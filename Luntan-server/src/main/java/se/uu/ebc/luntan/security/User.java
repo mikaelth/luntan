@@ -54,6 +54,7 @@ public class User {
     @NotNull
     private String lastName;
     
+/* 
     @Column(name = "PASSWORD", length = 255)
     @NotNull
     private String password;
@@ -61,15 +62,18 @@ public class User {
     @Column(name = "EMAIL", length = 255)
     @NotNull
     private String email;
+ */
     
     @Column(name = "IS_ACTIVE")
     private Short isActive;
     
+/* 
     @Column(name = "CREATION_DATE")
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "MM")
     private Calendar creationDate;
+ */
     
     @Column(name = "COMMENT", length = 255)
     private String comment;
@@ -98,7 +102,8 @@ public class User {
         this.lastName = lastName;
     }
     
-    public String getPassword() {
+ /* 
+   public String getPassword() {
         return password;
     }
     
@@ -114,6 +119,7 @@ public class User {
         this.email = email;
     }
     
+ */
     public Short getIsActive() {
         return isActive;
     }
@@ -122,6 +128,7 @@ public class User {
         this.isActive = isActive;
     }
     
+/* 
     public Calendar getCreationDate() {
         return creationDate;
     }
@@ -129,6 +136,7 @@ public class User {
     public void setCreationDate(Calendar creationDate) {
         this.creationDate = creationDate;
     }
+ */
     
     public String getComment() {
         return comment;

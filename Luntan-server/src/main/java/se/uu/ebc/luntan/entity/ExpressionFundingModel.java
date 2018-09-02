@@ -18,10 +18,13 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.MapContext;
 
+import org.apache.log4j.Logger;
+
 @Entity
 @Table(name = "EXPRESSION_MODEL")
 public class ExpressionFundingModel  extends FundingModel {
 
+    private static Logger log = Logger.getLogger(ExpressionFundingModel.class.getName());
 	private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).create();
     
 /* 
@@ -69,7 +72,7 @@ public class ExpressionFundingModel  extends FundingModel {
 		// work it out
 		Number result = (Number) e.evaluate(context);
 
-		return result.floatValue();
+		return result.floatValue()/REFERENCE_BASE_LEVEL;
 	}   
     
 }

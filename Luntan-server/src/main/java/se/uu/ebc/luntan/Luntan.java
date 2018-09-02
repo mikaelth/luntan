@@ -104,8 +104,6 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
 
 
 	public static void main(String[] args) throws Exception {
-		
-//		System.setProperty("javax.net.ssl.trustStore", trustPath);
 		SpringApplication.run(Luntan.class, args);
 	}
 

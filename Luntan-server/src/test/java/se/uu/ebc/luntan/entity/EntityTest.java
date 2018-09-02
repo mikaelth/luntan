@@ -33,6 +33,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
@@ -40,60 +41,75 @@ import static org.assertj.core.api.Assertions.*;
 import se.uu.ebc.luntan.entity.*;
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.repo.*;
+import se.uu.ebc.luntan.aux.*;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
+import javax.persistence.EntityManager;
 
 //@ContextConfiguration(classes = {PersistenceContext.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 //@RunWith(SpringRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@DataJpaTest
+//@DataJpaTest
 @ComponentScan("se.uu.ebc.luntan")
 @SpringBootTest
+//@AutoConfigureTestDatabase(replace=Replace.NONE)
 public class EntityTest {
 
     private Logger log = Logger.getLogger(EntityTest.class.getName());
 
 	@Autowired 
 	FundingModelRepo fmRepo;
+
 	@Autowired 
 	ExpressionFundingModelRepo efmRepo;
 
-	@Autowired
-	private TestEntityManager entityManager;
- 
+	@Autowired 
+	EconomyDocumentRepo emRepo;
+
+	@Autowired 
+	CourseInstanceRepo ciRepo;
+
+ 	@Autowired
+ 	private EntityManager entityManager;
+  
    
 
     @Test
-   	public void test() {
+ 	@Transactional
+    public void test() {
 	
 	System.out.println("In test");
 	
 	try { 
-	
-	ExpressionFundingModel efm = new ExpressionFundingModel();
-	efm.setExpression("65000/15 * studentNumber * ects");
-	efm.setDesignation("EnSlaskTest");
-	
-	log.info("Model " + efm.getDesignation() +", " +efm.computeFunding(20, 15.0f, 100000)); 
-	
-	testCourse();
 
-	log.info("fmRepo "+ efmRepo);
-	log.info("fmRepo content "+ efmRepo.findAll());
-    entityManager.persist(efm);
-    entityManager.flush();
-//	efmRepo.save(efm);
-	log.info("fmRepo content "+ fmRepo.findAll());
-	
-	for (FundingModel fm : fmRepo.findAll()) {
-		log.info("Model " + fm.getDesignation()/* +", " +fm.computeFunding(20, 15.0f, 100000)*/); 
+//	testCourse();
+	log.info("Repo fmRepo" + fmRepo); 
+	log.info("Repo efmRepo" + efmRepo); 
+	log.info("Repo emRepo" + emRepo); 
+	log.info("Repo ciRepo" + ciRepo); 
+	log.info("Repo emRepo "+ReflectionToStringBuilder.toString(emRepo, ToStringStyle.MULTI_LINE_STYLE));
+
+
+	for (CourseInstance ci : ciRepo.findAll()) {
+		log.info("Course instance " + ci.getDesignation()+", "+ci.getEconomyDoc().getYear()); 
+		log.info("Course instance " + ci.getDesignation()+", "+ci.getEconomyDoc().getYear() +", grant " +ci.computeGrants()); 
+		log.info("Course instance " + ci.getDesignation() +", adjusted grant " +ci.computeAdjustedGrants()); 
+		log.info("Course instance " + ci.getDesignation() +", grant adjustment " +ci.computeGrantAdjustment()); 
 	}
+		log.info("Done with the courses"); 
+
+//	for (EconomyDocument edoc : emRepo.findAll()) {
+		EconomyDocument edoc = emRepo.findByYear(2018);
+// 		log.info("Document " + edoc); 
+// 		log.info("Document " + edoc.getYear() +", " +edoc.getBaseValue()); 
+// 		log.info("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup()); 
+//	}
 			
 	} catch (Exception e) {
-		log.error("Pesky exception in test(), " + e + e.getCause());
+		log.error("Pesky exception in test(), " + e + ", "+e.getCause());
 
 	}
 
@@ -111,8 +127,9 @@ public class EntityTest {
 			acntSet.add(Department.IOB);
 			EconomyDocument econDoc = new EconomyDocument(2018,10000,false,"En test",acntSet);
 
-			assertThat(econDoc.getYear()).isEqualTo(2018);	
+			log.info(assertThat(econDoc.getYear()).isEqualTo(2018));	
 
+//edRepo.save(econDoc);
 			ExpressionFundingModel efm = new ExpressionFundingModel();
 			efm.setExpression("65000/15 * studentNumber * ects");
 			efm.setDesignation("EnSlasktest");

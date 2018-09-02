@@ -12,12 +12,15 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import org.apache.log4j.Logger;
 
 @Entity
 @Table(name = "FUNDING_MODEL")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class FundingModel  extends Auditable  implements FundingModelInterface {
 
+	static final Integer REFERENCE_BASE_LEVEL = 1000;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")

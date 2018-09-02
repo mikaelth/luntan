@@ -18,17 +18,20 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Embedded;
 import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
+import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 
 import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.enums.*;
+import se.uu.ebc.luntan.aux.GrantMaps;
 
 @Entity
-@Table(name = "COURSEINSTANCE", uniqueConstraints= @UniqueConstraint(columnNames={"COURSE_FK", "EXTRA_DESIGNATION"}))
+@Table(name = "COURSEINSTANCE", uniqueConstraints= @UniqueConstraint(columnNames={"COURSE_FK", "EXTRA_DESIGNATION","ECONOMY_DOC_FK"}))
 public class CourseInstance  extends Auditable {
 
+	private static final Integer DEFAULT_REG_STUDENT_NUMBER = 15;
     private static Logger log = Logger.getLogger(CourseInstance.class.getName());
 
     @Id
@@ -60,11 +63,14 @@ public class CourseInstance  extends Auditable {
     @Column(name = "ASSUMEDSTUDENTS")
 	private Integer startRegStudents;
 
-    @OneToOne(mappedBy = "preceedingCI")
-	private CourseInstance succeedingCI;
+    @Column(name = "LOCKEDSTUDENTNUMBER", length = 255)
+	private Integer lRegStud;
+
+    @Column(name = "UNLOCKEDSTUDENTNUMBER")
+	private Integer uRegStud;
 
     @OneToOne
-    @NotNull
+//    @NotNull
     @JoinColumn(name = "PREDECESSOR_FK")
 	private CourseInstance preceedingCI;
 
@@ -82,6 +88,7 @@ public class CourseInstance  extends Auditable {
  */
      
 	@ElementCollection
+	@MapKeyEnumerated(EnumType.STRING)    
     private Map<Department,Float> grantDistribution;
 
     @OneToOne
@@ -130,17 +137,6 @@ public class CourseInstance  extends Auditable {
 	public void setStartRegStudents(Integer startRegStudents)
 	{
 		this.startRegStudents = startRegStudents;
-	}
-
-
-	public CourseInstance getSucceedingCI()
-	{
-		return this.succeedingCI;
-	}
-
-	public void setSucceedingCI(CourseInstance succeedingCI)
-	{
-		this.succeedingCI = succeedingCI;
 	}
 
 
@@ -208,30 +204,80 @@ public class CourseInstance  extends Auditable {
 	}
 
 
+	public Integer getLRegStud()
+	{
+		return this.lRegStud;
+	}
+
+	public void setLRegStud(Integer lRegStud)
+	{
+		this.lRegStud = lRegStud;
+	}
+
+
+	public Integer getURegStud()
+	{
+		return this.uRegStud;
+	}
+
+	public void setURegStud(Integer uRegStud)
+	{
+		this.uRegStud = uRegStud;
+	}
+
+
+
 	/* Business methods */
 	
-	public String getDesignation () {
+	public String getDesignation() {
 		return course.getSeName()+this.extraDesignation;
 	}
 	
-	public Map<Department,Float> computeGrants() { 
+	private Map<Department,Float> computeGrantDist(Float grant) { 
 		Map<Department,Float> grants = new HashMap<Department,Float>();
-		Float grant = computeCIGrant();
+		Float implicitGrant = 0.0f;
+		Department implicitDept = null;
+
 		log.debug("Grant for " +getDesignation() +", "+ grant);
+ 
 		for (Department dept : economyDoc.getAccountedDepts()) {
-			grants.put(dept, grant * grantDistribution.get(dept));
+			if (dept.isImplicit()) {
+				implicitDept = dept;
+				implicitGrant += 1.0f;		
+			} else if (grantDistribution.containsKey(dept)) {
+				grants.put(dept, grant * grantDistribution.get(dept));
+				implicitGrant -= grantDistribution.get(dept);
+			} else {
+				grants.put(dept, 0.0f);			
+			}			
+		}
+
+		if (implicitDept != null) {
+			grants.put(implicitDept, grant * implicitGrant);
 		}
 	
 		return grants;
 	
 	}
 	
-	public Map<Department,Float> computeGrantAdjustment() {return null;}
+	public Map<Department,Float> computeGrants() {		
+		return computeGrantDist(computeCIGrant());
+	}
+	public Map<Department,Float> computeAdjustedGrants() {
+		return computeGrantDist(computeAdjustedCIGrant());
+	}	
+	public Map<Department,Float> computeGrantAdjustment() {
+		return GrantMaps.diff(computeAdjustedGrants(),computeGrants());
+	}
 	 
  	public Float computeCIGrant() {
- 		return fundingModel.computeFunding(getRegStudentAcnt(),course.getCredits(),economyDoc.getBaseValue());
+ 		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue());
+ 	}
+ 	public Float computeAdjustedCIGrant() {
+ 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue());
  	}
  	
+/* 
 	private Integer getRegStudentAcnt() {
 		Integer students = 0;
 		if (startRegStudents == null || startRegStudents == 0) {
@@ -243,4 +289,63 @@ public class CourseInstance  extends Auditable {
 		return students; 
  
    }
+ */
+
+	public Integer getModelStudentNumber() {
+		log.debug(this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +this.uRegStud+", " +this.preceedingCI);
+		Integer currentStudents = 1000;
+		
+		if (this.registeredStudents == null || this.registeredStudents == 0) {
+			if (this.startRegStudents == null || this.startRegStudents == 0) {
+				if (this.preceedingCI == null || this.preceedingCI == this) {
+					currentStudents = DEFAULT_REG_STUDENT_NUMBER;
+				} else {
+					currentStudents = this.preceedingCI.getModelStudentNumber(); 
+				}
+			} else {
+				currentStudents = this.startRegStudents; 
+			}
+		} else {
+			currentStudents = this.registeredStudents;
+		};
+				
+		if (economyDoc.isLocked()) {
+			this.uRegStud = 0;
+			if (this.lRegStud == null || this.lRegStud == 0) {
+				this.lRegStud = currentStudents;
+			}
+	 		return lRegStud;
+		} else {
+			this.lRegStud = 0;
+			this.uRegStud = currentStudents;
+	 		return uRegStud;
+		}
+
+ 		
+   }
+   
+	public Map<Department,Float> explicitGrantDist() { 
+		Map<Department,Float> grants = new HashMap<Department,Float>();
+		Float implicitGrant = 0.0f;
+		Department implicitDept = null;
+ 
+		for (Department dept : economyDoc.getAccountedDepts()) {
+			if (dept.isImplicit()) {
+				implicitDept = dept;
+				implicitGrant += 1.0f;		
+			} else if (grantDistribution.containsKey(dept)) {
+				grants.put(dept, grantDistribution.get(dept));
+				implicitGrant -= grantDistribution.get(dept);
+			} else {
+				grants.put(dept, 0.0f);			
+			}			
+		}
+
+		if (implicitDept != null) {
+			grants.put(implicitDept, implicitGrant);
+		}
+	
+		return grants;
+	
+	}
 }

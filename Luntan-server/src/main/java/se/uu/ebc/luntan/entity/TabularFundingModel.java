@@ -14,11 +14,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ElementCollection;
 
+import org.apache.log4j.Logger;
 
 @Entity
 @Table(name = "TABULAR_MODEL")
 public  class TabularFundingModel  extends FundingModel {
 
+    private static Logger log = Logger.getLogger(TabularFundingModel.class.getName());
     
 /* 
     @OneToMany(mappedBy = "course")
@@ -52,6 +54,8 @@ public  class TabularFundingModel  extends FundingModel {
  	/* Business methods */
 	@Override
 	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel) {
-		return 0.0f;
+		log.debug("computeFunding for " + registerdStudents + " students");
+		log.debug("computeFunding table reads " + valueTable.get(registerdStudents));
+		return (baseLevel/REFERENCE_BASE_LEVEL)*ects*registerdStudents*valueTable.get(registerdStudents);
 	}   
 }

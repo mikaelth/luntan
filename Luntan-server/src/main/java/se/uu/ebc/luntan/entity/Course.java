@@ -9,7 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
+import se.uu.ebc.luntan.enums.CourseGroup;
 
 @Entity
 @Table(name = "COURSE")
@@ -43,7 +46,8 @@ public class Course  extends Auditable {
     private String seName;
     
     @Column(name = "COURSE_GROUP", length = 255)
-    private String courseGroup;
+	@Enumerated(EnumType.STRING)    
+    private CourseGroup courseGroup;
     
     @Column(name = "NOTE", length = 255)
     private String note;
@@ -96,11 +100,11 @@ public class Course  extends Auditable {
     }
     
     
-    public String getCourseGroup() {
+    public CourseGroup getCourseGroup() {
         return courseGroup;
     }
     
-    public void setCourseGroup(String courseGroup) {
+    public void setCourseGroup(CourseGroup courseGroup) {
         this.courseGroup = courseGroup;
     }
     

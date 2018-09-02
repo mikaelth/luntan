@@ -24,22 +24,6 @@ public class AuxItemsController {
 
     private static Logger log = Logger.getLogger(AuxItemsController.class.getName());
 
-/* 
-	@Autowired
-	StaffRepo staffRepo;
-	
-	@RequestMapping("/years")
-    public List<Map<String, String>> usedYears() {
-    	List theList = new ArrayList<Map<String, String>>();
-    	for (String s : staffRepo.getStaffedYears()) {
-			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
-			vMap.put("label", s.toString());
-    		theList.add(vMap);
-    	}
-    	return theList;
-    }
-
-
 	@RequestMapping("/userroletypes")
     public List<Map<String, UserRoleType>> userRoleTypes() {
     	List theList = new ArrayList<Map<String, UserRoleType>>();
@@ -50,48 +34,32 @@ public class AuxItemsController {
     	}
     	return theList;
     }
-
-	@RequestMapping("/employmenttypes")
-    public List<Map<String, EmploymentType>> employmentType() {
-    	List theList = new ArrayList<Map<String, EmploymentType>>();
-    	for (EmploymentType s : EmploymentType.values()) {
-			java.util.Map<String,EmploymentType> vMap = new java.util.HashMap<String, EmploymentType>();
+	@RequestMapping("/departments")
+    public List<Map<String, Department>> departments() {
+    	List theList = new ArrayList<Map<String, Department>>();
+    	for (Department s : Department.values()) {
+			java.util.Map<String,Department> vMap = new java.util.HashMap<String, Department>();
 			vMap.put("label", s);
     		theList.add(vMap);
     	}
     	return theList;
     }
 
-	@RequestMapping("/granttypes")
-    public List<Map<String, GrantType>> grantType() {
-    	List theList = new ArrayList<Map<String, GrantType>>();
-    	for (GrantType s : GrantType.values()) {
-			java.util.Map<String,GrantType> vMap = new java.util.HashMap<String, GrantType>();
-			vMap.put("label", s);
-    		theList.add(vMap);
-    	}
-    	return theList;
-    }
- */
-	
-/* 
 	@RequestMapping("/coursegroups")
     public List<Map<String, String>> courseGroup() {
     	List theList = new ArrayList<Map<String, String>>();
     	for (CourseGroup s : CourseGroup.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
-			vMap.put("name", s.name());
-			vMap.put("displayname", s.toString());
+			vMap.put("label", s.toString());
     		theList.add(vMap);
     	}
     	return theList;
     }
- */
 
-	@RequestMapping("/coursegroups")
-    public List<Map<String, String>> courseGroup() {
+	@RequestMapping("/cidesignations")
+    public List<Map<String, String>> ciDesignation() {
     	List theList = new ArrayList<Map<String, String>>();
-    	for (CourseGroup s : CourseGroup.values()) {
+    	for (CIDesignation s : CIDesignation.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("label", s.toString());
     		theList.add(vMap);

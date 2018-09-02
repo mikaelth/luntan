@@ -2,6 +2,8 @@ package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +15,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.CourseGroup;
+import se.uu.ebc.luntan.aux.GrantMaps;
 
 @Entity
 @Table(name = "ECONOMYDOC", uniqueConstraints= @UniqueConstraint(columnNames={"YEAR"}))
@@ -27,17 +33,16 @@ public class EconomyDocument  extends Auditable {
     
     public Long getId() {
         return this.id;
-    }
-    
+    }    
     public void setId(Long id) {
         this.id = id;
     }
 
     
-/* 
-    @OneToMany(mappedBy = "course")
+ 
+    @OneToMany(mappedBy = "economyDoc")
     private Set<CourseInstance> courseInstances;
- */
+
     
     @Column(name = "YEAR")
     @NotNull
@@ -53,7 +58,8 @@ public class EconomyDocument  extends Auditable {
     @Column(name = "NOTE", length = 255)
     private String note;
   
-    @ElementCollection
+    @ElementCollection(targetClass=Department.class)
+	@Enumerated(EnumType.STRING)    
     private Set<Department> accountedDepts = new HashSet<Department>();
  	
      
@@ -121,4 +127,40 @@ public class EconomyDocument  extends Auditable {
     	this.note = note;
     }
 
+
+    public Set<CourseInstance> getCourseInstances()
+    {
+    	return this.courseInstances;
+    }
+
+    public void setCourseInstances(Set<CourseInstance> courseInstances)
+    {
+    	this.courseInstances = courseInstances;
+    }
+
+
+	/* Business methods */
+	
+	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroup() {
+		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
+		for (CourseInstance ci : courseInstances) {
+			if (!bigSum.containsKey(ci.getCourse().getCourseGroup())) {
+				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
+			}
+			bigSum.put(ci.getCourse().getCourseGroup(), GrantMaps.sum(bigSum.get(ci.getCourse().getCourseGroup()), ci.computeGrants()) );
+		}
+		
+		return bigSum;
+	}
+	public  Map<CourseGroup,Map<Department,Float>> sumAdjustmentsByCourseGroup() {
+		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
+		for (CourseInstance ci : courseInstances) {
+			if (!bigSum.containsKey(ci.getCourse().getCourseGroup())) {
+				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
+			}
+			bigSum.put(ci.getCourse().getCourseGroup(), GrantMaps.sum(bigSum.get(ci.getCourse().getCourseGroup()), ci.computeGrantAdjustment()) );
+		}
+		
+		return bigSum;
+	}
 }
