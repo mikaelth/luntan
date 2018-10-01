@@ -126,4 +126,9 @@ public class Course  extends Auditable {
         this.credits = credits;
     }
     
+    /* Business methods */
+    
+    public String getDesignation() {
+    	return this.code + " " + this.seName;
+    }
 }

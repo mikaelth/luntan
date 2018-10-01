@@ -25,9 +25,6 @@ public class SecurityService implements LuntanUserService {
     @Autowired
     UserRepo userRepo;
 
-    @Autowired
-    UserRoleRepo userRoleRepo;
-
 	private final boolean ENABLED = true;
 	private final boolean ACCOUNT_NON_EXPIRED = true;
 	private final boolean CREDENTIALS_NON_EXPIRED = true;

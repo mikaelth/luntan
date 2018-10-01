@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import se.uu.ebc.luntan.enums.*;
+import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +24,9 @@ import org.apache.log4j.Logger;
 public class AuxItemsController {
 
     private static Logger log = Logger.getLogger(AuxItemsController.class.getName());
+
+	@Autowired
+	EconomyDocumentRepo econDocRepo;
 
 	@RequestMapping("/userroletypes")
     public List<Map<String, UserRoleType>> userRoleTypes() {
@@ -60,6 +64,17 @@ public class AuxItemsController {
     public List<Map<String, String>> ciDesignation() {
     	List theList = new ArrayList<Map<String, String>>();
     	for (CIDesignation s : CIDesignation.values()) {
+			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
+			vMap.put("label", s.toString());
+    		theList.add(vMap);
+    	}
+    	return theList;
+    }
+
+	@RequestMapping("/years")
+    public List<Map<String, String>> usedYears() {
+    	List theList = new ArrayList<Map<String, String>>();
+    	for (Integer s : econDocRepo.getYears()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("label", s.toString());
     		theList.add(vMap);

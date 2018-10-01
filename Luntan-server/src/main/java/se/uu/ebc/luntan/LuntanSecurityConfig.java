@@ -40,6 +40,9 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${luntan.base.url}")
 	String baseUrl;
 
+	@Value("${luntan.environment.dev}")
+	boolean devEnv = false;
+
 	@Bean
     public AuthenticationUserDetailsService authenticationUserDetailsService() {
 		log.debug("authenticationUserDetailsService()");
@@ -110,28 +113,22 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
 
  		http.csrf().disable();
 
-// 		http.authorizeRequests()
-// 			.antMatchers("/index.*").authenticated()
-// 			.antMatchers("/document.*").authenticated()
-// 			.antMatchers("/login/**").permitAll()
-// 			.antMatchers("/LuntanClient/**").permitAll()
-// 			.antMatchers("/*").permitAll()
-// 			.antMatchers("/**").authenticated();
 
-//			.antMatchers("/rest/**").authenticated();
+		if (devEnv) {
+			http
+				.authorizeRequests().antMatchers("/**").permitAll();
+		} else {
+			http.authorizeRequests()
+				.antMatchers("/index.html").authenticated()
+				.antMatchers("/loginredirect.html").authenticated()
+				.antMatchers("/InREST.html").authenticated()
+				.antMatchers("/login/**").permitAll()
+				.antMatchers("/Luntan/index.html").authenticated()
+				.antMatchers("/Luntan/**").permitAll()
+				.antMatchers("/rest/**").authenticated()
+				.antMatchers("/**").authenticated();
  
-
-		
- 		http.authorizeRequests()
- 			.antMatchers("/index.html").authenticated()
- 			.antMatchers("/loginredirect.html").authenticated()
- 			.antMatchers("/Luntan/**").permitAll()
- 			.antMatchers("/rest/**").permitAll()
-// 			.antMatchers("/rest/**").hasAnyRole("DIRECTOROFSTUDIES","PHDADMIN","ADMINISTRATOR","SYSADMIN","COREDATAADMIN")
-			.antMatchers("/**").authenticated();
- 				
-// 		http
-// 			.authorizeRequests().antMatchers("/**").permitAll();
+		}
 
  			
         http

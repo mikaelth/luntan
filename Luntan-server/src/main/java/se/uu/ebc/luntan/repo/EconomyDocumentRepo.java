@@ -20,5 +20,8 @@ public interface EconomyDocumentRepo extends JpaRepository<EconomyDocument, Long
 
     public EconomyDocument findById(Long id);  
     public EconomyDocument findByYear(Integer year);  
+
+	@Query("SELECT distinct ed.year as yr FROM EconomyDocument AS ed order by yr DESC")
+	public List<Integer> getYears();
  
 }

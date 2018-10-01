@@ -35,6 +35,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import se.uu.ebc.luntan.service.CourseService;
+import se.uu.ebc.luntan.util.DateNullTransformer;
+
 @Controller
 @RequestMapping(value = "/rest")
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
@@ -42,10 +45,10 @@ public class CourseController {
 
     private Logger log = Logger.getLogger(CourseController.class.getName());
 
-/* 
+
 	@Autowired
 	CourseService courseService;
- */
+
 
 	/* Courses */
 /*		
@@ -120,7 +123,7 @@ public class CourseController {
 */
 
 	/* CourseInstances */
-/*		
+	
     @RequestMapping(value="/cis", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allCourseInstances() {
@@ -129,12 +132,14 @@ public class CourseController {
         try {
  			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).serialize(courseService.getAllCourseInstances()), headers, HttpStatus.OK);
 		} catch (Exception e) {
+			log.debug("Caught a pesky exception in allCourseInstances() "+ e + ", " +e.getCause());
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
   	
     }
  
-	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
+ /*	
+//	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cis/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourseInstance(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -154,7 +159,7 @@ public class CourseController {
     }
 
  
-	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
+//	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cis", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourseInstance(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -175,7 +180,7 @@ public class CourseController {
     }
 
 
-	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
+//	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
 	@RequestMapping(value = "/cis/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteCourseInstance(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();

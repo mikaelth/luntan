@@ -8,28 +8,35 @@ Ext.define('Luntan.Application', {
     
     name: 'Luntan',
 
-    stores: [
-        // TODO: add global / shared stores here
+    stores: ['CIDesignationStore', 'CourseGroupStore', 'DepartmentStore', 'UserRoleTypeStore',
+    	'UserStore', 'FundingModelStore', 'CourseInstanceStore'
     ],
     
     launch: function () {
         // TODO - Launch the application
 
-        Ext.Ajax.on('requestexception', function (connection, response, requestOptions, listenerOptions) {
-   			console.log("RequestException: " + response.status);
-			if (response.status == 401) {			
-				if(requestOptions.method == 'GET') {
-					window.open(Luntan.data.Constants.BASE_URL.concat('InREST.html'))	
-				} else {
-					Ext.MessageBox.alert('Status', 'Du saknar behörighet för detta');
-				}		
+		Ext.Ajax.on('requestexception', function (connection, response, requestOptions, listenerOptions) {
+			console.log("RequestException: " + response.status);
+			if (response.status == 401) {
+				window.open(Bemanning.data.Constants.CORE_URL.concat('InREST.html'));			
+			} else if (response.status == 403) {
+				Ext.MessageBox.alert('Status', 'Du saknar behörighet för detta');
 			} else {
 				Ext.MessageBox.alert('Status', 'RESTful-kommunikation gick inte som det skulle: ' + response.statusText + ' Skyll inte på mig om saker inte fungerar från och med nu!');
 			}
-    	});
+		});
 
+    
+    	Ext.getStore('CIDesignationStore').load();
+    	Ext.getStore('CourseGroupStore').load();
+    	Ext.getStore('DepartmentStore').load();
+    	Ext.getStore('UserRoleTypeStore').load();
+    	Ext.getStore('UserStore').load();
+    	Ext.getStore('FundingModelStore').load();
+    	Ext.getStore('CourseInstanceStore').load();
     },
-
+	
+	
     onAppUpdate: function () {
         Ext.Msg.confirm('Application Update', 'Den här applikationen har en uppdatering, ladda om?',
             function (choice) {

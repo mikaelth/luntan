@@ -50,9 +50,16 @@ public abstract class Auditable {
     	return this.lastModifiedBy;
     }
 
+/* 
     public void setLastModifiedBy(String lastModifiedBy)
     {
     	this.lastModifiedBy = lastModifiedBy;
+    }
+ */
+
+    public Date getLastModifiedDate()
+    {
+    	return this.lastModifiedDate;
     }
 
 

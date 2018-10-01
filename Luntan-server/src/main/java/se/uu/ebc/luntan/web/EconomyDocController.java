@@ -47,8 +47,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
+import se.uu.ebc.luntan.repo.FundingModelRepo;
+import se.uu.ebc.luntan.service.FundingModelService;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument ;
+import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.enums.CourseGroup;
 
 @Controller
@@ -61,32 +64,39 @@ public class EconomyDocController {
 	@Autowired
 	EconomyDocumentRepo emRepo;
 
-	/* Courses */
-/*		
-    @RequestMapping(value="/courses", method = RequestMethod.GET)
+	@Autowired
+	FundingModelRepo fmRepo;
+
+	@Autowired
+	FundingModelService fmService;
+
+	/* Funding models */
+		
+    @RequestMapping(value="rest/fundingmodels", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<String> allCourses() {
+    public ResponseEntity<String> allFMs() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), "updated").deepSerialize(courseService.getAllCourses()), headers, HttpStatus.OK);
+// 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fmService.getAllFMs()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fmRepo.findAll()), headers, HttpStatus.OK);
+// 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").deepSerialize(fmRepo.findAll()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
   	
     }
  
-	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
-    @RequestMapping(value="/courses/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+    @RequestMapping(value="rest/fundingmodels/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourse(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			CourseVO cVO = new JSONDeserializer<CourseVO>().use(null, CourseVO.class).deserialize(json);
-			cVO.setId(id);
-			cVO = courseService.saveCourse(cVO);
+			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			fm = fmRepo.save(fm);
 			
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").deepSerialize(cVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fm);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -96,18 +106,18 @@ public class EconomyDocController {
     }
 
  
-	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
-    @RequestMapping(value="/courses", method = RequestMethod.POST, headers = "Accept=application/json")
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+    @RequestMapping(value="rest/fundingmodels", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourse(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			CourseVO cVO = new JSONDeserializer<CourseVO>().use(null, CourseVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
-			cVO = courseService.saveCourse(cVO);
+			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			fm = fmRepo.save(fm);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
-            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+cVO.getId().toString()).build().toUriString());
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+fm.getId().toString()).build().toUriString());
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").deepSerialize(cVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fm);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
@@ -117,13 +127,13 @@ public class EconomyDocController {
     }
 
 
-	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
-	@RequestMapping(value = "/courses/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@RequestMapping(value = "rest/fundingmodels/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteCourse(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			courseService.deleteCourse(id);
+			fmRepo.delete(fmRepo.findById(id));
             return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -131,7 +141,7 @@ public class EconomyDocController {
     }
 
 
-*/
+
 
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)
@@ -149,6 +159,9 @@ log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
 			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
+			
+			emRepo.save(edoc);
+			
     		return "EconomyDocView";
         } catch (Exception e) {
 			log.error("viewEconoomy, caught a pesky exception "+ e);

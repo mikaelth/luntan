@@ -70,7 +70,6 @@ public class CourseInstance  extends Auditable {
 	private Integer uRegStud;
 
     @OneToOne
-//    @NotNull
     @JoinColumn(name = "PREDECESSOR_FK")
 	private CourseInstance preceedingCI;
 
@@ -81,17 +80,20 @@ public class CourseInstance  extends Auditable {
         
     @Column(name = "NOTE", length = 255)
     private String note;
-  
-/* 
-	@Embedded
-	private GrantDistribution grantDistribution;
- */
+ 
+    @Column(name = "BALANCE")
+    private boolean balanceRequest = false;
+
+    @ManyToOne
+    @JoinColumn(name = "BALANCED_ECON_DOC_FK")
+	private EconomyDocument balancedEconomyDoc;
+ 	 
      
 	@ElementCollection
 	@MapKeyEnumerated(EnumType.STRING)    
     private Map<Department,Float> grantDistribution;
 
-    @OneToOne
+    @ManyToOne
     @NotNull
     @JoinColumn(name = "MODEL_FK")
 	private FundingModel fundingModel;
@@ -225,8 +227,26 @@ public class CourseInstance  extends Auditable {
 		this.uRegStud = uRegStud;
 	}
 
+	public void setBalanceRequest (boolean balanceRequest) {
+		this.balanceRequest = balanceRequest;
+	}
 
+	public boolean isBalanceRequest() {
+		return this.balanceRequest;
+	}
+	
 
+	public EconomyDocument getBalancedEconomyDoc()
+	{
+		return this.balancedEconomyDoc;
+	}
+
+	public void setBalancedEconomyDoc(EconomyDocument balancedEconomyDoc)
+	{
+		this.balancedEconomyDoc = balancedEconomyDoc;
+	}
+
+	
 	/* Business methods */
 	
 	public String getDesignation() {
@@ -324,6 +344,22 @@ public class CourseInstance  extends Auditable {
  		
    }
    
+/* 
+	public Integer getComputedStudents() {
+		Integer studs = 0;
+ 		if (economyDoc.isLocked()) {
+			if (this.lRegStud == null || this.lRegStud == 0) {
+				studs = currentStudents;
+			} else {
+				studs =  lRegStud;
+			}
+		} else {
+			studs = currentStudents;
+		}
+		return studs;  
+	}
+ */
+	
 	public Map<Department,Float> explicitGrantDist() { 
 		Map<Department,Float> grants = new HashMap<Department,Float>();
 		Float implicitGrant = 0.0f;
@@ -347,5 +383,25 @@ public class CourseInstance  extends Auditable {
 	
 		return grants;
 	
+	}
+	
+	public Map<Department,Float> computeAccumulatedGrantAdjustment() {
+		Map<Department,Float> adjustment = new HashMap<Department,Float>();
+		log.debug("Adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ this.computeGrantAdjustment());		
+		try {		
+			if(!(this.registeredStudents == null || this.registeredStudents == 0)) {
+				if(this.preceedingCI == null || this.preceedingCI == this) {
+					adjustment = this.computeGrantAdjustment();
+				} else {
+					adjustment = this.preceedingCI.isBalanceRequest() ? this.computeGrantAdjustment() : GrantMaps.sum(this.computeGrantAdjustment(), this.preceedingCI.computeAccumulatedGrantAdjustment());
+			
+				}
+			}
+		} catch (Exception e) {
+			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
+		} finally {
+			return adjustment;
+		}
+
 	}
 }

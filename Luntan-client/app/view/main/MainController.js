@@ -17,5 +17,14 @@ Ext.define('Luntan.view.main.MainController', {
         if (choice === 'yes') {
             //
         }
-    }
+    },
+   	onTabChange: function (tabPanel, newCard, oldCard, eOpts) {
+//		console.log(newCard);
+		if (newCard.getReference() == 'logOutTab') {
+			window.location.replace('https://weblogin.uu.se/idp/profile/Logout');
+		} else if (newCard.getReference() == 'goBackTab') {
+			window.location.replace(Luntan.data.Constants. BASE_URL);
+		}
+   	}
+    
 });

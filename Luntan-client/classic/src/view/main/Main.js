@@ -14,8 +14,7 @@ Ext.define('Luntan.view.main.Main', {
         'Ext.window.MessageBox',
 
         'Luntan.view.main.MainController',
-        'Luntan.view.main.MainModel',
-        'Luntan.view.main.List'
+        'Luntan.view.main.MainModel'
     ],
 
     controller: 'main',
@@ -76,29 +75,55 @@ Ext.define('Luntan.view.main.Main', {
     },
 
     items: [{
-        title: 'Home',
-        iconCls: 'fa-home',
+        title: 'Uppdrag',
+        iconCls: 'fa-hourglass-2',
         // The following grid shares a store with the classic version's grid as well!
         items: [{
-            xtype: 'mainlist'
         }]
     }, {
-        title: 'Users',
+        title: 'Modeller',
         iconCls: 'fa-user',
-        bind: {
-            html: '{loremIpsum}'
-        }
+        items: [{
+            xtype: 'fmlist', 
+			height: 600
+        },{
+            xtype: 'fmtabledlist', 
+			height: 300
+        }]
     }, {
-        title: 'Groups',
-        iconCls: 'fa-users',
-        bind: {
-            html: '{loremIpsum}'
-        }
+        title: 'Kurstillfällen',
+        iconCls: 'fa-pencil',
+        items: [{
+            xtype: 'cilist', 
+			height: 900
+        }]
     }, {
-        title: 'Settings',
-        iconCls: 'fa-cog',
-        bind: {
-            html: '{loremIpsum}'
-        }
-    }]
+        title: 'Kurser',
+        iconCls: 'fa-book',
+        items: [{
+            xtype: 'courselist', 
+			height: 900
+        }]
+     }, {
+        title: 'Användare',
+        iconCls: 'fa-user',
+        items: [{
+            xtype: 'userlist', 
+			height: 900
+        }]
+	}, {
+        title: 'Gå till startsidan',
+        reference: 'goBackTab',
+        iconCls: ' fa-map'
+    }, {
+        title: 'Logga ut',
+        reference: 'logOutTab',
+        iconCls: 'fa-cog'
+    }],
+    
+    listeners: {
+ 		beforeTabChange: 'onTabChange'
+ 	}
+
+
 });

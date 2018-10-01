@@ -1,3 +1,4 @@
+
 package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
@@ -22,9 +23,13 @@ import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.aux.GrantMaps;
 
+import org.apache.log4j.Logger;
+
 @Entity
 @Table(name = "ECONOMYDOC", uniqueConstraints= @UniqueConstraint(columnNames={"YEAR"}))
 public class EconomyDocument  extends Auditable {
+
+    private static Logger log = Logger.getLogger(EconomyDocument.class.getName());
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -159,6 +164,7 @@ public class EconomyDocument  extends Auditable {
 				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
 			}
 			bigSum.put(ci.getCourse().getCourseGroup(), GrantMaps.sum(bigSum.get(ci.getCourse().getCourseGroup()), ci.computeGrantAdjustment()) );
+		log.debug("Accumulated adjustment for " + ci.getDesignation() + ", " + ci.getEconomyDoc().getYear() + ", "+ ci.computeAccumulatedGrantAdjustment());		
 		}
 		
 		return bigSum;
