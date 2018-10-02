@@ -2,6 +2,7 @@ package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -102,6 +103,7 @@ public class FundingModel  extends Auditable {
     }
 
 
+/* 
 	public void setValueTable (Map<Integer, Float> valueTable) {
 		this.valueTable = valueTable;
 	}
@@ -109,6 +111,17 @@ public class FundingModel  extends Auditable {
 	public Map<Integer, Float> getValueTable() {
 		return this.valueTable;
 	}
+ */
+
+ 	public void setValueTable(TreeMap<Integer,Float> valueTable) {
+ 		this.valueTable = valueTable;
+ 	}
+ 	public TreeMap<Integer,Float> getValueTable() {
+		if (!(this.valueTable instanceof TreeMap)) {
+			this.valueTable = new TreeMap<Integer,Float>(this.valueTable);
+		}
+ 		return (TreeMap)this.valueTable;
+ 	}
 	
 	/* Constructors */
 	
@@ -142,8 +155,10 @@ public class FundingModel  extends Auditable {
 		if (valueTable == null) {
 			context.set("tabled", 1);
 		} else {
-			log.debug("computeFunding table reads " + valueTable.get(registerdStudents));
-			context.set("tabled", valueTable.get(registerdStudents));
+//			log.debug("computeFunding table reads " + valueTable.get(registerdStudents));
+			log.debug("computeFunding table reads " + valueTable.get(getValueTable().floorKey(registerdStudents)));
+//			context.set("tabled", valueTable.get(registerdStudents));
+			context.set("tabled", valueTable.get(getValueTable().floorKey(registerdStudents)));
 		}
 		
 		// work it out
