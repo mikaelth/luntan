@@ -64,9 +64,6 @@ public class EntityTest {
 	FundingModelRepo fmRepo;
 
 	@Autowired 
-	ExpressionFundingModelRepo efmRepo;
-
-	@Autowired 
 	EconomyDocumentRepo emRepo;
 
 	@Autowired 
@@ -91,7 +88,6 @@ public class EntityTest {
 	log.info("Repo fmRepo" + fm.computeFunding(10,15.0f,1000)); 
 	log.info("Repo fmRepo" + fm.computeFunding(15,15.0f,1000)); 
 	log.info("Repo fmRepo" + fm.computeFunding(12,15.0f,1000)); 
-	log.info("Repo efmRepo" + efmRepo); 
 	log.info("Repo emRepo" + emRepo); 
 	log.info("Repo ciRepo" + ciRepo); 
 	log.info("Repo emRepo "+ReflectionToStringBuilder.toString(emRepo, ToStringStyle.MULTI_LINE_STYLE));
@@ -105,6 +101,9 @@ public class EntityTest {
 	}
 		log.info("Done with the courses"); 
 
+//	Set<FundingModel> fms = fmRepo.findFMWithTable();
+	log.info("fms " + fmRepo.slask()); 
+	
 //	for (EconomyDocument edoc : emRepo.findAll()) {
 		EconomyDocument edoc = emRepo.findByYear(2018);
 // 		log.info("Document " + edoc); 
@@ -134,7 +133,7 @@ public class EntityTest {
 			log.info(assertThat(econDoc.getYear()).isEqualTo(2018));	
 
 //edRepo.save(econDoc);
-			ExpressionFundingModel efm = new ExpressionFundingModel();
+			FundingModel efm = new FundingModel();
 			efm.setExpression("65000/15 * studentNumber * ects");
 			efm.setDesignation("EnSlasktest");
 

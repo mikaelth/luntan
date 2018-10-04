@@ -146,6 +146,10 @@ public class EconomyDocument  extends Auditable {
 
 	/* Business methods */
 	
+	public Integer getNumberOfCourseInstances() {
+		return this.courseInstances == null ? 0 : this.courseInstances.size();
+	}
+	
 	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroup() {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
 		for (CourseInstance ci : courseInstances) {

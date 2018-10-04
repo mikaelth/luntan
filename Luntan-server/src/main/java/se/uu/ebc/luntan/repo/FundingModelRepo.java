@@ -19,5 +19,5 @@ import java.util.List;
 public interface FundingModelRepo extends JpaRepository<FundingModel, Long>, JpaSpecificationExecutor<FundingModel>{
 
     public FundingModel findById(Long id);  
- 
+     
 }

@@ -152,7 +152,7 @@ public class FundingModel  extends Auditable {
 		context.set("baseLevel", baseLevel);
 
 		// check for look-up values
-		if (valueTable == null) {
+		if (valueTable == null || valueTable.size() == 0) {
 			context.set("tabled", 1);
 		} else {
 //			log.debug("computeFunding table reads " + valueTable.get(registerdStudents));

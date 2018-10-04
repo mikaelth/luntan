@@ -27,10 +27,9 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'balancedEconomyDocId', type: 'int'},
 		{name: 'fundingModelId', type: 'int'},
 		{name: 'extraDesignation', type: 'string'},
-		{name: 'registeredStudents', type: 'string'},
-		{name: 'startRegStudents', type: 'string'},
-		{name: 'lRegStud', type: 'string'},
-		{name: 'uRegStud', type: 'string'},
+		{name: 'registeredStudents', type: 'int'},
+		{name: 'startRegStudents', type: 'int'},
+		{name: 'modelStudentNumber', type: 'int'},
 		{name: 'balanceRequest', type: 'boolean'},
 		{name: 'note', type: 'string'},
 		{name: 'grantDistribution', type: 'auto'}

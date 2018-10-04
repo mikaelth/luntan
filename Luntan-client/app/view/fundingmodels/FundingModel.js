@@ -14,28 +14,31 @@ Ext.define('Luntan.view.fundingmodels.FundingModel', {
 		fundingmodels : 'FundingModelStore',
 		tabled : {
 			type: 'store',
-			autolaod: true,
+			autolaod: false,
 			proxy: {
 				type: 'memory',
 				reader: {
 					type: 'base',
 					rootProperty: 'data'
 				 },
-		/* 
+		 
 				writer: {
-					type: 'json',
+					type: 'base',
 					clientIdProperty: 'clientId',
 					writeAllFields: true,
 					dateFormat: 'Y-m-d'
 				 }
-		 */
+		 
 
 			 }, 
 			idProperty: 'number',
 			fields: [
 			   {name: 'number', type: 'string'},
 			   {name: 'value', type: 'float'}
-			]			
+			],
+/* 
+			data: [{number: 1, value: 1.5}, {number:2, value: 2.0}]			
+ */
 		}    	
 	},
 	

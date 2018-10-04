@@ -75,14 +75,22 @@ Ext.define('Luntan.view.main.Main', {
     },
 
     items: [{
+        title: 'Nådiga luntor',
+        iconCls: 'fa-legal',
+        // The following grid shares a store with the classic version's grid as well!
+        items: [{
+        	xtype: 'edoclist',
+        	height: '900'
+        }]
+    },{
         title: 'Uppdrag',
-        iconCls: 'fa-hourglass-2',
+        iconCls: 'fa-balance-scale',
         // The following grid shares a store with the classic version's grid as well!
         items: [{
         }]
     }, {
         title: 'Modeller',
-        iconCls: 'fa-user',
+        iconCls: 'fa-dollar',
         items: [{
             xtype: 'fmlist', 
 			height: 600

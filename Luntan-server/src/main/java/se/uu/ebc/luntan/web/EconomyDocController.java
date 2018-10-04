@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
+import se.uu.ebc.luntan.service.EconomyDocumentService;
 import se.uu.ebc.luntan.service.FundingModelService;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument ;
@@ -70,6 +71,9 @@ public class EconomyDocController {
 	@Autowired
 	FundingModelService fmService;
 
+	@Autowired
+	EconomyDocumentService edService;
+	
 	/* Funding models */
 		
     @RequestMapping(value="rest/fundingmodels", method = RequestMethod.GET)
@@ -142,6 +146,20 @@ public class EconomyDocController {
 
 
 
+	/* EconomyDocument */
+	
+	@RequestMapping(value="rest/edocs", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allEDs() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocs").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(edService.getAllEDs()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+  	
+    }
 
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)
@@ -151,7 +169,9 @@ public class EconomyDocController {
        try {
 			Map<CourseGroup, CourseInstance> ciMap = new HashMap<CourseGroup, CourseInstance>();
 			EconomyDocument edoc = emRepo.findByYear(year);
-log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup()); 
+			
+			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup()); 
+			
 			for (CourseInstance ci : edoc.getCourseInstances()) {
 				ciMap.put(ci.getCourse().getCourseGroup(), ci);
 			}
@@ -175,4 +195,22 @@ log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
 	  java.util.Collections.sort(list);
 	  return list;
 	}
+	
+	
+	
+/* 
+	@RequestMapping(value="rest/test", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> test() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fmRepo.slask()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+  	
+    }
+ */
+
 } 
