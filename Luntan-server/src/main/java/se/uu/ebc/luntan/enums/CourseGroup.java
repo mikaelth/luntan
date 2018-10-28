@@ -7,6 +7,8 @@ public enum CourseGroup {
 	KNO("KNO-kurser"),
 	SUMMER("Sommarkurser"),
 	ENGINEER("Ingenjörskurser"),
+	BIOINF("Master Bioinformatik"),
+	BIOTECH("Master Tillämpad bioteknik"),
 	MISC("Övrigt"),
 	RESEARCH("Forskarskola"),
 	DEFREEPROJ("Examensarbeten"),

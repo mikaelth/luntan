@@ -85,8 +85,9 @@ Ext.define('Luntan.view.main.Main', {
     },{
         title: 'Uppdrag',
         iconCls: 'fa-balance-scale',
-        // The following grid shares a store with the classic version's grid as well!
         items: [{
+            xtype: 'citasklist', 
+			height: 900
         }]
     }, {
         title: 'Modeller',

@@ -20,10 +20,9 @@ Ext.define('Luntan.model.Course', {
 		{name: 'id', type: 'int'},
 		{name: 'code', type: 'string'},
 		{name: 'courseGroup', type: 'string'},
-		{name: 'enName', type: 'string'},
 		{name: 'seName', type: 'string'},
+		{name: 'designation', type: 'string'},
 		{name: 'credits', type: 'float'},
-		{name: 'period', type: 'string'},
 		{name: 'formName', type: 'string', calculate: function (data) {return data.code.concat(data.code == '' ? '':' ').concat(data.seName)}},
 		{name: 'note', type: 'string'}
 

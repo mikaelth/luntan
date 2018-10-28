@@ -27,7 +27,7 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 
 						xtype: 'combobox',
 						reference: 'comboCurrentYear',
-						bind: {value: '{workingYear}', store: '{usedYears}'},
+						bind: {value: '{workingEDoc}', store: '{usedYears}'},
 						width: 200,
 						typeAhead: true,
 						triggerAction: 'all',
@@ -35,8 +35,8 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 						lastQuery: '',
 						fieldLabel: 'Välj år',
 						labelWidth: 50,
-						displayField: 'label',
-						valueField: 'label',
+						displayField: 'year',
+						valueField: 'id',
 						listeners: {
 							select: function() {
 								this.lookupReferenceHolder().lookupReference('btnCreate').enable();
@@ -55,7 +55,7 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 //						text: 'Create',
 						text: 'Ny post',
 						reference: 'btnCreate',
-						disabled: true,
+						disabled: false,
 						listeners: {
 							click: 'onCreate'
 						}

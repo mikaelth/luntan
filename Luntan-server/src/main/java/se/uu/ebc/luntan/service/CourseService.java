@@ -12,9 +12,13 @@ import java.util.List;
 import java.util.Set;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
+import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
+import se.uu.ebc.luntan.vo.CourseVO;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.repo.CourseRepo;
+import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
+import se.uu.ebc.luntan.repo.FundingModelRepo;
 
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -32,9 +36,14 @@ public class CourseService {
 	@Autowired
 	CourseInstanceRepo ciRepo;
 
+	@Autowired
+	EconomyDocumentRepo edRepo;
+
+	@Autowired
+	FundingModelRepo fmRepo;
 
 	/* Courses */
-/*	
+
 	public List<CourseVO> getAllCourses() throws Exception {
 		List<CourseVO> cVO = new ArrayList<CourseVO>();
 		try {	
@@ -43,13 +52,14 @@ public class CourseService {
  			}
          	return cVO;        	        
         } catch (Exception e) {
+			logger.error("getAllCourses got a pesky exception: "+ e + e.getCause());
 
 			return null;
 			
         }
     }
     
-
+/*	
     public CourseVO saveCourse(CourseVO cVO) throws Exception {
     	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()), cVO);
     	courseRepo.save(c);
@@ -110,7 +120,7 @@ public class CourseService {
         }
     }
     
-/*
+
     public CourseInstanceVO saveCourseInstance(CourseInstanceVO cVO) throws Exception {
     	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()), cVO);
     	ciRepo.save(ci);
@@ -118,13 +128,13 @@ public class CourseService {
     
     }
 
-
+/*
     public synchronized void deleteCourseInstance(Long cID) throws Exception {
 		CourseInstance ci = ciRepo.findById(cID);
 		ciRepo.delete(ci);
     }
 
- 
+*/ 
 	private CourseInstance toCourseInstance (CourseInstanceVO cVO) throws Exception {
  		return toCourseInstance (new CourseInstance(), cVO);
    	}
@@ -134,15 +144,25 @@ public class CourseService {
 
 		try {
 			ci.setId(cVO.getId());
-			ci.setYear(cVO.getYear());
 			ci.setExtraDesignation(cVO.getExtraDesignation());
-			ci.setStartDate(cVO.getStartDate());
-			ci.setEndDate(cVO.getEndDate());
-			ci.setNote(cVO.getNote());
-			ci.setNumberOfStudents(cVO.getNumberOfStudents());
+			ci.setRegisteredStudents(cVO.getRegisteredStudents());
+			ci.setStartRegStudents(cVO.getStartRegStudents());
+    		ci.setBalanceRequest(cVO.isBalanceRequest());
+    		ci.setNote(cVO.getNote());
+    		
+    		ci.setGrantDistribution(cVO.getGrantDistribution());
 
+			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()));
 			ci.setCourse(courseRepo.findById(cVO.getCourseId()));
-			ci.setCourseLeader(staffRepo.findById(cVO.getCourseLeaderId()));
+			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()));
+
+			if (cVO.getPreceedingCIId()!= null){
+				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()));
+			}
+			if (cVO.getBalancedEconomyDocId()!= null){
+				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()));
+			}
+			
 
 
 
@@ -154,7 +174,7 @@ public class CourseService {
 		}
 	}
 
-*/
+
 
     
 }

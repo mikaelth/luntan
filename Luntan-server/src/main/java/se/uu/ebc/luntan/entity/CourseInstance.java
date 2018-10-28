@@ -29,7 +29,7 @@ import se.uu.ebc.luntan.aux.GrantMaps;
 
 @Entity
 @Table(name = "COURSEINSTANCE", uniqueConstraints= @UniqueConstraint(columnNames={"COURSE_FK", "EXTRA_DESIGNATION","ECONOMY_DOC_FK"}))
-public class CourseInstance  extends Auditable {
+public class CourseInstance  extends Auditable implements Comparable<CourseInstance> {
 
 	private static final Integer DEFAULT_REG_STUDENT_NUMBER = 15;
     private static Logger log = Logger.getLogger(CourseInstance.class.getName());
@@ -250,7 +250,7 @@ public class CourseInstance  extends Auditable {
 	/* Business methods */
 	
 	public String getDesignation() {
-		return course.getSeName()+this.extraDesignation;
+		return course.getDesignation()+this.extraDesignation;
 	}
 	
 	private Map<Department,Float> computeGrantDist(Float grant) { 
@@ -404,4 +404,16 @@ public class CourseInstance  extends Auditable {
 		}
 
 	}
+
+    @Override
+    public int compareTo(CourseInstance ci)
+    {
+        int cmp = 0;
+        if (this.getDesignation() != null)
+        {
+            cmp = this.getDesignation().compareTo(ci.getDesignation());
+        }
+        return cmp;
+    }
 }
+

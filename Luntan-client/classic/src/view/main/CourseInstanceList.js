@@ -46,42 +46,59 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
  */
 //			}
 		},
-		{ text: 'Extra benämning', dataIndex: 'extraDesignation', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
-		{ text: 'Registrerade studenter', dataIndex: 'registeredStudents', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
-		{ text: 'Skattat studentantal', dataIndex: 'startRegStudents', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
-		{ text: 'Extra benämning', dataIndex: 'lRegStud', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
-		{ text: 'Extra benämning', dataIndex: 'uRegStud', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
-// 		{ text: 'Kursledare', dataIndex: 'courseLeaderId', editor: 'textfield', align: 'left', width: 200,
-//          	renderer: function(value) {
-// 				if (Ext.getStore('StaffStore').getById(value) != undefined) {
-// 					return Ext.getStore('StaffStore').getById(value).get('name');
-// 				} else {
-// 					return value;
-// 				}
-//         	},
-// 			editor: {
-// 				xtype: 'combobox',
-// 				typeAhead: true,
-// 				triggerAction: 'all',
-// 				bind: {store: '{staff}'},
-// 				queryMode: 'local',
-// 				lastQuery: '',
-// 				displayField: 'formName',
-// 			    valueField: 'id',
-// /* 
-// 			    listeners: {
-// 					// delete the previous query in the beforequery event or set
-// 					// combo.lastQuery = null (this will reload the store the next time it expands)
-// 					beforequery: function(qe){
-// 						delete qe.combo.lastQuery;
-// 					}							    
-// 			    }				
-//  */
-// 			}
-// 		},
-// 		{ text: 'Start', dataIndex: 'startDate', editor: {xtype: 'datefield', format: 'Y-m-d'}, xtype:'datecolumn', format: 'Y-m-d', filter: 'date', align: 'left', width: 100 },
-// 		{ text: 'Slut', dataIndex: 'endDate', editor: {xtype: 'datefield', format: 'Y-m-d'}, xtype:'datecolumn', format: 'Y-m-d', filter: 'date', align: 'left', width: 100 },
-		{ text: 'Studentantal', dataIndex: 'numberOfStudents', editor: 'numberfield', align: 'left', width: 80 },
+		{ text: 'Extra benämning', dataIndex: 'extraDesignation', filter: 'string', align: 'left', flex: 1, 
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{extradesstore}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'label',
+			    valueField: 'label',
+/* 
+			    listeners: {
+					// delete the previous query in the beforequery event or set
+					// combo.lastQuery = null (this will reload the store the next time it expands)
+					beforequery: function(qe){
+						delete qe.combo.lastQuery;
+					}							    
+			    }				
+ */
+			}
+		},
+		{ text: 'Registrerade studenter', dataIndex: 'registeredStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
+		{ text: 'Skattat studentantal', dataIndex: 'startRegStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
+		{ text: 'Studentantal i modell', dataIndex: 'modelStudentNumber', filter: 'number', align: 'left', flex: 1 },
+		{ text: 'Balansera', dataIndex: 'balanceRequest', xtype: 'checkcolumn', filter: 'boolean', align: 'left', width: 50 },
+		{ text: 'Betalningsmodell', dataIndex: 'fundingModelId', align: 'left', width: 200,
+         	renderer: function(value) {
+				if (Ext.getStore('FundingModelStore').getById(value) != undefined) {
+					return Ext.getStore('FundingModelStore').getById(value).get('designation');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{fmstore}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'designation',
+			    valueField: 'id',
+ 
+			    listeners: {
+					// delete the previous query in the beforequery event or set
+					// combo.lastQuery = null (this will reload the store the next time it expands)
+					beforequery: function(qe){
+						delete qe.combo.lastQuery;
+					}							    
+			    }				
+ 
+			}
+		},
 		{ text: 'Kommentarer', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 
 	],

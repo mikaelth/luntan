@@ -229,6 +229,7 @@ public class CourseInstanceVO {
     
     /* Public methods */
 
+/* 
 	public Float getIBG() {
 		return this.grantDistribution.get(Department.IBG);
 	}
@@ -241,6 +242,7 @@ public class CourseInstanceVO {
 	public Float getIOB() {
 		return this.grantDistribution.get(Department.IOB);
 	}
+ */
 
 	
  	/* Constructors */

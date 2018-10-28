@@ -32,7 +32,39 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'modelStudentNumber', type: 'int'},
 		{name: 'balanceRequest', type: 'boolean'},
 		{name: 'note', type: 'string'},
-		{name: 'grantDistribution', type: 'auto'}
+		{name: 'grantDistribution', type: 'auto'},
+		{name: 'IBG', type: 'float', 
+			convert: function(v,record){
+				if (typeof v !== "undefined" && v !== null) {
+					record.data.grantDistribution['IBG'] = parseFloat(v);
+				}
+				return record.data.grantDistribution['IBG'];
+			}
+		},
+		{name: 'ICM', type: 'float', 
+			convert: function(v,record){
+				if (typeof v !== "undefined" && v !== null) {
+					record.data.grantDistribution['ICM'] = parseFloat(v);
+				}
+				return record.data.grantDistribution['ICM'];
+			}
+		},
+		{name: 'IEG', type: 'float', 
+			convert: function(v,record){
+				if (typeof v !== "undefined" && v !== null) {
+					record.data.grantDistribution['IEG'] = parseFloat(v);
+				}
+				return record.data.grantDistribution['IEG'];
+			}
+		},
+		{name: 'IOB', type: 'float', 
+			convert: function(v,record){
+				if (typeof v !== "undefined" && v !== null) {
+					record.data.grantDistribution['IOB'] = parseFloat(v);
+				}
+				return record.data.grantDistribution['IOB'];
+			}
+		},
 
     ]
 

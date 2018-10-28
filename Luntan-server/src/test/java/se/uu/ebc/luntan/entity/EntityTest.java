@@ -102,7 +102,7 @@ public class EntityTest {
 		log.info("Done with the courses"); 
 
 //	Set<FundingModel> fms = fmRepo.findFMWithTable();
-	log.info("fms " + fmRepo.slask()); 
+//	log.info("fms " + fmRepo.slask()); 
 	
 //	for (EconomyDocument edoc : emRepo.findAll()) {
 		EconomyDocument edoc = emRepo.findByYear(2018);

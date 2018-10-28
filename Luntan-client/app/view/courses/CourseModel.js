@@ -5,7 +5,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
 
     data: {
 		current : {
-			year : '',
+			edocId : '',
 			ci : null
 		}
     },
@@ -13,6 +13,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
     stores: {
 		coursegroups: 'CourseGroupStore',    	
  
+/* 
 		usedYears: {
 			xtype: 'store.store',
 			fields: [
@@ -28,15 +29,36 @@ Ext.define('Luntan.view.courses.CourseModel', {
 			autoLoad: true
     			
 		},    	
+ */
  
- 
+		extradesstore: {
+			type: 'chained',
+			source: 'CIDesignationStore'
+		},    	
+ 		usedYears: {
+ 			type:'chained',
+ 			source:'EconomyDocStore',
+ 			sorters: [{property:'year', direction: 'DESC'}]
+ 		},
 		cistore: {
 			type: 'chained',
 			source: 'CourseInstanceStore',
-//			filters: [{property: 'year', value: '{current.year}', exactMatch: true}],
+			filters: [{property: 'economyDocId', value: '{current.edocId}', exactMatch: true}],
 			sorters: [{property:'courseName', direction: 'ASC'}],
 			groupField: 'courseGroup'
 		},    	
+		citaskstore: {
+			type: 'chained',
+			source: 'CourseInstanceStore',
+			filters: [{property: 'economyDocId', value: '{current.edocId}', exactMatch: true}],
+			sorters: [{property:'courseName', direction: 'ASC'}],
+			groupField: 'courseGroup'
+		},
+		fmstore : {
+			type: 'chained',
+			source: 'FundingModelStore'
+		}
+    	
 /*
 		courses: {
 			type: 'chained',
@@ -47,15 +69,15 @@ Ext.define('Luntan.view.courses.CourseModel', {
 	},
 	
 	formulas: {
-        workingYear: {
+        workingEDoc: {
             // We need to bind deep to be notified on each model change
             bind: {
-                bindTo: '{comboCurrentYear.selection.label}', //--> reference configurated on the grid view (reference: comboCurrentYear)
+                bindTo: '{comboCurrentYear.selection.id}', //--> reference configurated on the grid view (reference: comboCurrentYear)
                 deep: true
             },
-            get: function(year) {
-            	this.set('current.year', year);
-                return year;
+            get: function(edocId) {
+            	this.set('current.edocId', edocId);
+                return edocId;
             }
         },
  

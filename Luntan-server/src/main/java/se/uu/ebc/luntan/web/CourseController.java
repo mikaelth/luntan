@@ -36,7 +36,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.service.CourseService;
+import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.util.DateNullTransformer;
+import se.uu.ebc.luntan.vo.CourseInstanceVO;
 
 @Controller
 @RequestMapping(value = "/rest")
@@ -49,22 +51,25 @@ public class CourseController {
 	@Autowired
 	CourseService courseService;
 
+	@Autowired
+	CourseRepo courseRepo;
+
 
 	/* Courses */
-/*		
+	
     @RequestMapping(value="/courses", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allCourses() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), "updated").deepSerialize(courseService.getAllCourses()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(courseRepo.findAll()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
   	
     }
- 
+/*	 
 	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
     @RequestMapping(value="/courses/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourse(@RequestBody String json, @PathVariable("id") Long id) {
@@ -130,7 +135,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).serialize(courseService.getAllCourseInstances()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(courseService.getAllCourseInstances()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			log.debug("Caught a pesky exception in allCourseInstances() "+ e + ", " +e.getCause());
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -138,7 +143,7 @@ public class CourseController {
   	
     }
  
- /*	
+
 //	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cis/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourseInstance(@RequestBody String json, @PathVariable("id") Long id) {
@@ -146,10 +151,12 @@ public class CourseController {
         headers.add("Content-Type", "application/json");
         try {
 			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("updateCourseInstance, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
+			log.debug("updateCourseInstance, grantDistribution "+ReflectionToStringBuilder.toString(ciVO.getGrantDistribution(), ToStringStyle.MULTI_LINE_STYLE));
 			ciVO.setId(id);
 			ciVO = courseService.saveCourseInstance(ciVO);
 			
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), "startDate").transform(new DateNullTransformer("yyyy-MM-dd"), "endDate").serialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -157,7 +164,7 @@ public class CourseController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+ /*	
  
 //	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cis", method = RequestMethod.POST, headers = "Accept=application/json")

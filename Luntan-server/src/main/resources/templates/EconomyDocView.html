@@ -4,144 +4,164 @@
 	<title>Kursekonomidokument</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style>
-#blast_hits {
+#course_instances {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
 
-#blast_hits td, #blast_hits th {
+#course_instances td, #course_instances th {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#blast_hits tr:nth-child(even){background-color: #f2f2f2;}
+#course_instances tr:nth-child(even){background-color: #f2f2f2;}
 
-#blast_hits tr:hover {background-color: #ddd;}
+#course_instances tr:hover {background-color: #ddd;}
 
-#blast_hits th {
+#course_instances th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
     background-color: #4CAF50;
     color: white;
 }
+#course_instance_summary {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#course_instance_summary td, #course_instances th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#course_instance_summary tr:nth-child(even){background-color: #f2f2f2;}
+
+#course_instance_summary tr:hover {background-color: #ddd;}
+
+#course_instance_summary th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#course_instance_adjustment {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#course_instance_adjustment td, #course_instances th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#course_instance_adjustment tr:nth-child(even){background-color: #f2f2f2;}
+
+#course_instance_adjustment tr:hover {background-color: #ddd;}
+
+#course_instance_adjustment th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
 .alnright { text-align: right; }
 </style>
+
 </head>
 <body>
 
 	<h1 th:text="'Kursekonomidokument budgetåret ' + ${edoc.year}" />
 
-<!-- 
-	<ul>
-		<li th:text="${blastResult.blastOutputVersion}"/>
-		<li th:text="'Query: ' + ${blastResult.blastOutputQueryDef}" />
-		<li th:text="'Query length: ' + ${blastResult.blastOutputQueryLen}" />
-		<li th:text="'Database: ' + ${blastResult.blastOutputDb}" />
-	</ul>
-
-	<div>
-		<table id = "blast_hits">
+	<div th:each="cgrp: ${usedGroups}">
+		<h2 th:text="${cgrp}" />
+		<table id = "course_instances">
 			<tr>
-				<th>Hit description</th>
-				<th>Score</th>
-				<th>Query cover (%)</th>
-				<th>E-value</th>
-				<th>Identity (%)</th>
+				<th>Kurs</th>
+				<th>hp</th>
+				<th>Studenter</th>
+				<th>Registrerade</th>
+				<th>Årsplatser</th>
+				<th>Anslag</th>
+				<th:block th:each="dept: ${edoc.accountedDepts}">
+					<th th:text="${dept}" />
+				</th:block>
+				<th:block th:each="dept: ${edoc.accountedDepts}">
+					<th th:text="${dept}" />
+				</th:block>
 			</tr>
-
-			<th:block th:each="iteration: ${blastResult.blastOutputIterations}">
-				<th:block th:each="it: ${iteration.iteration}">
-					<th:block th:each="hits: ${it.iterationHits}">
-						<tr th:each="hit: ${hits.hit}">
-							<th:block th:each="hsps: ${hit.hitHsps}">
-							<th:block th:each="hsp: ${hsps.hsp}">
-							<th:block th:with="percentidentity=${hsp.hspIdentity}/${hsp.hspAlignLen}">
-							<th:block th:with="querycover=${hsp.hspAlignLen}/${blastResult.blastOutputQueryLen}">
-								<td th:text="${hit.hitDef}" />
-								<td th:text="${hsp.hspScore}"/>
-								<td th:text="${#numbers.formatDecimal(querycover*100,1,1)}"/>
-								<td th:text="${hsp.hspEvalue}" />
-								<td th:text="${#numbers.formatDecimal(percentidentity*100,1,1)}" />
-							</th:block>
-							</th:block>
-							</th:block>
-							</th:block>
-						</tr>
+	<!-- 
+			<th:block th:each="cgrp: ${usedGroups}">
+	 -->
+			<tr th:each="ci: ${courseInstances.get(cgrp)}">
+	<!-- 
+			<tr th:each="ci: ${edoc.courseInstances}">
+	 -->
+				<td th:text="${ci.designation}" />
+				<td class='alnright' th:text="${ci.course.credits}" />
+				<td class='alnright' th:text="${ci.modelStudentNumber}" />
+				<td class='alnright' th:text="${ci.registeredStudents}" />
+				<td class='alnright' />
+				<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
+				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
+					<th:block th:each= "dept: ${edoc.accountedDepts}">
+						<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)*100,1)}+ ' %'" />
+					</th:block>
+					<th:block th:each= "dept: ${edoc.accountedDepts}">
+						<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
 					</th:block>
 				</th:block>
+			</tr>
+	<!-- 
 			</th:block>
+	 -->
 		</table>
 	</div>
+	<h2 th:text="'Summerat över kursgrupper'" />
+	<table  id = "course_instance_summary" th:with="bigSum=${edoc.sumByCourseGroup()}">
+		<tr>
+			<th />
+			<th:block th:each="dept: ${edoc.accountedDepts}">
+				<th th:text="${dept}" />
+			</th:block>
+		</tr>
+		<tr th:each="cat: ${bigSum.keySet()}">
+			<td th:text="${cat.toString()}" />
+			<th:block th:with="dsum=${bigSum.get(cat)}">
+				<th:block th:each= "dept: ${edoc.accountedDepts}">
+					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
+				</th:block>
+			</th:block>
+		</tr>
+	</table>
+
+	<h2 th:text="'Justeringar för avslutade kurser'" />
+<!-- 
+	<table id = "course_instance_adjustment" th:with="bigSum=${edoc.sumAdjustmentsByCourseGroup()}">
+		<tr>
+			<th />
+			<th:block th:each="dept: ${edoc.accountedDepts}">
+				<th th:text="${dept}" />
+			</th:block>
+		</tr>
+		<tr th:each="cat: ${bigSum.keySet()}">
+			<td th:text="${cat.toString()}" />
+			<th:block th:with="dsum=${bigSum.get(cat)}">
+				<th:block th:each= "dept: ${edoc.accountedDepts}">
+					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
+				</th:block>
+			</th:block>
+		</tr>
+	</table>
+
  -->
-	<table>
-		<tr>
-			<th>Kurs</th>
-			<th>hp</th>
-			<th>Studenter</th>
-			<th>Registrerade</th>
-			<th>Årsplatser</th>
-			<th>Anslag</th>
-			<th:block th:each="dept: ${edoc.accountedDepts}">
-				<th th:text="${dept}" />
-			</th:block>
-			<th:block th:each="dept: ${edoc.accountedDepts}">
-				<th th:text="${dept}" />
-			</th:block>
-		</tr>
-
-		<tr th:each="ci: ${edoc.courseInstances}">
-			<td th:text="${ci.designation}" />
-			<td class='alnright' th:text="${ci.course.credits}" />
-			<td class='alnright' th:text="${ci.modelStudentNumber}" />
-			<td class='alnright' th:text="${ci.registeredStudents}" />
-			<td class='alnright' />
-			<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
-			<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
-				<th:block th:each= "dept: ${edoc.accountedDepts}">
-					<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)*100,1)}+ ' %'" />
-				</th:block>
-				<th:block th:each= "dept: ${edoc.accountedDepts}">
-					<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
-				</th:block>
-			</th:block>
-		</tr>
-	</table>
-
-	<table th:with="bigSum=${edoc.sumByCourseGroup()}">
-		<tr>
-			<th />
-			<th:block th:each="dept: ${edoc.accountedDepts}">
-				<th th:text="${dept}" />
-			</th:block>
-		</tr>
-		<tr th:each="cat: ${bigSum.keySet()}">
-			<td th:text="${cat.toString()}" />
-			<th:block th:with="dsum=${bigSum.get(cat)}">
-				<th:block th:each= "dept: ${edoc.accountedDepts}">
-					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
-				</th:block>
-			</th:block>
-		</tr>
-	</table>
-	<table th:with="bigSum=${edoc.sumAdjustmentsByCourseGroup()}">
-		<tr>
-			<th />
-			<th:block th:each="dept: ${edoc.accountedDepts}">
-				<th th:text="${dept}" />
-			</th:block>
-		</tr>
-		<tr th:each="cat: ${bigSum.keySet()}">
-			<td th:text="${cat.toString()}" />
-			<th:block th:with="dsum=${bigSum.get(cat)}">
-				<th:block th:each= "dept: ${edoc.accountedDepts}">
-					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
-				</th:block>
-			</th:block>
-		</tr>
-	</table>
-
 
 	<br />
 	<br />

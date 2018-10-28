@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collection;
 import java.util.Set;
+import java.util.HashSet;
 import java.security.Principal;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -167,13 +168,21 @@ public class EconomyDocController {
 			log.debug("viewEconoomy, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
        try {
-			Map<CourseGroup, CourseInstance> ciMap = new HashMap<CourseGroup, CourseInstance>();
+//			Map<CourseGroup, CourseInstance> ciMap = new HashMap<CourseGroup, CourseInstance>();
+			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
 			EconomyDocument edoc = emRepo.findByYear(year);
 			
 			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup()); 
 			
 			for (CourseInstance ci : edoc.getCourseInstances()) {
-				ciMap.put(ci.getCourse().getCourseGroup(), ci);
+//				ciMap.put(ci.getCourse().getCourseGroup(), ci);
+				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
+					ciMap.put(ci.getCourse().getCourseGroup(), new HashSet<CourseInstance>());
+				}
+				ciMap.get(ci.getCourse().getCourseGroup()).add(ci);
+			}
+			for (CourseGroup cgrp : ciMap.keySet()) {
+				ciMap.put(cgrp, asSortedList(ciMap.get(cgrp)));
 			}
 			model.addAttribute("serverTime", new Date());
 			model.addAttribute("edoc", edoc);
