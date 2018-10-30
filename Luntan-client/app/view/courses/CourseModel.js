@@ -12,25 +12,8 @@ Ext.define('Luntan.view.courses.CourseModel', {
     
     stores: {
 		coursegroups: 'CourseGroupStore',    	
- 
-/* 
-		usedYears: {
-			xtype: 'store.store',
-			fields: [
-				{name: 'label', type: 'string'}
-			],	
-			proxy: {
-				 type: 'rest',
-				 url: Luntan.data.Constants.BASE_URL.concat('rest/years'),
-				 reader: {
-					 type: 'json'
-				 }
-			 }, 
-			autoLoad: true
-    			
-		},    	
- */
- 
+		courses: 'CourseStore',    	
+  
 		extradesstore: {
 			type: 'chained',
 			source: 'CIDesignationStore'

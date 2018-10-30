@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.service.CourseService;
+import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.util.DateNullTransformer;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
@@ -69,19 +70,20 @@ public class CourseController {
         }
   	
     }
-/*	 
-	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	 
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
     @RequestMapping(value="/courses/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourse(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			CourseVO cVO = new JSONDeserializer<CourseVO>().use(null, CourseVO.class).deserialize(json);
-			cVO.setId(id);
-			cVO = courseService.saveCourse(cVO);
+			Course cnew = new JSONDeserializer<Course>().use(null, Course.class).deserialize(json);
+			Course cold = courseRepo.findById(id);
+			cold.copyProps(cnew);
+			cnew = courseRepo.save(cold);
 			
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").deepSerialize(cVO);
-			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").deepSerialize(cnew);
+			restResponse = new StringBuilder(restResponse).insert(1, "'success': true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
         } catch (Exception e) {
@@ -89,7 +91,7 @@ public class CourseController {
         }
     }
 
- 
+ /*
 	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
     @RequestMapping(value="/courses", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourse(@RequestBody String json, UriComponentsBuilder uriBuilder) {
@@ -164,7 +166,7 @@ public class CourseController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
- /*	
+ 	
  
 //	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cis", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -177,7 +179,7 @@ public class CourseController {
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), "startDate").transform(new DateNullTransformer("yyyy-MM-dd"), "endDate").serialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
@@ -200,7 +202,7 @@ public class CourseController {
         }
     }
 
-*/
+
 
 	/* CourseGrants */
 /*		

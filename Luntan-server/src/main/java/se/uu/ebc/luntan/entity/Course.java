@@ -131,4 +131,12 @@ public class Course  extends Auditable {
     public String getDesignation() {
     	return this.code + " " + this.seName;
     }
+    
+    public void copyProps (Course c) {
+    	this.code = c.getCode();
+		this.seName = c.getSeName();
+		this.courseGroup = c.getCourseGroup();
+		this.note = c.getNote();
+		this.credits = c.getCredits();    
+    }
 }

@@ -3,8 +3,10 @@ Ext.define('Luntan.store.CIDesignationStore', {
 
     alias: 'store.cidesignations',
 
+	idProperty: 'id',
     fields: [
-        {name: 'label', type: 'string'}
+        {name: 'id', type: 'string'},
+        {name: 'displayname', type: 'string'}
     ],
 	
 	proxy: {

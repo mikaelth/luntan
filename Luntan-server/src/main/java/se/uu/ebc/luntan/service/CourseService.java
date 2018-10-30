@@ -128,13 +128,13 @@ public class CourseService {
     
     }
 
-/*
+
     public synchronized void deleteCourseInstance(Long cID) throws Exception {
 		CourseInstance ci = ciRepo.findById(cID);
 		ciRepo.delete(ci);
     }
 
-*/ 
+
 	private CourseInstance toCourseInstance (CourseInstanceVO cVO) throws Exception {
  		return toCourseInstance (new CourseInstance(), cVO);
    	}

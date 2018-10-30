@@ -108,7 +108,7 @@
 				<td class='alnright' th:text="${ci.course.credits}" />
 				<td class='alnright' th:text="${ci.modelStudentNumber}" />
 				<td class='alnright' th:text="${ci.registeredStudents}" />
-				<td class='alnright' />
+				<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
 				<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
 				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
 					<th:block th:each= "dept: ${edoc.accountedDepts}">

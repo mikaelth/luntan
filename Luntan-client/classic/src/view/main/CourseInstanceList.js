@@ -18,24 +18,24 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 
     columns: [
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', width: 150 },
-		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', flex: 2,
-//          	renderer: function(value) {
-// 				if (Ext.getStore('CourseStore').getById(value) != undefined) {
-// 					return Ext.getStore('CourseStore').getById(value).get('formName');
-// 				} else {
-// 					return value;
-// 				}
-//         	},
-// 			editor: {
-// 				xtype: 'combobox',
-// 				typeAhead: true,
-// 				triggerAction: 'all',
-// 				bind: {store: '{courses}'},
-// 				queryMode: 'local',
-// 				lastQuery: '',
-// 				displayField: 'formName',
-// 			    valueField: 'id',
-/* 
+		{ text: 'Kurs', dataIndex: 'courseId', align: 'left', flex: 2,
+         	renderer: function(value) {
+				if (Ext.getStore('CourseStore').getById(value) != undefined) {
+					return Ext.getStore('CourseStore').getById(value).get('designation');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{courses}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'designation',
+			    valueField: 'id',
+
 			    listeners: {
 					// delete the previous query in the beforequery event or set
 					// combo.lastQuery = null (this will reload the store the next time it expands)
@@ -43,10 +43,16 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 						delete qe.combo.lastQuery;
 					}							    
 			    }				
- */
-//			}
+			}
 		},
 		{ text: 'Extra benämning', dataIndex: 'extraDesignation', filter: 'string', align: 'left', flex: 1, 
+         	renderer: function(value) {
+				if (Ext.getStore('CIDesignationStore').getById(value) != undefined) {
+					return Ext.getStore('CIDesignationStore').getById(value).get('displayname');
+				} else {
+					return value;
+				}
+        	},
 			editor: {
 				xtype: 'combobox',
 				typeAhead: true,
@@ -54,8 +60,8 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 				bind: {store: '{extradesstore}'},
 				queryMode: 'local',
 				lastQuery: '',
-				displayField: 'label',
-			    valueField: 'label',
+				displayField: 'displayname',
+			    valueField: 'id',
 /* 
 			    listeners: {
 					// delete the previous query in the beforequery event or set

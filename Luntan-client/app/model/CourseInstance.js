@@ -38,7 +38,7 @@ Ext.define('Luntan.model.CourseInstance', {
 				if (typeof v !== "undefined" && v !== null) {
 					record.data.grantDistribution['IBG'] = parseFloat(v);
 				}
-				return record.data.grantDistribution['IBG'];
+				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['IBG'];
 			}
 		},
 		{name: 'ICM', type: 'float', 
@@ -46,7 +46,7 @@ Ext.define('Luntan.model.CourseInstance', {
 				if (typeof v !== "undefined" && v !== null) {
 					record.data.grantDistribution['ICM'] = parseFloat(v);
 				}
-				return record.data.grantDistribution['ICM'];
+				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['ICM'];
 			}
 		},
 		{name: 'IEG', type: 'float', 
@@ -54,7 +54,7 @@ Ext.define('Luntan.model.CourseInstance', {
 				if (typeof v !== "undefined" && v !== null) {
 					record.data.grantDistribution['IEG'] = parseFloat(v);
 				}
-				return record.data.grantDistribution['IEG'];
+				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['IEG'];
 			}
 		},
 		{name: 'IOB', type: 'float', 
@@ -62,7 +62,7 @@ Ext.define('Luntan.model.CourseInstance', {
 				if (typeof v !== "undefined" && v !== null) {
 					record.data.grantDistribution['IOB'] = parseFloat(v);
 				}
-				return record.data.grantDistribution['IOB'];
+				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['IOB'];
 			}
 		},
 

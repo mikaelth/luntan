@@ -1,7 +1,7 @@
-Ext.define('Luntan.view.courses.CourseInstanceController', {
+Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
     extend: 'Luntan.view.BasicController',
 
-    alias: 'controller.courseinstancelist',
+    alias: 'controller.courseinstancetasklist',
 
     
     onCreate: function()
