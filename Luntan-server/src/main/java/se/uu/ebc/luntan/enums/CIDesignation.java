@@ -2,10 +2,10 @@ package se.uu.ebc.luntan.enums;
 
 public enum CIDesignation
 {
-	NONE(""),
+	NONE(" "),
 	VT("-vt"),
 	HT("-ht"),
-	ST("-st"),
+	ST("-sommar"),
 	P1("-period-1"),
 	P2("-period-2"),
 	P3("-period-3"),
