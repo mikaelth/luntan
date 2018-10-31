@@ -52,6 +52,7 @@ Ext.define('Luntan.view.fundingmodels.FundingModel', {
             get: function(fm) {
             	this.set('current.fm', fm);
   				console.log(this.getStore('tabled').data.getAt(0));
+/* 
            	if (fm != null) {
 					this.set('current.tabledValues', Object.keys(fm.get('valueTable')).map( function(e) 
 						{
@@ -64,6 +65,7 @@ Ext.define('Luntan.view.fundingmodels.FundingModel', {
  				console.log(this.getStore('tabled').data.getAt(0));
  				console.log(this.getStore('tabled').data.getAt(1));
            	}
+ */
                 return fm;
             }
         },
