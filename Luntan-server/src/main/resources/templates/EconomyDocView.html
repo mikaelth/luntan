@@ -124,6 +124,25 @@
 	 -->
 		</table>
 	</div>
+	<h2 th:text="'Helårsstudenter över kursgrupper'" />
+	<table  id = "course_instance_summary" th:with="bigSum=${edoc.hstByCourseGroup()}">
+		<tr>
+			<th />
+			<th:block th:each="dept: ${edoc.accountedDepts}">
+				<th th:text="${dept}" />
+			</th:block>
+		</tr>
+		<tr th:each="cat: ${bigSum.keySet()}">
+			<td th:text="${cat.toString()}" />
+			<th:block th:with="dsum=${bigSum.get(cat)}">
+				<th:block th:each= "dept: ${edoc.accountedDepts}">
+					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept),1)}" />
+				</th:block>
+			</th:block>
+		</tr>
+	</table>
+
+
 	<h2 th:text="'Summerat över kursgrupper'" />
 	<table  id = "course_instance_summary" th:with="bigSum=${edoc.sumByCourseGroup()}">
 		<tr>

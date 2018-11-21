@@ -173,4 +173,17 @@ public class EconomyDocument  extends Auditable {
 		
 		return bigSum;
 	}
+
+	public  Map<CourseGroup,Map<Department,Float>> hstByCourseGroup() {
+		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
+		for (CourseInstance ci : courseInstances) {
+			if (!bigSum.containsKey(ci.getCourse().getCourseGroup())) {
+				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
+			}
+			bigSum.put(ci.getCourse().getCourseGroup(), GrantMaps.sum(bigSum.get(ci.getCourse().getCourseGroup()), ci.computeHST()) );
+		}
+		
+		return bigSum;
+	}
+
 }

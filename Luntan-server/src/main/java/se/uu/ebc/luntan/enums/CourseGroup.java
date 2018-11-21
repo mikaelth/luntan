@@ -16,6 +16,7 @@ public enum CourseGroup {
 	TEACHERS("Lärarkurser"),
 	EXTERNAL("Externa kurser"),
 	GOTLAND("Gotlandskurser"),
+	GOTLANDNET("Gotland, distanskurser"),
 	ENVIRONMENT("Miljövetenskap"),
 	LIBART("Liberal Arts"),
 	COMMISIONED("Uppdragsutbildning"),

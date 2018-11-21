@@ -279,10 +279,42 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		return grants;
 	
 	}
+
+	private Map<Department,Float> computeHSTDist(Float hst) { 
+		Map<Department,Float> hsts = new HashMap<Department,Float>();
+		Float implicitHST = 0.0f;
+		Department implicitDept = null;
+
+		log.debug("HST for " +getDesignation() +", "+ hst);
+ 
+		for (Department dept : economyDoc.getAccountedDepts()) {
+			if (dept.isImplicit()) {
+				implicitDept = dept;
+				implicitHST += 1.0f;		
+			} else if (grantDistribution.containsKey(dept)) {
+				hsts.put(dept, hst * grantDistribution.get(dept));
+				implicitHST -= grantDistribution.get(dept);
+			} else {
+				hsts.put(dept, 0.0f);			
+			}			
+		}
+
+		if (implicitDept != null) {
+			hsts.put(implicitDept, hst * implicitHST);
+		}
+	
+		return hsts;
+	
+	}
 	
 	public Map<Department,Float> computeGrants() {		
 		return computeGrantDist(computeCIGrant());
 	}
+
+	public Map<Department,Float> computeHST() {		
+		return computeHSTDist(this.getCourse().getCredits()/60 * this.getModelStudentNumber());
+	}
+
 	public Map<Department,Float> computeAdjustedGrants() {
 		return computeGrantDist(computeAdjustedCIGrant());
 	}	

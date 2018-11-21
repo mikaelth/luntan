@@ -2,6 +2,7 @@ package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,9 +34,11 @@ public class FundingModel  extends Auditable {
 
 	static final Integer REFERENCE_BASE_LEVEL = 1000;
 	static final String DEFAULT_EXPRESSION = "baseLevel*ects*studentNumber";
+
+	private	static Map<String, Object> ns = new HashMap<String, Object>();
 	
     private static Logger log = Logger.getLogger(FundingModel.class.getName());
-	private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).create();
+	private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).namespaces(ns).create();
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -63,6 +68,10 @@ public class FundingModel  extends Auditable {
     @ElementCollection
     private Map<Integer,Float> valueTable;
     
+    @ManyToOne
+    @JoinColumn(name = "TABLED_VALUES_FK")
+	private TabularModelFunction tabledValues;
+
 	/* Expression model */
 
     @Column(name = "EXPRESSION", length = 255)
@@ -113,6 +122,18 @@ public class FundingModel  extends Auditable {
 	}
  */
 
+
+	public TabularModelFunction getTabledValues()
+	{
+		return this.tabledValues;
+	}
+
+	public void setTabledValues(TabularModelFunction tabledValues)
+	{
+		this.tabledValues = tabledValues;
+	}
+
+
  	public void setValueTable(TreeMap<Integer,Float> valueTable) {
  		this.valueTable = valueTable;
  	}
@@ -127,6 +148,9 @@ public class FundingModel  extends Auditable {
 	
 	public FundingModel() {
 		this.expression = DEFAULT_EXPRESSION;
+
+		ns.put("math", Math.class);
+		ns.put("fsmath", new FSMath());
 	}
 	
 	/* Business methods */
@@ -167,5 +191,11 @@ public class FundingModel  extends Auditable {
 		return result.floatValue()/REFERENCE_BASE_LEVEL;
 	}   
 
+
+		public static class FSMath {
+			public double ininterval(double x, double lo, double hi) {
+				return x < lo ? 0 : Math.min(x,hi) - lo;
+			}
+		}
 	 
 }
