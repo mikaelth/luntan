@@ -55,6 +55,7 @@ import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument ;
 import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.enums.CourseGroup;
+import se.uu.ebc.luntan.enums.Department;
 
 @Controller
 @RequestMapping(value = "/")
@@ -188,7 +189,8 @@ public class EconomyDocController {
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
 			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
-			
+			model.addAttribute("sums", new TableSum());
+			model.addAttribute("models", fmRepo.findDistinctByEconDoc(edoc));
 			emRepo.save(edoc);
 			
     		return "EconomyDocView";
@@ -205,7 +207,42 @@ public class EconomyDocController {
 	  return list;
 	}
 	
-	
+
+	private class TableSum {
+		public Map<CourseGroup, Float> colSum(Map<CourseGroup,Map<Department,Float>> table){
+			Map<CourseGroup, Float> csum = new HashMap<CourseGroup, Float>();
+			for (CourseGroup cg : table.keySet()) {
+				Float s = 0.0f;
+				for (Float f : table.get(cg).values()) {
+					s += f;
+				}
+				csum.put(cg,s);
+			}			
+			log.debug("csum " + csum); 
+			return csum;
+		}
+		public Map<Department, Float> rowSum(Map<CourseGroup,Map<Department,Float>> table){
+			Map<Department, Float> rsum = new HashMap<Department, Float>();
+			for (CourseGroup cg : table.keySet()) {
+				for (Department dep : table.get(cg).keySet()){
+					if (rsum.containsKey(dep)) {
+						rsum.put(dep,table.get(cg).get(dep) + rsum.get(dep));
+					} else {
+						rsum.put(dep,table.get(cg).get(dep));
+					}
+				}
+			}			
+			log.debug("rsum " + rsum); 
+			return rsum;
+		}
+		public Float totalSum(Map<Object, Float> arr) {
+			Float s = 0.0f;
+			for (Float f : arr.values()) {
+				s+=f;
+			}
+			return s;
+		}
+	}	
 	
 /* 
 	@RequestMapping(value="rest/test", method = RequestMethod.GET)

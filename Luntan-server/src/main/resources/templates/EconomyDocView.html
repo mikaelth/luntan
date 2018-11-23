@@ -7,7 +7,9 @@
 #course_instances {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
+    margin-left:5%; 
+    margin-right:5%;
 }
 
 #course_instances td, #course_instances th {
@@ -29,7 +31,9 @@
 #course_instance_summary {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
+    margin-left:5%; 
+    margin-right:5%;
 }
 
 #course_instance_summary td, #course_instances th {
@@ -52,7 +56,9 @@
 #course_instance_adjustment {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
+    margin-left:5%; 
+    margin-right:5%;
 }
 
 #course_instance_adjustment td, #course_instances th {
@@ -71,8 +77,33 @@
     background-color: #4CAF50;
     color: white;
 }
+#models {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    margin-left:5%; 
+    margin-right:5%;
+}
+
+#models td, #course_instances th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#models tr:nth-child(even){background-color: #f2f2f2;}
+
+#models tr:hover {background-color: #ddd;}
+
+#models th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
 
 .alnright { text-align: right; }
+.alnleft { text-align: left; }
 </style>
 
 </head>
@@ -86,9 +117,10 @@
 			<tr>
 				<th>Kurs</th>
 				<th>hp</th>
-				<th>Studenter</th>
-				<th>Registrerade</th>
-				<th>Årsplatser</th>
+				<th>Stud.</th>
+				<th>Reg.</th>
+				<th>hst</th>
+				<th>Modell</th>
 				<th>Anslag</th>
 				<th:block th:each="dept: ${edoc.accountedDepts}">
 					<th th:text="${dept}" />
@@ -109,6 +141,7 @@
 				<td class='alnright' th:text="${ci.modelStudentNumber}" />
 				<td class='alnright' th:text="${ci.registeredStudents}" />
 				<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
+				<td class='alnright' th:text="${ci.fundingModel.id}" />
 				<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
 				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
 					<th:block th:each= "dept: ${edoc.accountedDepts}">
@@ -150,14 +183,29 @@
 			<th:block th:each="dept: ${edoc.accountedDepts}">
 				<th th:text="${dept}" />
 			</th:block>
+				<th th:text="Totalt" />
 		</tr>
+<!-- 
 		<tr th:each="cat: ${bigSum.keySet()}">
+ -->
+		<tr th:each="cat: ${usedGroups}">
 			<td th:text="${cat.toString()}" />
 			<th:block th:with="dsum=${bigSum.get(cat)}">
 				<th:block th:each= "dept: ${edoc.accountedDepts}">
 					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
 				</th:block>
 			</th:block>
+			<th:block th:with="csum=${sums.colSum(bigSum)}">
+				<td class='alnright' th:text="${#numbers.formatInteger(csum.get(cat)/1000,1)}+ ' kkr'" />
+			</th:block>
+		</tr>
+		<tr th:with="rsum= ${sums.rowSum(bigSum)}">
+			<td th:text="Totalt" />
+			<th:block th:each= "dept: ${edoc.accountedDepts}">
+				<td class='alnright' th:text="${#numbers.formatInteger(rsum.get(dept)/1000,1)}+ ' kkr'" />
+			</th:block>
+			<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(rsum)/1000,1)}+ ' kkr'" />
+	
 		</tr>
 	</table>
 
@@ -181,6 +229,25 @@
 	</table>
 
  -->
+
+	<div>
+		<h2 th:text="'Modeller i beräkningarna'" />
+		<table id = "models">
+			<tr>
+				<th>ID</th>
+				<th>Benämning</th>
+				<th>Formel</th>
+			</tr>
+			<tr th:each="model: ${models}">
+				<td class='alnleft' th:text="${model.id}" />
+				<td class='alnleft' th:text="${model.designation}" />
+				<td class='alnleft' th:text="${model.expression}" />
+			</tr>
+	<!-- 
+			</th:block>
+	 -->
+		</table>
+	</div>
 
 	<br />
 	<br />

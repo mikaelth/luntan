@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 
 import se.uu.ebc.luntan.entity.FundingModel;
+import se.uu.ebc.luntan.entity.CourseInstance;
+import se.uu.ebc.luntan.entity.EconomyDocument;
 
 import java.util.Set;
 import java.util.List;
@@ -19,5 +21,7 @@ import java.util.List;
 public interface FundingModelRepo extends JpaRepository<FundingModel, Long>, JpaSpecificationExecutor<FundingModel>{
 
     public FundingModel findById(Long id);  
-     
+
+	@Query("SELECT distinct ci.fundingModel FROM CourseInstance AS ci WHERE ci.economyDoc = ?1")
+	public Set<FundingModel> findDistinctByEconDoc(EconomyDocument edoc);     
 }
