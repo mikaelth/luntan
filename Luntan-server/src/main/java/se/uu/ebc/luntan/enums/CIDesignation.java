@@ -11,7 +11,8 @@ public enum CIDesignation
 	P1("-period-1"),
 	P2("-period-2"),
 	P3("-period-3"),
-	P4("-period-4");
+	P4("-period-4"),
+	CG("-Gotland");
 
 	private final String designation;
 

@@ -40,6 +40,7 @@ public class CourseInstanceVO {
 	private Integer modelStudentNumber;
     private String note;
     private boolean balanceRequest = false;
+	private boolean firstInstance;
 
     private Map<Department,Float> grantDistribution;
 	
@@ -226,6 +227,19 @@ public class CourseInstanceVO {
 	}
 
 
+	public boolean getFirstInstance()
+	{
+		return this.firstInstance;
+	}
+	public boolean isFirstInstance()
+	{
+		return this.firstInstance;
+	}
+
+	public void setFirstInstance(boolean firstInstance)
+	{
+		this.firstInstance = firstInstance;
+	}
     
     /* Public methods */
 
@@ -267,7 +281,8 @@ public class CourseInstanceVO {
 		this.startRegStudents = xe.getStartRegStudents();
 
 		this.balanceRequest = xe.isBalanceRequest();
-		
+		this.firstInstance = xe.getFirstInstance();		
+
 		this.grantDistribution = xe.getGrantDistribution();
 		this.modelStudentNumber = xe.getModelStudentNumber();
 		

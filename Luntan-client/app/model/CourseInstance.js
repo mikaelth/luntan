@@ -31,6 +31,7 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'startRegStudents', type: 'int'},
 		{name: 'modelStudentNumber', type: 'int'},
 		{name: 'balanceRequest', type: 'boolean'},
+		{name: 'firstInstance', type: 'boolean'},
 		{name: 'note', type: 'string'},
 		{name: 'grantDistribution', type: 'auto'},
 		{name: 'IBG', type: 'float', 

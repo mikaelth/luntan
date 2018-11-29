@@ -163,7 +163,7 @@ public class FundingModel  extends Auditable {
 	
 //	public abstract Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel);   
 	
-	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel) {
+	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel, boolean firstInstance) {
 
 		// Create an expression object for our calculation
 		JexlExpression e = jexl.createExpression( this.expression );
@@ -174,6 +174,7 @@ public class FundingModel  extends Auditable {
 		context.set("studentNumber", registerdStudents);
 		context.set("ects", ects);
 		context.set("baseLevel", baseLevel);
+		context.set("firstInstance", firstInstance ? 1 : 0);
 
 		// check for look-up values
 		if (valueTable == null || valueTable.size() == 0) {

@@ -2,25 +2,25 @@ package se.uu.ebc.luntan.enums;
 
 public enum CourseGroup {
 
+	BASEYEAR("Basåret"),
 	BASE("Baskurser"),
-	ADVANCED("Påbyggnadskurser"),
-	KNO("KNO-kurser"),
-	SUMMER("Sommarkurser"),
+	DEFREEPROJ("Examensarbeten"),
+	EXTERNAL("Externa kurser"),
+	RESEARCH("Forskarskola"),
+	GOTLANDNET("Gotland, distanskurser"),
+	GOTLAND("Gotlandskurser"),
 	ENGINEER("Ingenjörskurser"),
+	KNO("KNO-kurser"),
+	TEACHERS("Lärarkurser"),
+	LIBART("Liberal Arts"),
 	BIOINF("Master Bioinformatik"),
 	BIOTECH("Master Tillämpad bioteknik"),
-	MISC("Övrigt"),
-	RESEARCH("Forskarskola"),
-	DEFREEPROJ("Examensarbeten"),
-	BASEYEAR("Basåret"),
-	TEACHERS("Lärarkurser"),
-	EXTERNAL("Externa kurser"),
-	GOTLAND("Gotlandskurser"),
-	GOTLANDNET("Gotland, distanskurser"),
 	ENVIRONMENT("Miljövetenskap"),
-	LIBART("Liberal Arts"),
-	COMMISIONED("Uppdragsutbildning"),
-	PROGRAM("Programansvar");
+	MISC("Övrigt"),
+	ADVANCED("Påbyggnadskurser"),
+	PROGRAM("Programansvar"),
+	SUMMER("Sommarkurser"),
+	COMMISIONED("Uppdragsutbildning");
 
 
 	private final String displayName;

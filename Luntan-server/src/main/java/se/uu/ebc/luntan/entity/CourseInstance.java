@@ -57,6 +57,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	@Enumerated(EnumType.STRING)    
 	private CIDesignation extraDesignation;
 
+    @Column(name = "FIRSTINSTANCE")
+	private boolean firstInstance;
+
     @Column(name = "REGSTUDENTS", length = 255)
 	private Integer registeredStudents;
 
@@ -246,6 +249,21 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		this.balancedEconomyDoc = balancedEconomyDoc;
 	}
 
+	public boolean getFirstInstance()
+	{
+		return this.firstInstance;
+	}
+	public boolean isFirstInstance()
+	{
+		return this.firstInstance;
+	}
+
+	public void setFirstInstance(boolean firstInstance)
+	{
+		this.firstInstance = firstInstance;
+	}
+
+
 	
 	/* Business methods */
 	
@@ -323,10 +341,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	}
 	 
  	public Float computeCIGrant() {
- 		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue());
+ 		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
  	public Float computeAdjustedCIGrant() {
- 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue());
+ 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
  	
 /* 

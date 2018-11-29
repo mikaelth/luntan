@@ -73,6 +73,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
  */
 			}
 		},
+		{ text: 'Ny kurs', dataIndex: 'firstInstance', xtype: 'checkcolumn', filter: 'boolean', align: 'left', width: 50 },
 		{ text: 'Registrerade studenter', dataIndex: 'registeredStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
 		{ text: 'Skattat studentantal', dataIndex: 'startRegStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
 		{ text: 'Studentantal i modell', dataIndex: 'modelStudentNumber', filter: 'number', align: 'left', flex: 1 },

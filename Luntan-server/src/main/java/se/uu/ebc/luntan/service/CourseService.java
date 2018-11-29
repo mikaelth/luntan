@@ -148,6 +148,7 @@ public class CourseService {
 			ci.setRegisteredStudents(cVO.getRegisteredStudents());
 			ci.setStartRegStudents(cVO.getStartRegStudents());
     		ci.setBalanceRequest(cVO.isBalanceRequest());
+    		ci.setFirstInstance(cVO.isFirstInstance());
     		ci.setNote(cVO.getNote());
     		
     		ci.setGrantDistribution(cVO.getGrantDistribution());

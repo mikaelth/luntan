@@ -5,6 +5,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -145,6 +148,17 @@ public class EconomyDocument  extends Auditable {
 
 
 	/* Business methods */
+
+	 public List<Department> getAccountedDeptsSorted()
+	 {
+		return asSortedList(this.accountedDepts);
+	 }
+
+	private static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
+	  List<T> list = new ArrayList<T>(c);
+	  java.util.Collections.sort(list);
+	  return list;
+	}
 	
 	public Integer getNumberOfCourseInstances() {
 		return this.courseInstances == null ? 0 : this.courseInstances.size();
