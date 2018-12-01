@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public enum CIDesignation
 {
-	NONE(" "),
+	NONE(" "),
 	VT("-vt"),
 	HT("-ht"),
 	ST("-sommar"),

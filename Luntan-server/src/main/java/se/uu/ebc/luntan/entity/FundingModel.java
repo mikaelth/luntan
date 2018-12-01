@@ -177,12 +177,13 @@ public class FundingModel  extends Auditable {
 		context.set("firstInstance", firstInstance ? 1 : 0);
 
 		// check for look-up values
-		if (valueTable == null || valueTable.size() == 0) {
+		if (tabledValues != null) {
+			log.debug("computeFunding table reads " + tabledValues.getTabledValue(registerdStudents));
+			context.set("tabled", tabledValues.getTabledValue(registerdStudents));			
+		} else if (valueTable == null || valueTable.size() == 0) {
 			context.set("tabled", 1);
 		} else {
-//			log.debug("computeFunding table reads " + valueTable.get(registerdStudents));
 			log.debug("computeFunding table reads " + valueTable.get(getValueTable().floorKey(registerdStudents)));
-//			context.set("tabled", valueTable.get(registerdStudents));
 			context.set("tabled", valueTable.get(getValueTable().floorKey(registerdStudents)));
 		}
 		

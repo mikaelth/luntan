@@ -119,14 +119,14 @@
 				<th>hp</th>
 				<th>Stud.</th>
 				<th>Reg.</th>
-				<th>hst</th>
+				<th>åp</th>
 				<th>Modell</th>
 				<th>Ny</th>
 				<th>Anslag</th>
-				<th:block th:each="dept: ${edoc.accountedDepts}">
+				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
 					<th th:text="${dept}" />
 				</th:block>
-				<th:block th:each="dept: ${edoc.accountedDepts}">
+				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
 					<th th:text="${dept}" />
 				</th:block>
 			</tr>
@@ -143,7 +143,7 @@
 				<td class='alnright' th:text="${ci.registeredStudents}" />
 				<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
 				<td class='alnright' th:text="${ci.fundingModel.id}" />
-				<td class='alnright' th:text="${ci.firstInstance}" />
+				<td class='alnright' th:text="${ci.firstInstance} ? 'X' : ''" />
 				<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
 				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
@@ -167,11 +167,14 @@
 				<th th:text="${dept}" />
 			</th:block>
 		</tr>
+<!-- 
 		<tr th:each="cat: ${bigSum.keySet()}">
+ -->
+		<tr th:each="cat: ${usedGroups}">
 			<td th:text="${cat.toString()}" />
 			<th:block th:with="dsum=${bigSum.get(cat)}">
 				<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept),1)}" />
+					<td class='alnright' th:text="${#numbers.formatDecimal(dsum.get(dept),1,1)}" />
 				</th:block>
 			</th:block>
 		</tr>

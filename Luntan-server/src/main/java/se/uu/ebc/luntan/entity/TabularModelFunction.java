@@ -103,7 +103,7 @@ public class TabularModelFunction  extends Auditable {
 
 	
 	float getTabledValue(Integer students) {
-		return this.getValueTable().floorKey(students);
+		return valueTable.get(getValueTable().floorKey(students));
 	}
 	
 	
