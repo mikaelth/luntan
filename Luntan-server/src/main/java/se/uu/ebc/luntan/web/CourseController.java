@@ -78,7 +78,8 @@ public class CourseController {
         headers.add("Content-Type", "application/json");
         try {
 			Course cnew = new JSONDeserializer<Course>().use(null, Course.class).deserialize(json);
-			Course cold = courseRepo.findById(id);
+//			Course cold = courseRepo.findById(id);
+			Course cold = courseRepo.findById(id).get();
 			cold.copyProps(cnew);
 			cnew = courseRepo.save(cold);
 			

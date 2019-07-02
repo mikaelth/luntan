@@ -122,7 +122,8 @@ public class CourseService {
     
 
     public CourseInstanceVO saveCourseInstance(CourseInstanceVO cVO) throws Exception {
-    	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()), cVO);
+//    	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()), cVO);
+    	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()).get(), cVO);
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
     
@@ -130,7 +131,8 @@ public class CourseService {
 
 
     public synchronized void deleteCourseInstance(Long cID) throws Exception {
-		CourseInstance ci = ciRepo.findById(cID);
+//		CourseInstance ci = ciRepo.findById(cID);
+		CourseInstance ci = ciRepo.findById(cID).get();
 		ciRepo.delete(ci);
     }
 
@@ -153,15 +155,20 @@ public class CourseService {
     		
     		ci.setGrantDistribution(cVO.getGrantDistribution());
 
-			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()));
-			ci.setCourse(courseRepo.findById(cVO.getCourseId()));
-			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()));
+// 			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()));
+// 			ci.setCourse(courseRepo.findById(cVO.getCourseId()));
+//			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()));
+			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()).get());
+			ci.setCourse(courseRepo.findById(cVO.getCourseId()).get());
+			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()).get());
 
 			if (cVO.getPreceedingCIId()!= null){
-				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()));
+//				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()));
+				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()).get());
 			}
 			if (cVO.getBalancedEconomyDocId()!= null){
-				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()));
+//				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()));
+				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()).get());
 			}
 			
 

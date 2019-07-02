@@ -188,14 +188,16 @@ public class UserController {
     }
     
     private UserVO savePerson(UserVO pvo) throws Exception {
-    	User p = pvo.getId() == null ? toPerson(pvo) : toPerson(personRepo.findById(pvo.getId()), pvo);
+//    	User p = pvo.getId() == null ? toPerson(pvo) : toPerson(personRepo.findById(pvo.getId()), pvo);
+    	User p = pvo.getId() == null ? toPerson(pvo) : toPerson(personRepo.findById(pvo.getId()).get(), pvo);
     	personRepo.save(p);
 		return new UserVO(p);
     
     }
 
     private synchronized void deletePerson(Long pID) throws Exception {
-		User p = personRepo.findById(pID);
+//		User p = personRepo.findById(pID);
+		User p = personRepo.findById(pID).get();
 		personRepo.delete(p);
     }
 

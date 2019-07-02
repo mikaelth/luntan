@@ -48,47 +48,46 @@ public class EconomyDocumentService {
         }
     }
     
-/*
-    public CourseVO saveCourse(CourseVO cVO) throws Exception {
-    	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()), cVO);
-    	courseRepo.save(c);
-		return new CourseVO(c);
+
+    public EconomyDocVO saveEDoc(EconomyDocVO edVO) throws Exception {
+    	EconomyDocument ed = edVO.getId() == null ? toEDoc(edVO) : toEDoc(edRepo.findById(edVO.getId()).get(), edVO);
+    	edRepo.save(ed);
+		return new EconomyDocVO(ed);
     
     }
 
 
-    public synchronized void deleteCourse(Long cID) throws Exception {
-		Course c = courseRepo.findById(cID);
-		courseRepo.delete(c);
+    public synchronized void deleteEDoc(Long eID) throws Exception {
+		EconomyDocument ed = edRepo.findById(eID).get();
+		edRepo.delete(ed);
     }
 
  
-	private Course toCourse (CourseVO cvo) throws Exception {
- 		return toCourse (new Course(), cvo);
+	private EconomyDocument toEDoc (EconomyDocVO edVO) throws Exception {
+ 		return toEDoc (new EconomyDocument(), edVO);
    	}
 
-	private Course toCourse (Course c, CourseVO cvo) throws Exception {
+	private EconomyDocument toEDoc (EconomyDocument ed, EconomyDocVO edVO) throws Exception {
 
 
 		try {
-			c.setId(cvo.getId()) ;
-			c.setCode(cvo.getCode()) ;
-			c.setSeName(cvo.getSeName()) ;
-			c.setEnName(cvo.getEnName()) ;
-			c.setCourseGroup(cvo.getCourseGroup()) ;
-			c.setPeriod(cvo.getPeriod()) ;
-			c.setNote(cvo.getNote()) ;
-			c.setCredits(cvo.getCredits()) ;
 
+			ed.setId(edVO.getId()) ;
+			ed.setBaseValue(edVO.getBaseValue());
+			ed.setYear(edVO.getYear());
+			ed.setNote(edVO.getNote());
+			ed.setAccountedDepts(edVO.getAccountedDepts());
+			ed.setLocked(edVO.isLocked());
+//			ed.setCourseInstances(edVO.getCourseInstances());
 
 		} catch (Exception e) {
-			logger.error("toCourse got a pesky exception: "+ e + e.getCause());
+			logger.error("toEDoc got a pesky exception: "+ e + e.getCause());
 		} finally {
-			return c;
+			return ed;
 		}
 	}
  
 
-*/
+
 
 }

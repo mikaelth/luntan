@@ -93,6 +93,19 @@ public class EconomyDocVO extends AuditableVO {
 	 {
 		this.accountedDepts = accountedDepts;
 	 }
+	 
+	 public void setLocked(boolean locked) {
+	 	this.locked = locked;
+	 }
+
+	public boolean isLocked () {
+		return this.locked;
+	}
+	
+	public boolean getLocked () {
+		return this.locked;
+	}
+
 
 	/* Constructors */
 	

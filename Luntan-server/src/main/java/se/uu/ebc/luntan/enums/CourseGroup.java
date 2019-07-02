@@ -2,8 +2,8 @@ package se.uu.ebc.luntan.enums;
 
 public enum CourseGroup {
 
-	BASEYEAR("Basåret"),
 	BASE("Baskurser"),
+	BASEYEAR("Basåret"),
 	DEFREEPROJ("Examensarbeten"),
 	EXTERNAL("Externa kurser"),
 	RESEARCH("Forskarskola"),
@@ -16,11 +16,11 @@ public enum CourseGroup {
 	BIOINF("Master Bioinformatik"),
 	BIOTECH("Master Tillämpad bioteknik"),
 	ENVIRONMENT("Miljövetenskap"),
-	MISC("Övrigt"),
 	ADVANCED("Påbyggnadskurser"),
 	PROGRAM("Programansvar"),
 	SUMMER("Sommarkurser"),
-	COMMISIONED("Uppdragsutbildning");
+	COMMISIONED("Uppdragsutbildning"),
+	MISC("Övrigt");
 
 
 	private final String displayName;

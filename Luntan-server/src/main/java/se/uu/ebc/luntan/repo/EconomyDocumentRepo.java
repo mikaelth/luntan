@@ -18,7 +18,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface EconomyDocumentRepo extends JpaRepository<EconomyDocument, Long>, JpaSpecificationExecutor<EconomyDocument>{
 
-    public EconomyDocument findById(Long id);  
+//    public EconomyDocument findById(Long id);  
     public EconomyDocument findByYear(Integer year);  
 
 	@Query("SELECT distinct ed.year as yr FROM EconomyDocument AS ed order by yr DESC")

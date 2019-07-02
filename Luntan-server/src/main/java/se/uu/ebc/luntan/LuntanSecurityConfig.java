@@ -29,7 +29,7 @@ import se.uu.ebc.luntan.security.SecurityService;
 import se.uu.ebc.luntan.security.RESTAuthenticationEntryPoint;
 
 @Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableAutoConfiguration
 @EnableWebMvcSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -73,7 +73,8 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
 
     @Bean
     public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
-        return new Cas20ServiceTicketValidator("https://cas.weblogin.uu.se/cas");
+//        return new Cas20ServiceTicketValidator("https://cas.weblogin.uu.se/cas");
+        return new Cas20ServiceTicketValidator("https://weblogin.uu.se/idp/profile/cas");
     }
 
     @Bean
@@ -88,7 +89,8 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
     @Bean
     public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setLoginUrl("https://cas.weblogin.uu.se/cas/login");
+//        casAuthenticationEntryPoint.setLoginUrl("https://cas.weblogin.uu.se/cas/login");
+        casAuthenticationEntryPoint.setLoginUrl("https://weblogin.uu.se/idp/profile/cas/login");
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
@@ -126,6 +128,7 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
 				.antMatchers("/Luntan/index.html").authenticated()
 				.antMatchers("/Luntan/**").permitAll()
 				.antMatchers("/rest/**").authenticated()
+				.antMatchers("/view/**").authenticated()
 				.antMatchers("/**").authenticated();
  
 		}

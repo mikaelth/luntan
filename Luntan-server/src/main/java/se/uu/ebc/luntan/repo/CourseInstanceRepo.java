@@ -18,6 +18,6 @@ import java.util.List;
 @Transactional(readOnly = false)
 public interface CourseInstanceRepo extends JpaRepository<CourseInstance, Long>, JpaSpecificationExecutor<CourseInstance>{
 
-    public CourseInstance findById(Long id);  
+//    public CourseInstance findById(Long id);  
  
 }

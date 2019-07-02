@@ -49,7 +49,7 @@ public class EconomyDocument  extends Auditable {
     
  
     @OneToMany(mappedBy = "economyDoc")
-    private Set<CourseInstance> courseInstances;
+    private Set<CourseInstance> courseInstances = new HashSet<CourseInstance>();
 
     
     @Column(name = "YEAR")
@@ -200,4 +200,7 @@ public class EconomyDocument  extends Auditable {
 		return bigSum;
 	}
 
+	private void addCopiedCourse (CourseInstance ci) {
+		this.courseInstances.add(ci.copyToNewEDoc(this));
+	}
 }

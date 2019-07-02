@@ -56,6 +56,7 @@ import se.uu.ebc.luntan.entity.EconomyDocument ;
 import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.vo.EconomyDocVO;
 
 @Controller
 @RequestMapping(value = "/")
@@ -139,7 +140,8 @@ public class EconomyDocController {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			fmRepo.delete(fmRepo.findById(id));
+//			fmRepo.delete(fmRepo.findById(id));
+			fmRepo.delete(fmRepo.findById(id).get());
             return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -161,6 +163,26 @@ public class EconomyDocController {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
   	
+    }
+
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+    @RequestMapping(value="rest/edocs", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createED(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			edVO = edService.saveEDoc(edVO);
+            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+edVO.getId().toString()).build().toUriString());
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocs").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(edVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

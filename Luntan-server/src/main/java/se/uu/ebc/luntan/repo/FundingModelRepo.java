@@ -20,7 +20,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface FundingModelRepo extends JpaRepository<FundingModel, Long>, JpaSpecificationExecutor<FundingModel>{
 
-    public FundingModel findById(Long id);  
+//    public FundingModel findById(Long id);  
 
 	@Query("SELECT distinct ci.fundingModel FROM CourseInstance AS ci WHERE ci.economyDoc = ?1")
 	public Set<FundingModel> findDistinctByEconDoc(EconomyDocument edoc);     

@@ -242,11 +242,13 @@
 				<th>ID</th>
 				<th>Benämning</th>
 				<th>Formel</th>
+				<th>Kommentar</th>
 			</tr>
 			<tr th:each="model: ${models}">
 				<td class='alnleft' th:text="${model.id}" />
 				<td class='alnleft' th:text="${model.designation}" />
 				<td class='alnleft' th:text="${model.expression}" />
+				<td class='alnleft' th:text="${model.note}" />
 			</tr>
 	<!-- 
 			</th:block>

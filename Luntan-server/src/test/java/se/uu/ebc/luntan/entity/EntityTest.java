@@ -84,10 +84,10 @@ public class EntityTest {
 
 //	testCourse();
 	log.info("Repo fmRepo" + fmRepo); 
-	FundingModel fm = fmRepo.findById(2L);
-	log.info("Repo fmRepo" + fm.computeFunding(10,15.0f,1000)); 
-	log.info("Repo fmRepo" + fm.computeFunding(15,15.0f,1000)); 
-	log.info("Repo fmRepo" + fm.computeFunding(12,15.0f,1000)); 
+	FundingModel fm = fmRepo.findById(2L).get();
+	log.info("Repo fmRepo" + fm.computeFunding(10,15.0f,1000, false)); 
+	log.info("Repo fmRepo" + fm.computeFunding(15,15.0f,1000, false)); 
+	log.info("Repo fmRepo" + fm.computeFunding(12,15.0f,1000, false)); 
 	log.info("Repo emRepo" + emRepo); 
 	log.info("Repo ciRepo" + ciRepo); 
 	log.info("Repo emRepo "+ReflectionToStringBuilder.toString(emRepo, ToStringStyle.MULTI_LINE_STYLE));

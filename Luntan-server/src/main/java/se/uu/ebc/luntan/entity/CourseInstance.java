@@ -35,7 +35,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     private static Logger log = Logger.getLogger(CourseInstance.class.getName());
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
     
@@ -464,6 +464,27 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
             cmp = this.getDesignation().compareTo(ci.getDesignation());
         }
         return cmp;
+    }
+    
+    
+    public CourseInstance copyToNewEDoc(EconomyDocument ed) {
+ 
+    	CourseInstance nci = new CourseInstance();
+    	
+		nci.setCourse( this.course );
+		nci.setExtraDesignation( this.extraDesignation );
+		nci.setFirstInstance( false );
+		nci.setRegisteredStudents( null );
+		nci.setStartRegStudents( this.registeredStudents);
+
+		nci.setPreceedingCI( this.preceedingCI );
+		nci.setEconomyDoc( ed );
+		nci.setNote( this.note );
+		nci.setBalancedEconomyDoc( this.balancedEconomyDoc);
+		nci.setFundingModel( this.fundingModel );
+   
+   		return nci;
+    	
     }
 }
 

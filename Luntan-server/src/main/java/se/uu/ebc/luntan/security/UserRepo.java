@@ -16,6 +16,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 	@Query("SELECT u FROM User AS u WHERE u.username = ?1")
 	public User findUserByUsername(String username);
 
-    public User findById(Long id);   
+//    public User findById(Long id);   
 
 }
