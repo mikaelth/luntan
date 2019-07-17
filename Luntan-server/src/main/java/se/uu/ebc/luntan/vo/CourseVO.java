@@ -13,12 +13,17 @@ import se.uu.ebc.luntan.entity.FundingModel;
 import se.uu.ebc.luntan.enums.CIDesignation;
 import se.uu.ebc.luntan.enums.CourseGroup;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Slf4j
+@Data
+@NoArgsConstructor
 public class CourseVO {
 
     
-    private static Logger logger = Logger.getLogger(CourseVO.class.getName());
+//    private static Logger logger = Logger.getLogger(CourseVO.class.getName());
 	 
     private Long id;
 
@@ -30,6 +35,7 @@ public class CourseVO {
 	
  	/* Setters and getters */
  	   
+/* 
 
 	public Long getId()
 	{
@@ -98,6 +104,7 @@ public class CourseVO {
     	this.credits = credits;
     }
 
+ */
 
     
     /* Public methods */
@@ -116,6 +123,6 @@ public class CourseVO {
 		this.credits = xe.getCredits();
 	}
 	
-	public CourseVO() {}
+//	public CourseVO() {}
 
 }

@@ -31,6 +31,13 @@ Ext.define('Luntan.view.main.CourseList', {
 		{ text: 'Benämning', dataIndex: 'seName', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
 //		{ text: 'Engelsk benämning', dataIndex: 'enName', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', flex: 1,
+         	renderer: function(value) {
+				if (Ext.getStore('CourseGroupStore').getById(value) != undefined) {
+					return Ext.getStore('CourseGroupStore').getById(value).get('displayname');
+				} else {
+					return value;
+				}
+        	},
 			editor: {
 				xtype: 'combobox',
 				typeAhead: true,
@@ -38,8 +45,8 @@ Ext.define('Luntan.view.main.CourseList', {
 				bind: {store: '{coursegroups}'},
 				queryMode: 'local',
 				lastQuery: '',
-				displayField: 'label',
-			    valueField: 'label',
+				displayField: 'displayname',
+			    valueField: 'id',
 			}
 		},
 //		{ text: 'Kursperiod', dataIndex: 'period', editor: 'textfield', align: 'left', width: 80 },

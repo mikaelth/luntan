@@ -57,6 +57,7 @@ import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.vo.EconomyDocVO;
+import se.uu.ebc.luntan.util.DateNullTransformer;
 
 @Controller
 @RequestMapping(value = "/")
@@ -96,7 +97,7 @@ public class EconomyDocController {
  
 //	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
     @RequestMapping(value="rest/fundingmodels/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateCourse(@RequestBody String json, @PathVariable("id") Long id) {
+    public ResponseEntity<String> updateFM(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
@@ -115,7 +116,7 @@ public class EconomyDocController {
  
 //	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
     @RequestMapping(value="rest/fundingmodels", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createCourse(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<String> createFM(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
@@ -136,7 +137,7 @@ public class EconomyDocController {
 
 //	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
 	@RequestMapping(value = "rest/fundingmodels/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-	public ResponseEntity<String> deleteCourse(@PathVariable("id") Long id) {
+	public ResponseEntity<String> deleteFM(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
@@ -163,6 +164,26 @@ public class EconomyDocController {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
   	
+    }
+
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+    @RequestMapping(value="rest/edocs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateED(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("updateED, edVO "+ReflectionToStringBuilder.toString(edVO, ToStringStyle.MULTI_LINE_STYLE));
+			edVO.setId(id);
+			edVO = edService.saveEDoc(edVO);
+			
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(edVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 //	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")

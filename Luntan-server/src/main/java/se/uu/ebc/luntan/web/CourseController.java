@@ -40,6 +40,7 @@ import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.util.DateNullTransformer;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
+import se.uu.ebc.luntan.vo.CourseVO;
 
 @Controller
 @RequestMapping(value = "/rest")
@@ -92,7 +93,7 @@ public class CourseController {
         }
     }
 
- /*
+
 	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
     @RequestMapping(value="/courses", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourse(@RequestBody String json, UriComponentsBuilder uriBuilder) {
@@ -128,7 +129,7 @@ public class CourseController {
     }
 
 
-*/
+
 
 	/* CourseInstances */
 	

@@ -10,12 +10,17 @@ import java.util.Iterator;
 
 import se.uu.ebc.luntan.entity.FundingModel;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Slf4j
+@Data
+@NoArgsConstructor
 public class FMTVO {
 
     
-    private static Logger logger = Logger.getLogger(FMTVO.class.getName());
+//    private static Logger logger = Logger.getLogger(FMTVO.class.getName());
 	 
     private Long fmId;
     private Integer number;
@@ -23,6 +28,7 @@ public class FMTVO {
 	
  	/* Setters and getters */
  	   
+/* 
 
 
     public Long getFmId()
@@ -57,6 +63,7 @@ public class FMTVO {
     	this.value = value;
     }
 
+ */
 
 
     
@@ -66,6 +73,5 @@ public class FMTVO {
  	/* Constructors */
 
 	
-	public FMTVO() {}
 
 }

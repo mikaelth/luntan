@@ -10,12 +10,17 @@ import java.util.Iterator;
 
 import se.uu.ebc.luntan.entity.FundingModel;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Slf4j
+@Data
+@NoArgsConstructor
 public class FMVO {
 
     
-    private static Logger logger = Logger.getLogger(FMVO.class.getName());
+//    private static Logger logger = Logger.getLogger(FMVO.class.getName());
 	 
 	private Long id;
 	   
@@ -27,6 +32,7 @@ public class FMVO {
     private Map<Integer,Float> valueTable;
 
  	/* Setters and getters */
+/* 
  	   
 
 	public Long getId()
@@ -90,6 +96,7 @@ public class FMVO {
  		return this.valueTable;
  	}
 
+ */
     
     /* Public methods */
 
@@ -108,6 +115,5 @@ public class FMVO {
 		this.valueTable = xe.getValueTable();
 	}
 	
-	public FMVO() {}
 
 }

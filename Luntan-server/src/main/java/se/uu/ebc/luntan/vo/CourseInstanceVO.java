@@ -13,12 +13,17 @@ import se.uu.ebc.luntan.entity.FundingModel;
 import se.uu.ebc.luntan.enums.CIDesignation;
 import se.uu.ebc.luntan.enums.Department;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Slf4j
+@Data
+@NoArgsConstructor
 public class CourseInstanceVO {
 
     
-    private static Logger logger = Logger.getLogger(CourseInstanceVO.class.getName());
+//    private static Logger logger = Logger.getLogger(CourseInstanceVO.class.getName());
 	 
     private Long id;
 
@@ -39,13 +44,15 @@ public class CourseInstanceVO {
 	private Integer startRegStudents;
 	private Integer modelStudentNumber;
     private String note;
-    private boolean balanceRequest = false;
+	private boolean balanceRequest = false;
 	private boolean firstInstance;
 
     private Map<Department,Float> grantDistribution;
 	
  	/* Setters and getters */
+
  	   
+/* 
 
 	public Long getId()
 	{
@@ -240,6 +247,7 @@ public class CourseInstanceVO {
 	{
 		this.firstInstance = firstInstance;
 	}
+ */
     
     /* Public methods */
 
@@ -290,6 +298,6 @@ public class CourseInstanceVO {
 
 	}
 	
-	public CourseInstanceVO() {}
+//	public CourseInstanceVO() {}
 
 }

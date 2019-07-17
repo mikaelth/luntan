@@ -59,9 +59,9 @@ public class CourseService {
         }
     }
     
-/*	
+	
     public CourseVO saveCourse(CourseVO cVO) throws Exception {
-    	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()), cVO);
+    	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()).get(), cVO);
     	courseRepo.save(c);
 		return new CourseVO(c);
     
@@ -69,11 +69,11 @@ public class CourseService {
 
 
     public synchronized void deleteCourse(Long cID) throws Exception {
-		Course c = courseRepo.findById(cID);
+		Course c = courseRepo.findById(cID).get();
 		courseRepo.delete(c);
     }
 
- 
+
 	private Course toCourse (CourseVO cvo) throws Exception {
  		return toCourse (new Course(), cvo);
    	}
@@ -85,9 +85,9 @@ public class CourseService {
 			c.setId(cvo.getId()) ;
 			c.setCode(cvo.getCode()) ;
 			c.setSeName(cvo.getSeName()) ;
-			c.setEnName(cvo.getEnName()) ;
+//			c.setEnName(cvo.getEnName()) ;
 			c.setCourseGroup(cvo.getCourseGroup()) ;
-			c.setPeriod(cvo.getPeriod()) ;
+//			c.setPeriod(cvo.getPeriod()) ;
 			c.setNote(cvo.getNote()) ;
 			c.setCredits(cvo.getCredits()) ;
 
@@ -100,7 +100,7 @@ public class CourseService {
 	}
  
 
-*/
+
 
 	/* CourseInstances */
 	

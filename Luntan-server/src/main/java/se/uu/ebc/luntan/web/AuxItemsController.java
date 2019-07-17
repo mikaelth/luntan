@@ -54,7 +54,9 @@ public class AuxItemsController {
     	List theList = new ArrayList<Map<String, String>>();
     	for (CourseGroup s : CourseGroup.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
-			vMap.put("label", s.toString());
+//			vMap.put("label", s.toString());
+			vMap.put("id", s.name());
+			vMap.put("displayname", s.toString());
     		theList.add(vMap);
     	}
     	return theList;
