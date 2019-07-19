@@ -74,6 +74,32 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 			}
 		},
 		{ text: 'Ny kurs', dataIndex: 'firstInstance', xtype: 'checkcolumn', filter: 'boolean', align: 'left', width: 50 },
+		{ text: 'Föregående kurs', dataIndex: 'preceedingCIId', align: 'left', flex: 1,
+         	renderer: function(value) {
+				if (Ext.getStore('CourseInstanceStore').getById(value) != undefined) {
+					return Ext.getStore('CourseInstanceStore').getById(value).get('ciDesignation');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{precedingistore}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'ciDesignation',
+			    valueField: 'id',
+			    listeners: {
+					// delete the previous query in the beforequery event or set
+					// combo.lastQuery = null (this will reload the store the next time it expands)
+					beforequery: function(qe){
+						delete qe.combo.lastQuery;
+					}							    
+			    }				
+			}
+		},
 		{ text: 'Registrerade studenter', dataIndex: 'registeredStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
 		{ text: 'Skattat studentantal', dataIndex: 'startRegStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
 		{ text: 'Studentantal i modell', dataIndex: 'modelStudentNumber', filter: 'number', align: 'left', flex: 1 },

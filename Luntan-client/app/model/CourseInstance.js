@@ -20,6 +20,7 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'id', type: 'int'},
 		{name: 'locked', type: 'boolean'},
 		{name: 'courseId', type: 'int'},
+		{name: 'ciDesignation', type: 'string'},
 		{name: 'courseGroup', type:'string'},
 		{name: 'courseDesignation', type:'string'},
 		{name: 'preceedingCIId', type: 'int'},

@@ -29,6 +29,8 @@ public class CourseInstanceVO {
 
 	private boolean locked; 
 	
+	private String ciDesignation;
+	
 	private Long courseId;
 	private String courseGroup;
 	private String courseDesignation;
@@ -49,8 +51,12 @@ public class CourseInstanceVO {
 
     private Map<Department,Float> grantDistribution;
 	
+
  	/* Setters and getters */
 
+	public boolean isLocked() {
+		return this.locked;
+	}
  	   
 /* 
 
@@ -201,16 +207,6 @@ public class CourseInstanceVO {
 	}
     
 
-	public boolean isLocked()
-	{
-		return this.locked;
-	}
-
-	public void setLocked(boolean locked)
-	{
-		this.locked = locked;
-	}
-
 
 	public String getCourseGroup()
 	{
@@ -296,6 +292,7 @@ public class CourseInstanceVO {
 		
 		this.note = xe.getNote();	
 
+		this.ciDesignation = xe.getEconomyDoc().getYear() + "-" + xe.getCourse().getCode()  + "-" + xe.getExtraDesignation();
 	}
 	
 //	public CourseInstanceVO() {}

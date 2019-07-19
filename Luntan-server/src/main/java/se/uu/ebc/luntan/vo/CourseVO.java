@@ -35,8 +35,8 @@ public class CourseVO {
 	
  	/* Setters and getters */
  	   
-/* 
 
+/* 
 	public Long getId()
 	{
 		return this.id;
@@ -114,6 +114,8 @@ public class CourseVO {
 
 	public CourseVO (Course xe) {
 
+		log.debug("In CourseVO constructor, " + xe);
+		
 		this.id = xe.getId();
 		
 		this.code = xe.getCode();

@@ -22,17 +22,23 @@ import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.aux.GrantMaps;
 
+@Slf4j
 @Entity
 @Table(name = "COURSEINSTANCE", uniqueConstraints= @UniqueConstraint(columnNames={"COURSE_FK", "EXTRA_DESIGNATION","ECONOMY_DOC_FK"}))
 public class CourseInstance  extends Auditable implements Comparable<CourseInstance> {
 
 	private static final Integer DEFAULT_REG_STUDENT_NUMBER = 15;
+/* 
     private static Logger log = Logger.getLogger(CourseInstance.class.getName());
+ */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
