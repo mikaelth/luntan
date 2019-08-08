@@ -194,6 +194,9 @@ public class EconomyDocController {
         try {
 			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			edVO = edService.saveEDoc(edVO);
+
+			
+
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+edVO.getId().toString()).build().toUriString());
 
@@ -205,6 +208,20 @@ public class EconomyDocController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@RequestMapping(value = "rest/edocs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	public ResponseEntity<String> deleteED(@PathVariable("id") Long id) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			edService.deleteEDoc(id);
+            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)

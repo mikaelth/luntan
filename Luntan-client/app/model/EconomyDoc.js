@@ -22,7 +22,8 @@ Ext.define('Luntan.model.EconomyDoc', {
 		{name: 'baseValue', type: 'int'},
 		{name: 'note', type: 'string'},
 		{name: 'numberOfCIs', type: 'int'},
-		{name: 'accountedDepts', type: 'auto'}
+		{name: 'accountedDepts', type: 'auto'},
+		{name: 'cloneCourses', type: 'boolean'}
 
     ]
 

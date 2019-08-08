@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 import se.uu.ebc.luntan.entity.EconomyDocument;
+//import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
+//import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.vo.EconomyDocVO;
 
 
@@ -28,6 +30,11 @@ public class EconomyDocumentService {
 	@Autowired
 	EconomyDocumentRepo edRepo;
 
+	@Autowired
+	CourseService courseService;
+
+//	@Autowired
+//	CourseInstanceRepo ciRepo;
 
 
 	/* EconomyDocument */
@@ -52,6 +59,12 @@ public class EconomyDocumentService {
     public EconomyDocVO saveEDoc(EconomyDocVO edVO) throws Exception {
     	EconomyDocument ed = edVO.getId() == null ? toEDoc(edVO) : toEDoc(edRepo.findById(edVO.getId()).get(), edVO);
     	edRepo.save(ed);
+
+		/* If creating new EconomyDocument and flag is set in VO, clone all courses from previous year to new EconomyDocument */
+    	if (edVO.getId() == null && edVO.isCloneCourses()) {
+    		courseService.cloneCourseInstances(ed,edRepo.findByYear(ed.getYear()-1));
+    	}
+
 		return new EconomyDocVO(ed);
     
     }
@@ -88,6 +101,6 @@ public class EconomyDocumentService {
 	}
  
 
-
+	
 
 }

@@ -32,7 +32,8 @@ public class EconomyDocVO extends AuditableVO {
 	
 	private Set<Department> accountedDepts = new HashSet<Department>();
 
-
+	private boolean cloneCourses;
+	
 	/* Setters and getters */
 /* 
 	
@@ -129,6 +130,7 @@ public class EconomyDocVO extends AuditableVO {
 		this.numberOfCIs = xe.getNumberOfCourseInstances();
 		
 		this.locked = xe.isLocked();
+		this.cloneCourses = false;
 	}
     
 }

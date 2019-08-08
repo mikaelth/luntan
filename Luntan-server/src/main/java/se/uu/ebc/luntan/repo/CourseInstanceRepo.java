@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
+import se.uu.ebc.luntan.entity.EconomyDocument;
 
 import java.util.Set;
 import java.util.List;
@@ -19,5 +20,8 @@ import java.util.List;
 public interface CourseInstanceRepo extends JpaRepository<CourseInstance, Long>, JpaSpecificationExecutor<CourseInstance>{
 
 //    public CourseInstance findById(Long id);  
+ 
+	@Query("SELECT ci FROM CourseInstance AS ci WHERE ci.economyDoc = ?1")
+	public List<CourseInstance> findByEconomyDoc(EconomyDocument ed);
  
 }

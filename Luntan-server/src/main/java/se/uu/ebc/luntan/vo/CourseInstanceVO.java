@@ -285,7 +285,8 @@ public class CourseInstanceVO {
 		this.startRegStudents = xe.getStartRegStudents();
 
 		this.balanceRequest = xe.isBalanceRequest();
-		this.firstInstance = xe.getFirstInstance();		
+		this.firstInstance = xe.isFirstInstance();		
+//		this.firstInstance = xe.getFirstInstance();		
 
 		this.grantDistribution = xe.getGrantDistribution();
 		this.modelStudentNumber = xe.getModelStudentNumber();

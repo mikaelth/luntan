@@ -26,25 +26,40 @@ import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.aux.GrantMaps;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Singular;
 
+@Slf4j
+@Getter
+@Setter
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "ECONOMYDOC", uniqueConstraints= @UniqueConstraint(columnNames={"YEAR"}))
 public class EconomyDocument  extends Auditable {
 
-    private static Logger log = Logger.getLogger(EconomyDocument.class.getName());
+//    private static Logger log = Logger.getLogger(EconomyDocument.class.getName());
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
     
+/* 
     public Long getId() {
         return this.id;
     }    
     public void setId(Long id) {
         this.id = id;
     }
+ */
 
     
  
@@ -66,6 +81,7 @@ public class EconomyDocument  extends Auditable {
     @Column(name = "NOTE", length = 255)
     private String note;
   
+    @Singular
     @ElementCollection(targetClass=Department.class)
 	@Enumerated(EnumType.STRING)    
     private Set<Department> accountedDepts = new HashSet<Department>();
@@ -73,7 +89,7 @@ public class EconomyDocument  extends Auditable {
      
 	/* Constructors */
 	
-	public EconomyDocument() {}
+//	public EconomyDocument() {}
 
 	public EconomyDocument(Integer year, Integer baseValue, boolean locked, String note, Set<Department> accounetedDepts) {
 		this.year = year;
@@ -86,6 +102,7 @@ public class EconomyDocument  extends Auditable {
 
 	/* Setters and getters */
 
+/*
 	 public Set<Department> getAccountedDepts()
 	 {
 		return this.accountedDepts;
@@ -146,6 +163,7 @@ public class EconomyDocument  extends Auditable {
     	this.courseInstances = courseInstances;
     }
 
+*/
 
 	/* Business methods */
 
@@ -200,7 +218,9 @@ public class EconomyDocument  extends Auditable {
 		return bigSum;
 	}
 
+/* 
 	private void addCopiedCourse (CourseInstance ci) {
 		this.courseInstances.add(ci.copyToNewEDoc(this));
 	}
+ */
 }

@@ -39,6 +39,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 //	features: [{ ftype: 'grouping',startCollapsed: true }],
 
     columns: [
+		{ xtype: 'checkcolumn', text: 'Klona', dataIndex: 'cloneCourses', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
 		{ xtype: 'checkcolumn', text: 'Låst', dataIndex: 'locked', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
 		{ text: 'År', dataIndex: 'year', editor: 'textfield', filter: 'number', align: 'left', width: 100},
 		{ text: 'Antal kurser', dataIndex: 'numberOfCIs', filter: 'number', align: 'left', width: 100},

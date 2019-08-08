@@ -9,10 +9,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.Course;
+import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
 import se.uu.ebc.luntan.vo.CourseVO;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
@@ -24,6 +28,7 @@ import se.uu.ebc.luntan.repo.FundingModelRepo;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang3.SerializationUtils;
 
 @Service
 public class CourseService {
@@ -122,7 +127,6 @@ public class CourseService {
     
 
     public CourseInstanceVO saveCourseInstance(CourseInstanceVO cVO) throws Exception {
-//    	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()), cVO);
     	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()).get(), cVO);
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
@@ -131,11 +135,22 @@ public class CourseService {
 
 
     public synchronized void deleteCourseInstance(Long cID) throws Exception {
-//		CourseInstance ci = ciRepo.findById(cID);
 		CourseInstance ci = ciRepo.findById(cID).get();
 		ciRepo.delete(ci);
     }
 
+
+	public void cloneCourseInstances (EconomyDocument ned, EconomyDocument fed) {
+		for (CourseInstance ci : ciRepo.findByEconomyDoc(fed)) {
+			ciRepo.save(ci.toBuilder().
+							id(null).
+							economyDoc(ned).
+							preceedingCI(ci).
+							firstInstance(false).
+							grantDistribution(new HashMap<Department,Float>(ci.getGrantDistribution())).
+							build());
+		}
+	}
 
 	private CourseInstance toCourseInstance (CourseInstanceVO cVO) throws Exception {
  		return toCourseInstance (new CourseInstance(), cVO);

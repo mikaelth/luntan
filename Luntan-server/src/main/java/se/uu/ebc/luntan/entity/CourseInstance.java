@@ -22,29 +22,37 @@ import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 
-//import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.aux.GrantMaps;
 
 @Slf4j
+//@Data
+@Getter
+@Setter
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "COURSEINSTANCE", uniqueConstraints= @UniqueConstraint(columnNames={"COURSE_FK", "EXTRA_DESIGNATION","ECONOMY_DOC_FK"}))
 public class CourseInstance  extends Auditable implements Comparable<CourseInstance> {
 
 	private static final Integer DEFAULT_REG_STUDENT_NUMBER = 15;
-/* 
-    private static Logger log = Logger.getLogger(CourseInstance.class.getName());
- */
+//    private static Logger log = Logger.getLogger(CourseInstance.class.getName());
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
     
+/* 
     public Long getId() {
         return this.id;
     }
@@ -52,6 +60,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     public void setId(Long id) {
         this.id = id;
     }
+ */
 
     
     @ManyToOne
@@ -110,6 +119,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 
 	/* Setters and getters */
  
+/* 
  	public Course getCourse()
 	{
 		return this.course;
@@ -180,7 +190,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     {
     	this.note = note;
     }
-
+ */
 /* 
 	public GrantDistribution getGrantDistribution()
 	{
@@ -192,6 +202,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		this.grantDistribution = grantDistribution;
 	}
  */
+/* 
 
 	public Map<Department,Float> getGrantDistribution()
 	{
@@ -269,7 +280,11 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		this.firstInstance = firstInstance;
 	}
 
+ */
 
+	/* Constructors */
+	
+//	public CourseInstance() {}
 	
 	/* Business methods */
 	
@@ -473,6 +488,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     }
     
     
+    
+ 
+/* 
     public CourseInstance copyToNewEDoc(EconomyDocument ed) {
  
     	CourseInstance nci = new CourseInstance();
@@ -492,5 +510,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
    		return nci;
     	
     }
+ */
+ 
 }
 
