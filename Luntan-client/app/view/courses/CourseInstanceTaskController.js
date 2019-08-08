@@ -3,7 +3,7 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
 
     alias: 'controller.courseinstancetasklist',
 
-    
+
     onCreate: function()
     {
         var grid = this.getView(),
@@ -16,11 +16,19 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
         r.set('economyDocId',thisEDoc);
 		var rec = grid.getStore().insert(0, r);
         grid.plugins[0].startEdit(rec[0]);
-        
+
     },
 
    	onBeforeRender: function (grid) {
-   	}
+   	},
 
-    
+   	init: function (view) {
+
+        view.plugins[0].addListener('beforeEdit', function(rowEditing, context) {
+			return !context.record.get('locked');
+        });
+	}
+
+
+
 });
