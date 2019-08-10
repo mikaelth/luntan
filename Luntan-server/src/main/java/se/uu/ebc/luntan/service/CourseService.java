@@ -147,6 +147,11 @@ public class CourseService {
 							economyDoc(ned).
 							preceedingCI(ci).
 							firstInstance(false).
+							lockedStudentNumberUpdated(false).
+							registeredStudents(null).
+							lRegStud(null).
+							note("").
+							balanceRequest(false).
 							grantDistribution(new HashMap<Department,Float>(ci.getGrantDistribution())).
 							build());
 		}

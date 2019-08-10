@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.aux.GrantMaps;
@@ -84,8 +85,14 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @Column(name = "LOCKEDSTUDENTNUMBER", length = 255)
 	private Integer lRegStud;
 
+    @Column(name = "LCKUPDATED")
+    @Setter(AccessLevel.NONE)
+    private boolean lockedStudentNumberUpdated = false;
+
+/* 
     @Column(name = "UNLOCKEDSTUDENTNUMBER")
 	private Integer uRegStud;
+ */
 
     @OneToOne
     @JoinColumn(name = "PREDECESSOR_FK")
@@ -381,9 +388,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  
    }
  */
-
-	public Integer getModelStudentNumber() {
-		log.debug(this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +this.uRegStud+", " +this.preceedingCI);
+	
+	
+	private Integer currentStudents() {
+		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +this.preceedingCI);
 		Integer currentStudents = 1000;
 		
 		if (this.registeredStudents == null || this.registeredStudents == 0) {
@@ -391,7 +399,11 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 				if (this.preceedingCI == null || this.preceedingCI == this) {
 					currentStudents = DEFAULT_REG_STUDENT_NUMBER;
 				} else {
-					currentStudents = this.preceedingCI.getModelStudentNumber(); 
+					if (this.preceedingCI.getPreceedingCI() == null || this.preceedingCI.getPreceedingCI() == this.preceedingCI || this.preceedingCI.getPreceedingCI().getRegisteredStudents() == null) {
+							currentStudents = this.preceedingCI.getModelStudentNumber();
+					} else {
+							currentStudents = this.preceedingCI.getPreceedingCI().getRegisteredStudents();
+					}
 				}
 			} else {
 				currentStudents = this.startRegStudents; 
@@ -399,22 +411,31 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		} else {
 			currentStudents = this.registeredStudents;
 		};
+		
+		return currentStudents;
+	}
 				
+	public Integer getModelStudentNumber() {
+		log.debug("getModelStudentNumber(): " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +", " +this.preceedingCI);
 		if (economyDoc.isLocked()) {
-			this.uRegStud = 0;
-			if (this.lRegStud == null || this.lRegStud == 0) {
-				this.lRegStud = currentStudents;
+			if (!this.lockedStudentNumberUpdated) {
+				this.lRegStud = currentStudents();
+				this.lockedStudentNumberUpdated = true;
 			}
 	 		return lRegStud;
 		} else {
-			this.lRegStud = 0;
-			this.uRegStud = currentStudents;
-	 		return uRegStud;
-		}
-
- 		
+			this.lockedStudentNumberUpdated = false;
+//			this.uRegStud = currentStudents();
+	 		return currentStudents();
+		} 		
    }
    
+   
+	public void updateLock() {
+		log.debug("updateLock(): " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +", " +this.preceedingCI);
+		getModelStudentNumber();
+	}
+	
 /* 
 	public Integer getComputedStudents() {
 		Integer studs = 0;

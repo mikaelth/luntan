@@ -226,7 +226,7 @@ public class EconomyDocController {
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)
     public String viewEconomyDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
-			log.debug("viewEconoomy, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+			log.debug("viewEconomyDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
        try {
 //			Map<CourseGroup, CourseInstance> ciMap = new HashMap<CourseGroup, CourseInstance>();
@@ -242,9 +242,13 @@ public class EconomyDocController {
 				}
 				ciMap.get(ci.getCourse().getCourseGroup()).add(ci);
 			}
+			log.debug("viewEconomyDoc, course instances done");
+
 			for (CourseGroup cgrp : ciMap.keySet()) {
 				ciMap.put(cgrp, asSortedList(ciMap.get(cgrp)));
 			}
+			log.debug("viewEconomyDoc, course groups done");
+
 			model.addAttribute("serverTime", new Date());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
@@ -255,7 +259,7 @@ public class EconomyDocController {
 			
     		return "EconomyDocView";
         } catch (Exception e) {
-			log.error("viewEconoomy, caught a pesky exception "+ e);
+			log.error("viewEconomyDoc, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
 		}
 	}

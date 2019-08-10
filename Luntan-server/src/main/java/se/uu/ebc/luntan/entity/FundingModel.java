@@ -164,6 +164,7 @@ public class FundingModel  extends Auditable {
 //	public abstract Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel);   
 	
 	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel, boolean firstInstance) {
+		log.debug("computeFunding(), number of students " + registerdStudents);
 
 		// Create an expression object for our calculation
 		JexlExpression e = jexl.createExpression( this.expression );
