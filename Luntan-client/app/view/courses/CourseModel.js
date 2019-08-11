@@ -6,9 +6,14 @@ Ext.define('Luntan.view.courses.CourseModel', {
     data: {
 		current : {
 			edocId : '',
+			edoc : null,
 			ci : null,
 			cid : null
-		}
+		},
+		cloning: {
+        	cloneDestED: null,
+//        	seletcedCIsToClone : []
+		},
     },
     
     stores: {
@@ -24,17 +29,24 @@ Ext.define('Luntan.view.courses.CourseModel', {
  			source:'EconomyDocStore',
  			sorters: [{property:'year', direction: 'DESC'}]
  		},
+ 		futureYears: {
+ 			type:'chained',
+ 			source:'EconomyDocStore',
+			filters: [{property: 'year', value: '{current.edoc.year}', operator: '>'}, {property: 'locked', value: false, exactMatch: true}],
+ 			sorters: [{property:'year', direction: 'DESC'}]
+ 		},
 		cistore: {
 			type: 'chained',
 			source: 'CourseInstanceStore',
-			filters: [{property: 'economyDocId', value: '{current.edocId}', exactMatch: true}],
+			filters: [{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}],
 			sorters: [{property:'courseName', direction: 'ASC'}],
 			groupField: 'courseGroup'
 		},    	
 		citaskstore: {
 			type: 'chained',
 			source: 'CourseInstanceStore',
-			filters: [{property: 'economyDocId', value: '{current.edocId}', exactMatch: true}],
+			filters: [{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}],
+//			filters: [{property: 'economyDocId', value: '{current.edocId}', exactMatch: true}],
 			sorters: [{property:'courseName', direction: 'ASC'}],
 			groupField: 'courseGroup'
 		},
@@ -59,6 +71,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
 	},
 	
 	formulas: {
+/* 
         workingEDoc: {
             // We need to bind deep to be notified on each model change
             bind: {
@@ -70,7 +83,36 @@ Ext.define('Luntan.view.courses.CourseModel', {
                 return edocId;
             }
         },
+ */
+        workingEDoc: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{comboCurrentYear.selection}', //--> reference configurated on the grid view (reference: comboCurrentYear)
+                deep: true
+            },
+            get: function(edoc) {
+            	this.set('current.edoc', edoc);
+                return edoc;
+            }
+        },
+
+
+        cloneDestEDoc: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{comboFutureYears.selection}', //--> reference configurated on the grid view (reference: comboCurrentYear)
+                deep: true
+            },
+            get: function(cloneDestED) {
+            	this.set('cloning.cloneDestED', cloneDestED);
+                return cloneDestED;
+            }
+        },
  
+ 		disableEditBtns :  function (get) {
+ 			return get('current.edoc') === null || get('current.edoc.locked');
+ 		},
+ 		
         currentCI: {
             // We need to bind deep to be notified on each model change
             bind: {

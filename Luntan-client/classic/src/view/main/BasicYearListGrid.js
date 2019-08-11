@@ -39,7 +39,7 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 						valueField: 'id',
 						listeners: {
 							select: function() {
-								this.lookupReferenceHolder().lookupReference('btnCreate').enable();
+//								this.lookupReferenceHolder().lookupReference('btnCreate').enable();
 							}
 						}
 					},
@@ -48,6 +48,7 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 						text: 'Tag bort post',
 						reference: 'btnRemove',
 						disabled: true,
+						bind:{disabled: '{current.edoc.locked}'},
 						 listeners: {
 							click: 'onRemove'
 						}
@@ -55,7 +56,8 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 //						text: 'Create',
 						text: 'Ny post',
 						reference: 'btnCreate',
-						disabled: false,
+						disabled: true,
+						bind:{disabled: '{disableEditBtns}'},
 						listeners: {
 							click: 'onCreate'
 						}

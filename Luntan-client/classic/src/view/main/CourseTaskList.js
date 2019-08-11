@@ -12,20 +12,12 @@ Ext.define('Luntan.view.main.CourseTaskList', {
 
 
 	bind: {store: '{citaskstore}'},
-//	store: 'CIStore',
 	
 	features: [{ ftype: 'grouping',startCollapsed: false }],
 
     columns: [
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', filter: 'string', width: 150 },
 		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', filter: 'string', flex: 1,         	
-// 			renderer: function(value,record) {
-// 				if (Ext.getStore('CIDesignationStore').getById(record.record.get('extraDesignation')) != undefined) {
-// 					return value.concat(Ext.getStore('CIDesignationStore').getById(record.record.get('extraDesignation')).get('displayname'));
-// 				} else {
-// 					return value;
-// 				}
-//         	},
 		},
 		{ text: 'Skattat studentantal', dataIndex: 'modelStudentNumber', filter: 'string', align: 'left', width: 150 },
 		{ text: 'IBG', dataIndex: 'IBG', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80},
@@ -36,6 +28,8 @@ Ext.define('Luntan.view.main.CourseTaskList', {
 
 	],
 
+	listeners: {
+	},
 	config : {
 	}
 

@@ -107,6 +107,13 @@ Ext.define('Luntan.view.main.Main', {
 			height: 900
         }]
     }, {
+        title: 'Klona kurstillfällen',
+        iconCls: 'fa-pencil',
+        items: [{
+            xtype: 'ciclonelist', 
+			height: 900
+        }]
+    }, {
         title: 'Kurser',
         iconCls: 'fa-book',
         items: [{

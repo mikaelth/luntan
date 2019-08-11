@@ -3,11 +3,12 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
 
     alias: 'controller.courseinstancelist',
 
+    onSelectionChange: function(sm, rec) {},
 
     onCreate: function()
     {
         var grid = this.getView(),
-			thisEDoc = this.getViewModel().get('current.edocId');
+			thisEDoc = this.getViewModel().get('current.edoc.id');
 		grid.plugins[0].cancelEdit();
 
         // Create a model instance
@@ -24,8 +25,19 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
 
    	init: function (view) {
 
-        view.plugins[0].addListener('beforeEdit', function(rowEditing, context) {
-			return !context.record.get('locked');
+       view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
+			/* Disabling editing of specific fileds */
+			var form   = rowEditing.getEditor().form,
+				fields  = [form.findField('courseId'),form.findField('extraDesignation'),form.findField('firstInstance'),form.findField('preceedingCIId'),form.findField('startRegStudents'),form.findField('fundingModelId')],
+				status = context.grid.getViewModel().get('current.edoc.locked');
+			if(status){
+				fields.forEach(field => field.disable());
+			} else {
+				fields.forEach(field => field.enable());
+			}
+			return true;
+			/* Disabling editing of entire record */
+//			return !context.grid.getViewModel().get('current.edoc.locked');
         });
 	}
 

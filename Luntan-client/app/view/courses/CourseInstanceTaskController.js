@@ -3,11 +3,17 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
 
     alias: 'controller.courseinstancetasklist',
 
+    onSelectionChange: function(sm, rec)
+    {
+		console.log(rec);
+
+        this.lookupReference('btnRemove').enable();
+    },
 
     onCreate: function()
     {
         var grid = this.getView(),
-			thisEDoc = this.getViewModel().get('current.edocId');
+			thisEDoc = this.getViewModel().get('current.edoc.id');
 		grid.plugins[0].cancelEdit();
 
         // Create a model instance
@@ -22,13 +28,27 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
    	onBeforeRender: function (grid) {
    	},
 
+
    	init: function (view) {
 
-        view.plugins[0].addListener('beforeEdit', function(rowEditing, context) {
-			return !context.record.get('locked');
+		view.down('toolbar').remove(view.lookupReference('btnCreate'));	
+		view.down('toolbar').remove(view.lookupReference('btnRemove'));	
+ 
+		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
+			/* Disabling editing of specific fileds */
+			var form   = rowEditing.getEditor().form,
+				fields  = [form.findField('IBG'),form.findField('ICM'),form.findField('IEG'),form.findField('IOB')],
+				status = context.grid.getViewModel().get('current.edoc.locked');
+			if(status){
+				fields.forEach(field => field.disable());
+			} else {
+				fields.forEach(field => field.enable());
+			}
+			return true;
+			/* Disabling editing of entire record */
+//			return !context.grid.getViewModel().get('current.edoc.locked');
         });
+
 	}
-
-
 
 });

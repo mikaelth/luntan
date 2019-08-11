@@ -66,8 +66,7 @@ Ext.define('Luntan.model.CourseInstance', {
 				}
 				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['IOB'];
 			}
-		},
-
+		}
     ]
 
 /* 
