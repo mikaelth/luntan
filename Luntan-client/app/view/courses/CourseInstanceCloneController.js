@@ -3,6 +3,7 @@ Ext.define('Luntan.view.courses.CourseInstanceCloneController', {
 
     alias: 'controller.courseinstanceclone',
 
+    onSelectionChange: function(sm, rec) {},
 
 	onNewFromYear: function() {
 		this.getView().getSelectionModel().deselectAll();

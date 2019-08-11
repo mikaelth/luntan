@@ -3,12 +3,7 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
 
     alias: 'controller.courseinstancetasklist',
 
-    onSelectionChange: function(sm, rec)
-    {
-		console.log(rec);
-
-        this.lookupReference('btnRemove').enable();
-    },
+    onSelectionChange: function(sm, rec) {},
 
     onCreate: function()
     {
