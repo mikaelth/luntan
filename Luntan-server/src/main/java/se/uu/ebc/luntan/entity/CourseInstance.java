@@ -46,23 +46,12 @@ import se.uu.ebc.luntan.aux.GrantMaps;
 public class CourseInstance  extends Auditable implements Comparable<CourseInstance> {
 
 	private static final Integer DEFAULT_REG_STUDENT_NUMBER = 15;
-//    private static Logger log = Logger.getLogger(CourseInstance.class.getName());
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
     
-/* 
-    public Long getId() {
-        return this.id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
- */
-
     
     @ManyToOne
     @NotNull
@@ -126,172 +115,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 
 	/* Setters and getters */
  
-/* 
- 	public Course getCourse()
-	{
-		return this.course;
-	}
-
-	public void setCourse(Course course)
-	{
-		this.course = course;
-	}
-
-	public CIDesignation getExtraDesignation()
-	{
-		return this.extraDesignation;
-	}
-
-	public void setExtraDesignation(CIDesignation extraDesignation)
-	{
-		this.extraDesignation = extraDesignation;
-	}
-
-	public Integer getRegisteredStudents()
-	{
-		return this.registeredStudents;
-	}
-
-	public void setRegisteredStudents(Integer registeredStudents)
-	{
-		this.registeredStudents = registeredStudents;
-	}
-
-	public Integer getStartRegStudents()
-	{
-		return this.startRegStudents;
-	}
-
-	public void setStartRegStudents(Integer startRegStudents)
-	{
-		this.startRegStudents = startRegStudents;
-	}
-
-
-	public CourseInstance getPreceedingCI()
-	{
-		return this.preceedingCI;
-	}
-
-	public void setPreceedingCI(CourseInstance preceedingCI)
-	{
-		this.preceedingCI = preceedingCI;
-	}
-
-	public EconomyDocument getEconomyDoc()
-	{
-		return this.economyDoc;
-	}
-
-	public void setEconomyDoc(EconomyDocument economyDoc)
-	{
-		this.economyDoc = economyDoc;
-	}
-
-    public String getNote()
-    {
-    	return this.note;
-    }
-
-    public void setNote(String note)
-    {
-    	this.note = note;
-    }
- */
-/* 
-	public GrantDistribution getGrantDistribution()
-	{
-		return this.grantDistribution;
-	}
-
-	public void setGrantDistribution(GrantDistribution grantDistribution)
-	{
-		this.grantDistribution = grantDistribution;
-	}
- */
-/* 
-
-	public Map<Department,Float> getGrantDistribution()
-	{
-		return this.grantDistribution;
-	}
-
-	public void setGrantDistribution(Map<Department,Float> grantDistribution)
-	{
-		this.grantDistribution = grantDistribution;
-	}
-
-
- 	public FundingModel getFundingModel()
-	{
-		return this.fundingModel;
-	}
-
-	public void setFundingModel(FundingModel fundingModel)
-	{
-		this.fundingModel = fundingModel;
-	}
-
-
-	public Integer getLRegStud()
-	{
-		return this.lRegStud;
-	}
-
-	public void setLRegStud(Integer lRegStud)
-	{
-		this.lRegStud = lRegStud;
-	}
-
-
-	public Integer getURegStud()
-	{
-		return this.uRegStud;
-	}
-
-	public void setURegStud(Integer uRegStud)
-	{
-		this.uRegStud = uRegStud;
-	}
-
-	public void setBalanceRequest (boolean balanceRequest) {
-		this.balanceRequest = balanceRequest;
-	}
-
-	public boolean isBalanceRequest() {
-		return this.balanceRequest;
-	}
-	
-
-	public EconomyDocument getBalancedEconomyDoc()
-	{
-		return this.balancedEconomyDoc;
-	}
-
-	public void setBalancedEconomyDoc(EconomyDocument balancedEconomyDoc)
-	{
-		this.balancedEconomyDoc = balancedEconomyDoc;
-	}
-
-	public boolean getFirstInstance()
-	{
-		return this.firstInstance;
-	}
-	public boolean isFirstInstance()
-	{
-		return this.firstInstance;
-	}
-
-	public void setFirstInstance(boolean firstInstance)
-	{
-		this.firstInstance = firstInstance;
-	}
-
- */
 
 	/* Constructors */
 	
-//	public CourseInstance() {}
 	
 	/* Business methods */
 	
@@ -375,19 +201,6 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
  	
-/* 
-	private Integer getRegStudentAcnt() {
-		Integer students = 0;
-		if (startRegStudents == null || startRegStudents == 0) {
-			students = preceedingCI == null ?  0 : preceedingCI.getRegisteredStudents();
-		} else {
-			students = startRegStudents;
-		}
-		
-		return students; 
- 
-   }
- */
 	
 	
 	private Integer currentStudents() {
@@ -425,7 +238,6 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	 		return lRegStud;
 		} else {
 			this.lockedStudentNumberUpdated = false;
-//			this.uRegStud = currentStudents();
 	 		return currentStudents();
 		} 		
    }
@@ -435,22 +247,6 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		log.debug("updateLock(): " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +", " +this.preceedingCI);
 		getModelStudentNumber();
 	}
-	
-/* 
-	public Integer getComputedStudents() {
-		Integer studs = 0;
- 		if (economyDoc.isLocked()) {
-			if (this.lRegStud == null || this.lRegStud == 0) {
-				studs = currentStudents;
-			} else {
-				studs =  lRegStud;
-			}
-		} else {
-			studs = currentStudents;
-		}
-		return studs;  
-	}
- */
 	
 	public Map<Department,Float> explicitGrantDist() { 
 		Map<Department,Float> grants = new HashMap<Department,Float>();
@@ -511,27 +307,6 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     
     
  
-/* 
-    public CourseInstance copyToNewEDoc(EconomyDocument ed) {
- 
-    	CourseInstance nci = new CourseInstance();
-    	
-		nci.setCourse( this.course );
-		nci.setExtraDesignation( this.extraDesignation );
-		nci.setFirstInstance( false );
-		nci.setRegisteredStudents( null );
-		nci.setStartRegStudents( this.registeredStudents);
-
-		nci.setPreceedingCI( this.preceedingCI );
-		nci.setEconomyDoc( ed );
-		nci.setNote( this.note );
-		nci.setBalancedEconomyDoc( this.balancedEconomyDoc);
-		nci.setFundingModel( this.fundingModel );
-   
-   		return nci;
-    	
-    }
- */
  
 }
 

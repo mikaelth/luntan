@@ -142,19 +142,24 @@ public class CourseService {
 
 	public void cloneCourseInstances (EconomyDocument ned, EconomyDocument fed) {
 		for (CourseInstance ci : ciRepo.findByEconomyDoc(fed)) {
-			ciRepo.save(ci.toBuilder().
-							id(null).
-							economyDoc(ned).
-							preceedingCI(ci).
-							firstInstance(false).
-							lockedStudentNumberUpdated(false).
-							registeredStudents(null).
-							lRegStud(null).
-							note("").
-							balanceRequest(false).
-							grantDistribution(new HashMap<Department,Float>(ci.getGrantDistribution())).
-							build());
+			cloneCourseInstance(ci,ned);
 		}
+	}
+
+	public void cloneCourseInstance (CourseInstance ci, EconomyDocument ned) {
+		ciRepo.save(ci.toBuilder().
+						id(null).
+						economyDoc(ned).
+						preceedingCI(ci).
+						firstInstance(false).
+						lockedStudentNumberUpdated(false).
+						registeredStudents(null).
+						lRegStud(null).
+						note("").
+						balanceRequest(false).
+						grantDistribution(new HashMap<Department,Float>(ci.getGrantDistribution())).
+						build()
+					);
 	}
 
 	private CourseInstance toCourseInstance (CourseInstanceVO cVO) throws Exception {
