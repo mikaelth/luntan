@@ -28,7 +28,7 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
        view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 			/* Disabling editing of specific fileds */
 			var form   = rowEditing.getEditor().form,
-				fields  = [form.findField('courseId'),form.findField('extraDesignation'),form.findField('firstInstance'),form.findField('preceedingCIId'),form.findField('startRegStudents'),form.findField('fundingModelId')],
+				fields  = [form.findField('courseId'),form.findField('extraDesignation'),form.findField('firstInstance'),/*form.findField('preceedingCIId'),*/form.findField('startRegStudents'),form.findField('fundingModelId')],
 				status = context.grid.getViewModel().get('current.edoc.locked');
 			if(status){
 				fields.forEach(field => field.disable());

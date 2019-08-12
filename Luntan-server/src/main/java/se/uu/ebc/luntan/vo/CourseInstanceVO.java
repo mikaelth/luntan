@@ -12,6 +12,7 @@ import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.FundingModel;
 import se.uu.ebc.luntan.enums.CIDesignation;
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.StudentModelNumberCase;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -45,6 +46,8 @@ public class CourseInstanceVO {
 	private Integer registeredStudents;
 	private Integer startRegStudents;
 	private Integer modelStudentNumber;
+	private StudentModelNumberCase modelCase;
+	
     private String note;
 	private boolean balanceRequest = false;
 	private boolean firstInstance;
@@ -283,13 +286,14 @@ public class CourseInstanceVO {
 		this.extraDesignation = xe.getExtraDesignation();
 		this.registeredStudents = xe.getRegisteredStudents();
 		this.startRegStudents = xe.getStartRegStudents();
-
+		
 		this.balanceRequest = xe.isBalanceRequest();
 		this.firstInstance = xe.isFirstInstance();		
 //		this.firstInstance = xe.getFirstInstance();		
 
 		this.grantDistribution = xe.getGrantDistribution();
 		this.modelStudentNumber = xe.getModelStudentNumber();
+		this.modelCase = xe.getModelCase();
 		
 		this.note = xe.getNote();	
 

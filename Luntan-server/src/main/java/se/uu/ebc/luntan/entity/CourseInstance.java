@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Embedded;
 import javax.persistence.ElementCollection;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
@@ -112,7 +113,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @JoinColumn(name = "MODEL_FK")
 	private FundingModel fundingModel;
 
-
+	@Transient
+	private StudentModelNumberCase modelCase = StudentModelNumberCase.DEFAULT;
+	
+	
 	/* Setters and getters */
  
 
@@ -210,21 +214,32 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		if (this.registeredStudents == null || this.registeredStudents == 0) {
 			if (this.startRegStudents == null || this.startRegStudents == 0) {
 				if (this.preceedingCI == null || this.preceedingCI == this) {
+					this.modelCase=StudentModelNumberCase.DEFAULT;
 					currentStudents = DEFAULT_REG_STUDENT_NUMBER;
 				} else {
 					if (this.preceedingCI.getPreceedingCI() == null || this.preceedingCI.getPreceedingCI() == this.preceedingCI || this.preceedingCI.getPreceedingCI().getRegisteredStudents() == null) {
-							currentStudents = this.preceedingCI.getModelStudentNumber();
+							if(this.preceedingCI.getRegisteredStudents() == null || this.preceedingCI.getRegisteredStudents() == 0) {
+								this.modelCase=StudentModelNumberCase.PREVIOUSMODEL;
+								currentStudents = this.preceedingCI.getModelStudentNumber();
+							} else {
+								this.modelCase=StudentModelNumberCase.PREVIOUSREG;
+								currentStudents = this.preceedingCI.getRegisteredStudents();							
+							}
 					} else {
+							this.modelCase=StudentModelNumberCase.REG2YEARS;
 							currentStudents = this.preceedingCI.getPreceedingCI().getRegisteredStudents();
 					}
 				}
 			} else {
+				this.modelCase=StudentModelNumberCase.EXPLICTISTART;
 				currentStudents = this.startRegStudents; 
 			}
 		} else {
+			this.modelCase=StudentModelNumberCase.REGISTERED;
 			currentStudents = this.registeredStudents;
 		};
-		
+
+		log.debug(this.modelCase.toString());		
 		return currentStudents;
 	}
 				
@@ -234,6 +249,8 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 			if (!this.lockedStudentNumberUpdated) {
 				this.lRegStud = currentStudents();
 				this.lockedStudentNumberUpdated = true;
+			} else {
+				this.modelCase=StudentModelNumberCase.LOCKED;
 			}
 	 		return lRegStud;
 		} else {
