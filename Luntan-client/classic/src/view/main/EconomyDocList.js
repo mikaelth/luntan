@@ -8,7 +8,8 @@ Ext.define('Luntan.view.main.EconomyDocList', {
     title: 'Nådiga luntor',
 
 	controller: 'edoclist',
-//	viewModel: 'fundingmodel',
+	viewModel: 'edocmodel',
+/* 
 	viewModel: {
 		data: {
 			current : {
@@ -32,6 +33,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 			}
 		}
 	},
+ */
 
 //	bind: {store: '{fundingmodels}'},
 	store: 'EconomyDocStore',

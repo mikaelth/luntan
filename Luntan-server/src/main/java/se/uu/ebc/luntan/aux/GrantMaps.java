@@ -8,11 +8,21 @@ import java.util.stream.*;
 
 import se.uu.ebc.luntan.enums.Department;
 
+import lombok.extern.slf4j.Slf4j;
+
+import se.uu.ebc.luntan.enums.*;
+import se.uu.ebc.luntan.aux.GrantMaps;
+
+@Slf4j
 public class GrantMaps {
 
 	public static Map<Department,Float> sum(Map<Department,Float> a, Map<Department,Float> b)  {
-	
+		
+		log.debug("Sum, first map " + a.toString());
+		log.debug("Sum, second map " + b.toString());
+		
 		Map<Department,Float> c = Stream.concat(a.entrySet().stream(), b.entrySet().stream())
+//			.peek( f -> log.debug("sum " + f.toString()) )
 			.collect(Collectors.toMap(
 				entry -> entry.getKey(), // The key
 				entry -> entry.getValue(), // The value
@@ -20,12 +30,17 @@ public class GrantMaps {
 				(x, y) -> x + y
 			)
 		);	
+		log.debug("Sum, resulting map " + c.toString());
 		return c;
 	}
 
 	public static Map<Department,Float> diff(Map<Department,Float> a, Map<Department,Float> b) {
 	
+		log.debug("Diff, first map " + a.toString());
+		log.debug("Diff, second map " + b.toString());
+
 		Map<Department,Float> c = Stream.concat(a.entrySet().stream(), b.entrySet().stream())
+//			.peek( f -> log.debug("diff " + f.toString()) )
 			.collect(Collectors.toMap(
 				entry -> entry.getKey(), // The key
 				entry -> entry.getValue(), // The value
@@ -33,6 +48,7 @@ public class GrantMaps {
 				(x, y) -> x - y
 			)
 		);	
+		log.debug("Diff, resulting map " + c.toString());
 		return c;
 	}
 

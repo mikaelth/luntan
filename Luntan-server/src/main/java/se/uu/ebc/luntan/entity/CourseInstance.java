@@ -184,6 +184,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	}
 	
 	public Map<Department,Float> computeGrants() {		
+		log.debug("computeGrants()");
 		return computeGrantDist(computeCIGrant());
 	}
 
@@ -191,9 +192,24 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		return computeHSTDist(this.getCourse().getCredits()/60 * this.getModelStudentNumber());
 	}
 
+	/**
+	 * <p>Calculates the grants based on actual registrations for the course instance
+	 * </p>
+	 * @return a map with amounts by department
+	 * @since 1.0
+	 */
 	public Map<Department,Float> computeAdjustedGrants() {
+		log.debug("computeAdjustedGrants()");
 		return computeGrantDist(computeAdjustedCIGrant());
 	}	
+
+	/**
+	 * <p>Calculates the difference between modeled (budget) grants 
+	 * and grants based on actual registrations for the course instance
+	 * </p>
+	 * @return a map with amounts by department
+	 * @since 1.0
+	 */
 	public Map<Department,Float> computeGrantAdjustment() {
 		return GrantMaps.diff(computeAdjustedGrants(),computeGrants());
 	}
@@ -202,7 +218,8 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
  	public Float computeAdjustedCIGrant() {
- 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+// 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+		return this.registeredStudents == null ? computeCIGrant() : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
  	
 	
@@ -290,21 +307,27 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	
 	}
 	
+	/**
+	 * <p>Calculates the accumulated adjustment (computeGrantAdjustment()) of grants, 
+	 * back to the latest instance which has been adjusted
+	 * </p>
+	 * @return a map with amounts by department
+	 * @since 1.0
+	 */
 	public Map<Department,Float> computeAccumulatedGrantAdjustment() {
 		Map<Department,Float> adjustment = new HashMap<Department,Float>();
-		log.debug("Adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ this.computeGrantAdjustment());		
 		try {		
-			if(!(this.registeredStudents == null || this.registeredStudents == 0)) {
-				if(this.preceedingCI == null || this.preceedingCI == this) {
-					adjustment = this.computeGrantAdjustment();
-				} else {
-					adjustment = this.preceedingCI.isBalanceRequest() ? this.computeGrantAdjustment() : GrantMaps.sum(this.computeGrantAdjustment(), this.preceedingCI.computeAccumulatedGrantAdjustment());
-			
-				}
+//			if(!(this.registeredStudents == null || this.registeredStudents == 0)) {
+			if(this.preceedingCI == null || this.preceedingCI == this) {
+				adjustment = this.computeGrantAdjustment();
+			} else {
+				adjustment = this.preceedingCI.isBalanceRequest() ? this.computeGrantAdjustment() : GrantMaps.sum(this.computeGrantAdjustment(), this.preceedingCI.computeAccumulatedGrantAdjustment());			
 			}
+//			}
 		} catch (Exception e) {
 			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
 		} finally {
+			log.debug("Accumulated adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ adjustment);		
 			return adjustment;
 		}
 

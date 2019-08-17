@@ -12,10 +12,13 @@ import java.util.List;
 import java.util.Set;
 
 import se.uu.ebc.luntan.entity.EconomyDocument;
+import se.uu.ebc.luntan.entity.EconomyDocGrant;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
+import se.uu.ebc.luntan.repo.EDGRepo;
 //import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.vo.EconomyDocVO;
+import se.uu.ebc.luntan.vo.EDGVO;
 
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -29,6 +32,9 @@ public class EconomyDocumentService {
 
 	@Autowired
 	EconomyDocumentRepo edRepo;
+
+	@Autowired
+	EDGRepo edgRepo;
 
 	@Autowired
 	CourseService courseService;
@@ -110,6 +116,67 @@ public class EconomyDocumentService {
 	}
  
 
+
+	/* EconomyDocumentGrant */
+	
+	public List<EDGVO> getAllEDGrants() throws Exception {
+		List<EDGVO> edgVO = new ArrayList<EDGVO>();
+		try {	
+			for (EconomyDocGrant edg : edgRepo.findAll()) {
+ 				edgVO.add(new EDGVO(edg));
+ 			}
+         	return edgVO;        	        
+        } catch (Exception e) {
+
+			logger.error("getAllEDs got a pesky exception: "+ e + e.getCause());
+
+			return null;
+			
+        }
+    }
+    
+
+    public EDGVO saveEDGrant(EDGVO edgVO) throws Exception {
+    	EconomyDocGrant edg = edgVO.getId() == null ? toEDGrant(edgVO) : toEDGrant(edgRepo.findById(edgVO.getId()).get(), edgVO);
+    	edgRepo.save(edg);
+
+		return new EDGVO(edg);
+    
+    }
+
+
+    public synchronized void deleteEDGrant(Long eID) throws Exception {
+		EconomyDocGrant edg = edgRepo.findById(eID).get();
+		edgRepo.delete(edg);
+    }
+
+ 
+	private EconomyDocGrant toEDGrant (EDGVO edgVO) throws Exception {
+ 		return toEDGrant (new EconomyDocGrant(), edgVO);
+   	}
+
+	private EconomyDocGrant toEDGrant (EconomyDocGrant edg, EDGVO edgVO) throws Exception {
+
+
+		try {
+			
+			edg.setId(edgVO.getId());
+			
+			edg.setEconomyDoc(edRepo.findById(edgVO.getEconomyDocId()).get());
+			
+			edg.setNote(edgVO.getNote());
+			edg.setItemDesignation(edgVO.getItemDesignation());
+			edg.setGrantKind(edgVO.getGrantKind());		
+			edg.setTotalGrant(edgVO.getTotalGrant());
+
+			edg.setGrantDistribution(edgVO.getGrantDistribution());
+
+		} catch (Exception e) {
+			logger.error("toEDGrant got a pesky exception: "+ e + e.getCause());
+		} finally {
+			return edg;
+		}
+	}
 	
 
 }

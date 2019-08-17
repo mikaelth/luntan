@@ -11,6 +11,14 @@ Ext.define('Luntan.view.BasicController', {
 
         this.lookupReference('btnRemove').enable();
     },
+    
+    onPrint: function()
+    {
+     	Ext.ux.grid.Printer.printAutomatically = false;
+		Ext.ux.grid.Printer.closeAutomaticallyAfterPrint = false;
+		Ext.ux.grid.Printer.print(this.getView());   
+	},
+
 
     onReload: function()
     {

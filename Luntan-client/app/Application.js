@@ -9,7 +9,7 @@ Ext.define('Luntan.Application', {
     name: 'Luntan',
 
     stores: ['CIDesignationStore', 'CourseGroupStore', 'DepartmentStore', 'UserRoleTypeStore',
-    	'UserStore', 'FundingModelStore', 'CourseInstanceStore','EconomyDocStore','CourseStore'
+    	'UserStore', 'FundingModelStore', 'CourseInstanceStore','EconomyDocStore','CourseStore', 'EDGStore', 'EDGKindStore'
     ],
     
     launch: function () {
@@ -30,11 +30,13 @@ Ext.define('Luntan.Application', {
     	Ext.getStore('CIDesignationStore').load();
     	Ext.getStore('CourseGroupStore').load();
     	Ext.getStore('DepartmentStore').load();
+    	Ext.getStore('EDGKindStore').load();
     	Ext.getStore('UserRoleTypeStore').load();
     	Ext.getStore('UserStore').load();
     	Ext.getStore('FundingModelStore').load();
     	Ext.getStore('CourseStore').load();
     	Ext.getStore('CourseInstanceStore').load();
+    	Ext.getStore('EDGStore').load();
     	Ext.getStore('EconomyDocStore').load();
     },
 	

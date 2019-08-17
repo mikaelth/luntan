@@ -66,6 +66,8 @@ public class EconomyDocument  extends Auditable {
     @OneToMany(mappedBy = "economyDoc")
     private Set<CourseInstance> courseInstances = new HashSet<CourseInstance>();
 
+    @OneToMany(mappedBy = "economyDoc")
+    private Set<EconomyDocGrant> economyDocGrants = new HashSet<EconomyDocGrant>();
     
     @Column(name = "YEAR")
     @NotNull
@@ -181,7 +183,16 @@ public class EconomyDocument  extends Auditable {
 	public Integer getNumberOfCourseInstances() {
 		return this.courseInstances == null ? 0 : this.courseInstances.size();
 	}
+
+	public 	Map<Department,Float> totalSum() {
+		Map<Department,Float> bigSum = new HashMap<Department,Float>();
+		for (CourseInstance ci : courseInstances) {
+			bigSum = (GrantMaps.sum(bigSum, ci.computeGrants()) );
+		}
+		
+		return bigSum;
 	
+	}
 	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroup() {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
 		for (CourseInstance ci : courseInstances) {

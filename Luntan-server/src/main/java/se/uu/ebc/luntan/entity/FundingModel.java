@@ -25,8 +25,18 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.MapContext;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+
+@Slf4j
 @Entity
 @Table(name = "FUNDING_MODEL")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -36,15 +46,16 @@ public class FundingModel  extends Auditable {
 	static final String DEFAULT_EXPRESSION = "baseLevel*ects*studentNumber";
 
 	private	static Map<String, Object> ns = new HashMap<String, Object>();
-	
-    private static Logger log = Logger.getLogger(FundingModel.class.getName());
 	private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).namespaces(ns).create();
+	
+//    private static Logger log = Logger.getLogger(FundingModel.class.getName());
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
     
+ 
     public Long getId() {
         return this.id;
     }
@@ -53,6 +64,7 @@ public class FundingModel  extends Auditable {
         this.id = id;
     }
 
+ 
     
     @OneToMany(mappedBy = "fundingModel")
     private Set<CourseInstance> courseInstances;
@@ -79,6 +91,8 @@ public class FundingModel  extends Auditable {
 	 
  
    /* Setters and getters */
+
+
  
     public String getDesignation()
     {
@@ -133,6 +147,7 @@ public class FundingModel  extends Auditable {
 		this.tabledValues = tabledValues;
 	}
 
+ 
 
  	public void setValueTable(TreeMap<Integer,Float> valueTable) {
  		this.valueTable = valueTable;

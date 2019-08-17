@@ -17,6 +17,8 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 	features: [{ ftype: 'grouping',startCollapsed: false }],
 
     columns: [
+		{ xtype: 'checkcolumn', text: 'Ny', dataIndex: 'firstInstance', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 50 },
+		{ xtype: 'checkcolumn', text: 'Balansera', dataIndex: 'balanceRequest', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'left', width: 50 },
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', width: 150 },
 		{ text: 'Kurs', dataIndex: 'courseId', align: 'left', flex: 2,
          	renderer: function(value) {
@@ -73,7 +75,6 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
  */
 			}
 		},
-		{ text: 'Ny kurs', dataIndex: 'firstInstance', xtype: 'checkcolumn', filter: 'boolean', align: 'left', width: 50 },
 		{ text: 'Föregående kurs', dataIndex: 'preceedingCIId', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('CourseInstanceStore').getById(value) != undefined) {
@@ -103,7 +104,6 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 		{ text: 'Registrerade studenter', dataIndex: 'registeredStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
 		{ text: 'Skattat studentantal', dataIndex: 'startRegStudents', editor: 'textfield', filter: 'number', align: 'left', flex: 1 },
 		{ text: 'Studentantal i modell', dataIndex: 'modelStudentNumber', filter: 'number', align: 'left', flex: 1 },
-		{ text: 'Balansera', dataIndex: 'balanceRequest', xtype: 'checkcolumn', filter: 'boolean', align: 'left', width: 50 },
 		{ text: 'Betalningsmodell', dataIndex: 'fundingModelId', align: 'left', width: 200,
          	renderer: function(value) {
 				if (Ext.getStore('FundingModelStore').getById(value) != undefined) {

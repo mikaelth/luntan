@@ -15,6 +15,7 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
         var r = Ext.create('Luntan.model.CourseInstance');
 
         r.set('economyDocId',thisEDoc);
+        r.set('modelCase','DEFAULT');
 		var rec = grid.getStore().insert(0, r);
         grid.plugins[0].startEdit(rec[0]);
 
@@ -28,10 +29,16 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
        view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 			/* Disabling editing of specific fileds */
 			var form   = rowEditing.getEditor().form,
-				fields  = [form.findField('courseId'),form.findField('extraDesignation'),form.findField('firstInstance'),/*form.findField('preceedingCIId'),*/form.findField('startRegStudents'),form.findField('fundingModelId')],
+				fields  = [
+					form.findField('courseId'),
+					form.findField('extraDesignation'),
+					form.findField('firstInstance'),
+					form.findField('startRegStudents'),
+					form.findField('fundingModelId')
+				],
 				status = context.grid.getViewModel().get('current.edoc.locked');
 			if(status){
-				fields.forEach(field => field.disable());
+				fields.forEach(field=>field.disable());
 			} else {
 				fields.forEach(field => field.enable());
 			}

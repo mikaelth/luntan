@@ -49,6 +49,18 @@ public class AuxItemsController {
     	return theList;
     }
 
+	@RequestMapping("/grantkinds")
+    public List<Map<String, String>> grantKinds() {
+    	List theList = new ArrayList<Map<String, String>>();
+    	for (EDGKind s : EDGKind.values()) {
+			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
+			vMap.put("id", s.name());
+			vMap.put("displayname", s.toString());
+    		theList.add(vMap);
+    	}
+    	return theList;
+    }
+
 	@RequestMapping("/coursegroups")
     public List<Map<String, String>> courseGroup() {
     	List theList = new ArrayList<Map<String, String>>();

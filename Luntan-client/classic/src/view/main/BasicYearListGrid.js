@@ -22,8 +22,16 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 						 listeners: {
 							click: 'onReload'
 						}
-					}, 
-					{
+					}, {
+						text: 'Skriv ut',
+						reference: 'btnPrint',
+						disabled: false,
+						handler: function() {
+							Ext.ux.grid.Printer.printAutomatically = false;
+							Ext.ux.grid.Printer.closeAutomaticallyAfterPrint = false;
+							Ext.ux.grid.Printer.print(this.up('grid'));   
+						}
+					}, {
 
 						xtype: 'combobox',
 						reference: 'comboCurrentYear',

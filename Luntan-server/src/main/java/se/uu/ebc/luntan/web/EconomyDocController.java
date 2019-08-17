@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.servlet.ModelAndView;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -57,7 +58,9 @@ import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.vo.EconomyDocVO;
+import se.uu.ebc.luntan.vo.EDGVO;
 import se.uu.ebc.luntan.util.DateNullTransformer;
+import se.uu.ebc.luntan.web.view.EconomyDocExcel;
 
 @Controller
 @RequestMapping(value = "/")
@@ -78,6 +81,80 @@ public class EconomyDocController {
 	@Autowired
 	EconomyDocumentService edService;
 	
+
+
+	/* EconomyDocumentGrants */
+	
+	@RequestMapping(value="rest/edocgrants", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allEDGrants() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocgrants").deepSerialize(edService.getAllEDGrants()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+  	
+    }
+
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+    @RequestMapping(value="rest/edocgrants/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateEDGrant(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("updateEDGrant, edVO "+ReflectionToStringBuilder.toString(edVO, ToStringStyle.MULTI_LINE_STYLE));
+			edVO.setId(id);
+			edVO = edService.saveEDGrant(edVO);
+			
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocgrants").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(edVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+    @RequestMapping(value="rest/edocgrants", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createEDGrant(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			edVO = edService.saveEDGrant(edVO);
+
+			
+
+            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+edVO.getId().toString()).build().toUriString());
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocgrants").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(edVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@RequestMapping(value = "rest/edocgrants/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	public ResponseEntity<String> deleteEDGrant(@PathVariable("id") Long id) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			edService.deleteEDGrant(id);
+            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 	/* Funding models */
 		
     @RequestMapping(value="rest/fundingmodels", method = RequestMethod.GET)
@@ -258,17 +335,56 @@ public class EconomyDocController {
 			emRepo.save(edoc);
 			
     		return "EconomyDocView";
+//    		return "EconomyDocAdjustmentView";
         } catch (Exception e) {
 			log.error("viewEconomyDoc, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
 		}
 	}
 
+    @RequestMapping("/excel/economydoc")
+    public ModelAndView viewEconomyExcelDoc(@RequestParam(value = "year", required = true) Integer year, Principal principal, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        //Sheet Name
+		EconomyDocument edoc = emRepo.findByYear(year);
 
+        model.put("edoc", edoc);
+        model.put("sheetname", "Kursekonomidokument-" + edoc.getYear());
+
+        //Headers List
+        List<String> headers = new ArrayList<String>();
+        headers.add("Kurs");
+        headers.add("hp");
+        headers.add("Stud.");
+        headers.add("Reg.");
+        headers.add("åp");
+        headers.add("Modell");
+        headers.add("Ny");
+        headers.add("Anslag");
+        for (Department dept : edoc.getAccountedDeptsSorted()) {
+        	headers.add(dept.toString());
+        }
+        for (Department dept : edoc.getAccountedDeptsSorted()) {
+        	headers.add(dept.toString());
+        }
+        model.put("headers", headers);
+
+        response.setContentType( "application/ms-excel" );
+        response.setHeader( "Content-disposition", "attachment; filename=" + "Kursekonomidokument-" + edoc.getYear() + ".xls" );         
+        return new ModelAndView(new EconomyDocExcel(), model);
+    }
+
+	/**
+	 * <p>This is a simple description of the method asSortedList
+	 * </p>
+	 * @param c is a collection of objects
+	 * @return is a sorted list of objects
+	 * @since 1.0
+	 */
 	private static <T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
-	  List<T> list = new ArrayList<T>(c);
-	  java.util.Collections.sort(list);
-	  return list;
+		List<T> list = new ArrayList<T>(c);
+		java.util.Collections.sort(list);
+		return list;
 	}
 	
 

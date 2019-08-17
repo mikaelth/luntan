@@ -102,31 +102,6 @@
     color: white;
 }
 
-#economy_doc_grants {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 90%;
-    margin-left:5%; 
-    margin-right:5%;
-}
-
-#economy_doc_grants td, #course_instances th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#economy_doc_grants tr:nth-child(even){background-color: #f2f2f2;}
-
-#economy_doc_grants tr:hover {background-color: #ddd;}
-
-#economy_doc_grants th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
-
 .alnright { text-align: right; }
 .alnleft { text-align: left; }
 </style>
@@ -144,10 +119,11 @@
 				<th>hp</th>
 				<th>Stud.</th>
 				<th>Reg.</th>
-				<th>åp</th>
 				<th>Modell</th>
-				<th>Ny</th>
 				<th>Anslag</th>
+				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+					<th th:text="${dept}" />
+				</th:block>
 				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
 					<th th:text="${dept}" />
 				</th:block>
@@ -166,16 +142,17 @@
 				<td class='alnright' th:text="${ci.course.credits}" />
 				<td class='alnright' th:text="${ci.modelStudentNumber}" />
 				<td class='alnright' th:text="${ci.registeredStudents}" />
-				<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
 				<td class='alnright' th:text="${ci.fundingModel.id}" />
-				<td class='alnright' th:text="${ci.firstInstance} ? 'X' : ''" />
 				<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
-				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
-					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)*100,1)}+ ' %'" />
-					</th:block>
+				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.computeGrantAdjustment()},ga=${ci.computeAccumulatedGrantAdjustment()}">
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
 						<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
+					</th:block>
+					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+						<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)/1000,1)}+ ' kkr'" />
+					</th:block>
+					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+						<td class='alnright' th:text="${#numbers.formatInteger(ga.get(dept)/1000,1)}+ ' kkr'" />
 					</th:block>
 				</th:block>
 			</tr>
@@ -184,6 +161,8 @@
 	 -->
 		</table>
 	</div>
+
+<!-- 
 	<h2 th:text="'Helårsstudenter över kursgrupper'" />
 	<table  id = "course_instance_summary" th:with="bigSum=${edoc.hstByCourseGroup()}">
 		<tr>
@@ -192,9 +171,6 @@
 				<th th:text="${dept}" />
 			</th:block>
 		</tr>
-<!-- 
-		<tr th:each="cat: ${bigSum.keySet()}">
- -->
 		<tr th:each="cat: ${usedGroups}">
 			<td th:text="${cat.toString()}" />
 			<th:block th:with="dsum=${bigSum.get(cat)}">
@@ -215,9 +191,6 @@
 			</th:block>
 				<th th:text="Totalt" />
 		</tr>
-<!-- 
-		<tr th:each="cat: ${bigSum.keySet()}">
- -->
 		<tr th:each="cat: ${usedGroups}">
 			<td th:text="${cat.toString()}" />
 			<th:block th:with="dsum=${bigSum.get(cat)}">
@@ -236,29 +209,6 @@
 			</th:block>
 			<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(rsum)/1000,1)}+ ' kkr'" />
 	
-		</tr>
-	</table>
-
-	<h2 th:text="'Övrig tilldelning'" />
-	<table id = "economy_doc_grants">
-		<tr>
-			<th>Post</th>
-			<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-				<th th:text="${dept}" />
-			</th:block>
-			<th>Kommentar</th>
-		</tr>
-		<tr th:each="edg: ${edoc.economyDocGrants}">
-			<td th:text="${edg.itemDesignation}" />
-			<th:block th:with="gd=${edg.distributedGrant}">
-				<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-<!-- 
-					<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
- -->
-					<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr' : ''" />
-				</th:block>
-			</th:block>
-			<td th:text="${edg.note}" />
 		</tr>
 	</table>
 
@@ -287,6 +237,7 @@
 		</tr>
 	</table>
 
+ -->
 
 	<div>
 		<h2 th:text="'Modeller i beräkningarna'" />

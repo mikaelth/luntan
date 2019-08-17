@@ -16,7 +16,9 @@ Ext.define('Luntan.view.main.EconomyDocController', {
     },
 
    	init: function (view) {
-        view.plugins[0].addListener('beforeEdit', function(rowEditing, context) {
+ 		view.lookupReference('btnRemove').setBind({disabled: '{current.edoc.locked}'});	
+
+        view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 			return !rowEditing.grid.viewModel.get('currentEconomyDoc').get('locked');
         });
 	}
