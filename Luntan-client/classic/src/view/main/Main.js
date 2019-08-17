@@ -78,9 +78,23 @@ Ext.define('Luntan.view.main.Main', {
         title: 'Nådiga luntor',
         iconCls: 'fa-legal',
         // The following grid shares a store with the classic version's grid as well!
+
+		viewModel: {
+			data: {
+ 
+				current : {
+					edoc : null
+				}
+ 
+			}
+		},
+ 
         items: [{
         	xtype: 'edoclist',
-        	height: '900'
+        	height: '600'
+        },{
+        	xtype: 'edgrantlist',
+        	height: '400'
         }]
     },{
         title: 'Uppdrag',
@@ -97,7 +111,7 @@ Ext.define('Luntan.view.main.Main', {
 			height: 600
         },{
             xtype: 'fmtabledlist', 
-			height: 300
+			height: 400
         }]
     }, {
         title: 'Kurstillfällen',
