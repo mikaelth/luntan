@@ -184,15 +184,23 @@ public class EconomyDocument  extends Auditable {
 		return this.courseInstances == null ? 0 : this.courseInstances.size();
 	}
 
+	public Map<Department,Float> grandTotalSum() {
+		Map<Department,Float> bigSum = totalSum();
+		for (EconomyDocGrant edg : this.economyDocGrants) {
+			bigSum = GrantMaps.sum(bigSum, edg.getDistributedGrant());
+		}
+		log.debug("grandTotalSum(): " + bigSum);
+		return bigSum;
+	}
+	
 	public 	Map<Department,Float> totalSum() {
 		Map<Department,Float> bigSum = new HashMap<Department,Float>();
 		for (CourseInstance ci : courseInstances) {
 			bigSum = (GrantMaps.sum(bigSum, ci.computeGrants()) );
 		}
-		
 		return bigSum;
-	
 	}
+
 	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroup() {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
 		for (CourseInstance ci : courseInstances) {
@@ -204,6 +212,7 @@ public class EconomyDocument  extends Auditable {
 		
 		return bigSum;
 	}
+
 	public  Map<CourseGroup,Map<Department,Float>> sumAdjustmentsByCourseGroup() {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
 		for (CourseInstance ci : courseInstances) {

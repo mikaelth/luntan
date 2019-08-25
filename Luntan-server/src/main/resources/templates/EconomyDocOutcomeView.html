@@ -262,26 +262,6 @@
 		</tr>
 	</table>
 
-
-	<h2 th:text="'Totalsumma'" />
-	<table id = "economy_doc_grants">
-		<tr>
-			<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-				<th th:text="${dept}" />
-			</th:block>
-			<th th:text="Totalt" />
-		</tr>
-		<tr>
-			<th:block th:with="gd=${edoc.grandTotalSum()}">
-				<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-					<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr' : ''" />
-				</th:block>
-				<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(gd)/1000,1)}+ ' kkr'" />
-			</th:block>
-		</tr>
-	</table>
-
-<!-- 
 	<h2 th:text="'Differens som effekt av skillnad i faktiskt och beräknat antal registreringar'" />
 	<table id = "course_instance_adjustment" th:with="bigSum=${edoc.sumAdjustmentsByCourseGroup()}">
 		<tr>
@@ -306,7 +286,6 @@
 	
 		</tr>
 	</table>
- -->
 
 
 	<div>
