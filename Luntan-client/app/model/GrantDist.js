@@ -4,7 +4,7 @@ Ext.define('Luntan.model.GrantDist', {
 		{name: 'IBG', type: 'float'},
 		{name: 'ICM', type: 'float'},
 		{name: 'IEG', type: 'float'},
-		{name: 'IOB', type: 'float'},
+		{name: 'IOB', type: 'float'}
     ]
 
 });

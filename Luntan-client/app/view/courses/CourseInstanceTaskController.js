@@ -21,15 +21,15 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
     },
 
    	onBeforeRender: function (grid) {
-   	
+
    	},
 
 
    	init: function (view) {
 
-		view.down('toolbar').remove(view.lookupReference('btnCreate'));	
-		view.down('toolbar').remove(view.lookupReference('btnRemove'));	
- 
+		view.down('toolbar').remove(view.lookupReference('btnCreate'));
+		view.down('toolbar').remove(view.lookupReference('btnRemove'));
+
 		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 			/* Disabling editing of specific fileds */
 			var form   = rowEditing.getEditor().form,
@@ -41,9 +41,24 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
 				],
 				status = context.grid.getViewModel().get('current.edoc.locked');
 			if(status){
-				fields.forEach(field => field.disable());
+				fields.forEach(function(field){
+					field.disable()
+				});
+
+
+// 				fields.forEach(
+// 					(field) => {field.disable()}
+// 				);
+
+
 			} else {
-				fields.forEach(field => field.enable());
+				fields.forEach(function(field){
+					field.disable()
+				});
+// 				fields.forEach(
+// 					(field) => {field.enable()}
+// 				);
+
 			}
 			return true;
 			/* Disabling editing of entire record */

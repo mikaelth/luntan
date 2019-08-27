@@ -38,13 +38,30 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
 				],
 				status = context.grid.getViewModel().get('current.edoc.locked');
 			if(status){
-				fields.forEach(field=>field.disable());
+				fields.forEach(function(field){
+					field.disable()
+				});
+
+
+// 				fields.forEach(
+// 					(field) => {field.disable()}
+// 				);
+
+
 			} else {
-				fields.forEach(field => field.enable());
+				fields.forEach(function(field){
+					field.disable()
+				});
+// 				fields.forEach(
+// 					(field) => {field.enable()}
+// 				);
+
 			}
 			return true;
+
 			/* Disabling editing of entire record */
 //			return !context.grid.getViewModel().get('current.edoc.locked');
+
         });
 	}
 
