@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
  	   <artifactId>spring-boot-starter-parent</artifactId>
 	    <version>2.1.3.RELEASE</version>
-<!-- 
+<!--
 	    <version>1.4.7.RELEASE</version>
  -->
 	</parent>
@@ -14,7 +14,7 @@
   <artifactId>luntan</artifactId>
   <version>1.0-SNAPSHOT</version>
   <!-- For deployment to Tomcat container -->
-  <packaging>war</packaging> 
+  <packaging>war</packaging>
   <!-- tag::dependencies[] -->
 	<organization>
 		<name>Systematic Biology, Uppsala university</name>
@@ -29,7 +29,7 @@
    	 	<start-class>se.uu.ebc.luntan.Luntan</start-class>
    	 	<spring.security.version>4.0.3.RELEASE</spring.security.version>
    	 	<sdn.version>4.0.3.RELEASE</sdn.version>
-<!-- 
+<!--
     	<spring-data-releasetrain.version>Gosling-RELEASE</spring-data-releasetrain.version>
  -->
 	 	<project.build.finalName>luntan</project.build.finalName>
@@ -60,7 +60,7 @@
 		  <groupId>org.springframework.boot</groupId>
 		  <artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
- 
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-<!-- 
+<!--
 			<scope>provided</scope>
  -->
 		</dependency>
@@ -119,7 +119,7 @@
 		</dependency>
 
 
-<!-- 
+<!--
 		<dependency>
 		  <groupId>commons-fileupload</groupId>
 		  <artifactId>commons-fileupload</artifactId>
@@ -150,7 +150,7 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-<!-- 
+<!--
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
@@ -201,6 +201,7 @@
 				<spring.active.url>http://localhost:8080</spring.active.url>
 				<spring.profiles.active>test</spring.profiles.active>
 				<activatedProperties>test</activatedProperties>
+				<maven.test.skip>true</maven.test.skip>
 			</properties>
 		   <build>
 				<plugins>
@@ -222,9 +223,10 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<spring.active.url>https://suberites.ebc.uu.se/luntan</spring.active.url>
+				<spring.active.url>https://fabricius.ebc.uu.se/luntan</spring.active.url>
 				<spring.profiles.active>prod</spring.profiles.active>
 				<activatedProperties>prod</activatedProperties>
+				<maven.test.skip>true</maven.test.skip>
 			</properties>
            <build>
                 <plugins>
@@ -248,7 +250,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 
-<!-- 
+<!--
 				<version>1.5.10.RELEASE</version>
 				<executions>
 				  <execution>
@@ -272,8 +274,8 @@
 			  <groupId>com.lewisd</groupId>
 			  <artifactId>lint-maven-plugin</artifactId>
 			  <version>0.0.11</version>
-			</plugin>		
-<!-- 
+			</plugin>
+<!--
 <plugin>
  <groupId>org.codehaus.mojo</groupId>
  <artifactId>buildnumber-maven-plugin</artifactId>
