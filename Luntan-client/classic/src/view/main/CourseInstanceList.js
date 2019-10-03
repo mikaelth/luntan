@@ -132,6 +132,26 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
  
 			}
 		},
+		{ text: 'Examinatorer', dataIndex: 'examiners', align: 'left', filter: 'list', flex: 1,
+			renderer: function(value, p, r) { 
+				if (value.length > 0) { 
+						var list = []; 
+						for (i = 0; i < value.length; i++) { 
+							list.push(' ' + Ext.getStore('TeacherStore').getById(value[i]).get('name')) 
+						} 
+						return list; 
+					} 
+			},
+			editor: new Ext.form.field.Tag({
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{teachers}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'name',
+			    valueField: 'employeeNumber'
+				
+			})},
 		{ text: 'Kommentarer', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 
 	],

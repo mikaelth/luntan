@@ -23,8 +23,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import se.uu.ebc.luntan.security.UserRepo;
 import se.uu.ebc.luntan.security.User;
 import se.uu.ebc.luntan.enums.UserRoleType;
-//import se.uu.ebc.luntan.service.PeopleService;
+import se.uu.ebc.luntan.service.StaffService;
 import se.uu.ebc.luntan.vo.UserVO;
+import se.uu.ebc.ldap.Staff;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -42,17 +43,22 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Controller
 @RequestMapping(value = "/rest")
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class UserController {
 
-    private Logger logger = Logger.getLogger(UserController.class.getName());
 
 	@Autowired
 	UserRepo personRepo;
+
+ 	@Autowired
+	StaffService staffService;
+
 
 
 	/* Persons */
@@ -126,8 +132,33 @@ public class UserController {
 
 
 
+	/* Staff */
+	
+	@RequestMapping(value="/teachers", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allBiologyTeachers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+			List<Staff> staff = staffService.getTeachersBiology();
+ 
+			for (Staff person : staff){
+				log.debug("Lookup: " + staffService.findStaff(person.getDn().toString()).toString());
+			}
 
-	/* Curren user REST service */
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("staff").deepSerialize(staff), headers, HttpStatus.OK);
+		} catch (Exception e) {
+ 			log.error("Got a pesky exception: "  + e);
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+  	
+    }
+
+
+
+
+
+	/* Current user REST service */
 
 	@Autowired
 	UserRepo userRepo;
@@ -138,7 +169,7 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
-			logger.debug("loggedInUser... "+ ReflectionToStringBuilder.toString(principal, ToStringStyle.MULTI_LINE_STYLE));
+			log.debug("loggedInUser... "+ ReflectionToStringBuilder.toString(principal, ToStringStyle.MULTI_LINE_STYLE));
 			if (principal == null) { 
 				// Dummy for testing purposes
      			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("currentuser").deepSerialize(createDummyUser()), headers, HttpStatus.OK);
@@ -150,6 +181,7 @@ public class UserController {
         }
   	
     }
+
 
 
 
@@ -175,7 +207,7 @@ public class UserController {
 	private List<UserVO> getAllPersons() throws Exception {
 		List<UserVO> pVO = new ArrayList<UserVO>();
 		try {	
-			logger.debug("getAllPersons()");
+			log.debug("getAllPersons()");
 			for (User p : personRepo.findAll()) {
  				pVO.add(new UserVO(p));
  			}
@@ -224,11 +256,14 @@ public class UserController {
 
 
 		} catch (Exception e) {
-			logger.error("toPerson got a pesky exception: "+ e + e.getCause());
+			log.error("toPerson got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return p;
 		}
 	}
  
+ 
+
+
 	
 } 

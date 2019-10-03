@@ -1,18 +1,12 @@
 package se.uu.ebc.luntan;
 
-//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import org.springframework.boot.builder.SpringApplicationBuilder;
-
-//import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,12 +14,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.core.env.Environment;
+
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.ldap.repository.config.EnableLdapRepositories;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -59,7 +59,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.security.RESTAuthenticationEntryPoint;
 import se.uu.ebc.luntan.security.AuditorAwareImpl;
@@ -67,13 +66,17 @@ import se.uu.ebc.luntan.security.AuditorAwareImpl;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@EnableLdapRepositories(basePackages = "se.uu.ebc.ldap")
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef="auditorProvider")
 @EnableScheduling
 @EnableAutoConfiguration
-@Configuration
-@EnableWebMvc //Disable this and file upload will not work; enable and static will not work.
+// @Configuration
+// @EnableWebMvc //Disable this and file upload will not work; enable and static will not work.
 @RestController("/")
 @SpringBootApplication
 @CrossOrigin(origins = "http://localhost:1841")
@@ -81,9 +84,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @ComponentScan(basePackages = {"se.uu.ebc.luntan.service","se.uu.ebc.luntan.web","se.uu.ebc.luntan.security"})
 public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomcat container */
 
-    private static Logger logger = Logger.getLogger(Luntan.class.getName());
-
 	private static String trustPath = System.getenv("JAVA_HOME") + "/jre/lib/security/cacerts";
+
+	private final String BASE_DN = "";
+//	private final String BASE_DN = "cn=People,dc=uu,dc=se";
+	
+    @Autowired
+    private Environment env;
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -102,6 +109,24 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
     public AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();
     }
+
+
+    @Bean
+    public LdapContextSource contextSource() {
+        LdapContextSource contextSource = new LdapContextSource();
+        contextSource.setUrl("ldap://ldap.katalog.uu.se");
+        contextSource.setBase(BASE_DN);
+
+        return contextSource;
+    }
+    
+
+
+    @Bean
+    public LdapTemplate ldapTemplate() {
+        return new LdapTemplate(contextSource());
+    }
+
 
 
 	public static void main(String[] args) throws Exception {

@@ -59,8 +59,15 @@ Ext.define('Luntan.view.courses.CourseModel', {
 		fmstore : {
 			type: 'chained',
 			source: 'FundingModelStore'
+		},
+		teachers : {
+			type: 'chained',
+			source: 'TeacherStore'
+		},
+		examiners : {
+			type: 'chained',
+			source: 'TeacherStore'
 		}
-    	
 /*
 		courses: {
 			type: 'chained',

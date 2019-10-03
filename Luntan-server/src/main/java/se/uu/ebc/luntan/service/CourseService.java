@@ -178,6 +178,8 @@ public class CourseService {
     		ci.setFirstInstance(cVO.isFirstInstance());
     		ci.setNote(cVO.getNote());
     		
+			ci.setExaminers(cVO.getExaminers());
+			
     		ci.setGrantDistribution(cVO.getGrantDistribution());
 
 // 			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()));

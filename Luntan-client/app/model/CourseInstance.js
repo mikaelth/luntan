@@ -39,6 +39,7 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'balanceRequest', type: 'boolean'},
 		{name: 'firstInstance', type: 'boolean'},
 		{name: 'note', type: 'string'},
+		{name: 'examiners', type: 'auto'},
 		{name: 'grantDistribution', type: 'auto'},
 		{name: 'IBG', type: 'float', 
 			convert: function(v,record){

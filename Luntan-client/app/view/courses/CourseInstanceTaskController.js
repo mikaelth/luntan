@@ -53,7 +53,7 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
 
 			} else {
 				fields.forEach(function(field){
-					field.disable()
+					field.enable()
 				});
 // 				fields.forEach(
 // 					(field) => {field.enable()}

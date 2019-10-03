@@ -50,16 +50,23 @@ import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
+
 import se.uu.ebc.luntan.service.EconomyDocumentService;
 import se.uu.ebc.luntan.service.FundingModelService;
+import se.uu.ebc.luntan.service.StaffService;
+
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument ;
 import se.uu.ebc.luntan.entity.FundingModel ;
+
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
+
 import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
+
 import se.uu.ebc.luntan.util.DateNullTransformer;
+
 import se.uu.ebc.luntan.web.view.EconomyDocExcel;
 
 @Controller
@@ -81,6 +88,9 @@ public class EconomyDocController {
 	@Autowired
 	EconomyDocumentService edService;
 	
+
+ 	@Autowired
+	StaffService staffService;
 
 
 	/* EconomyDocumentGrants */
@@ -299,6 +309,29 @@ public class EconomyDocController {
         }
     }
 
+
+	/* Examiners */
+	
+    @RequestMapping(value = "/view/examiners", method = RequestMethod.GET)
+    public String viewExaminers(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+			log.debug("viewExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+
+       try {
+
+			EconomyDocument edoc = emRepo.findByYear(year);
+						
+			model.addAttribute("serverTime", new Date());
+			model.addAttribute("edoc", edoc);
+			model.addAttribute("staff", staffService);
+			
+    		return "Examiners";
+        } catch (Exception e) {
+			log.error("viewEconomyDoc, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
+
+	
 
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)

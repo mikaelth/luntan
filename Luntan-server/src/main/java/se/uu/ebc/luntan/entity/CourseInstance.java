@@ -3,6 +3,7 @@ package  se.uu.ebc.luntan.entity;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,6 +35,8 @@ import lombok.AccessLevel;
 
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.aux.GrantMaps;
+
+import javax.naming.Name;
 
 @Slf4j
 //@Data
@@ -112,6 +115,12 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @NotNull
     @JoinColumn(name = "MODEL_FK")
 	private FundingModel fundingModel;
+
+	@ElementCollection
+//	@MapKeyEnumerated(EnumType.STRING)    
+//    private Set<Name> examiners = new HashSet<Name>();;
+    private Set<String> examiners = new HashSet<String>();;
+
 
 	@Transient
 	private StudentModelNumberCase modelCase = StudentModelNumberCase.DEFAULT;

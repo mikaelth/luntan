@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Kursekonomidokument</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+</head>
+<body>
+
+	<h1 th:text="'Examinatorer biologi ' + ${edoc.year} + ' – ' + (${edoc.locked} ? 'slutlig version, ' + ${#dates.format(edoc.lastModifiedDate,'yyyy-MM-dd')}: 'arbetsdokument, ' +  ${#dates.format(serverTime,'yyyy-MM-dd')})" />
+
+		<table id = "course_instances">
+			<tr>
+				<th>Kurs</th>
+				<th>Examinatorer</th>
+			</tr>
+			<tr th:each="ci: ${edoc.courseInstances}">
+				<td th:text="${ci.designation}" />
+				<th:block th:each="ex: ${ci.examiners}">
+					<td class='alnright' th:text="${staff.findbyEmployeeNumber(ex).name}" />
+				</th:block>
+			</tr>
+		</table>
+	<p>
+		Current time is <span th:text="${serverTime}" />
+	</p>
+</body>
+</html>
+

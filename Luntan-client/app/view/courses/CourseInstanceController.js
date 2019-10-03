@@ -16,6 +16,9 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
 
         r.set('economyDocId',thisEDoc);
         r.set('modelCase','DEFAULT');
+        r.set('extraDesignation','NONE');
+        r.set('examiners',[]);
+
 		var rec = grid.getStore().insert(0, r);
         grid.plugins[0].startEdit(rec[0]);
 
@@ -41,21 +44,10 @@ Ext.define('Luntan.view.courses.CourseInstanceController', {
 				fields.forEach(function(field){
 					field.disable()
 				});
-
-
-// 				fields.forEach(
-// 					(field) => {field.disable()}
-// 				);
-
-
 			} else {
 				fields.forEach(function(field){
-					field.disable()
+					field.enable()
 				});
-// 				fields.forEach(
-// 					(field) => {field.enable()}
-// 				);
-
 			}
 			return true;
 
