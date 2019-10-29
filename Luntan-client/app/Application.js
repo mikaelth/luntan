@@ -5,21 +5,21 @@
  */
 Ext.define('Luntan.Application', {
     extend: 'Ext.app.Application',
-    
+
     name: 'Luntan',
 
     stores: ['CIDesignationStore', 'CourseGroupStore', 'DepartmentStore', 'UserRoleTypeStore',
     	'UserStore', 'FundingModelStore', 'CourseInstanceStore','EconomyDocStore','CourseStore', 'EDGStore', 'EDGKindStore',
     	'TeacherStore'
     ],
-    
+
     launch: function () {
         // TODO - Launch the application
 
 		Ext.Ajax.on('requestexception', function (connection, response, requestOptions, listenerOptions) {
 			console.log("RequestException: " + response.status);
 			if (response.status == 401) {
-				window.open(Bemanning.data.Constants.CORE_URL.concat('InREST.html'));			
+				window.open(Luntan.data.Constants.BASE_URL.concat('InREST.html'));
 			} else if (response.status == 403) {
 				Ext.MessageBox.alert('Status', 'Du saknar behörighet för detta');
 			} else {
@@ -27,7 +27,7 @@ Ext.define('Luntan.Application', {
 			}
 		});
 
-    
+
     	Ext.getStore('CIDesignationStore').load();
     	Ext.getStore('CourseGroupStore').load();
     	Ext.getStore('DepartmentStore').load();
@@ -41,8 +41,8 @@ Ext.define('Luntan.Application', {
     	Ext.getStore('EconomyDocStore').load();
     	Ext.getStore('TeacherStore').load();
     },
-	
-	
+
+
     onAppUpdate: function () {
         Ext.Msg.confirm('Application Update', 'Den här applikationen har en uppdatering, ladda om?',
             function (choice) {

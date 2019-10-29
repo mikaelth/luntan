@@ -1,6 +1,6 @@
 package se.uu.ebc.luntan.web;
- 
- 
+
+
 //import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.security.access.annotation.Secured;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -87,14 +88,14 @@ public class EconomyDocController {
 
 	@Autowired
 	EconomyDocumentService edService;
-	
+
 
  	@Autowired
 	StaffService staffService;
 
 
 	/* EconomyDocumentGrants */
-	
+
 	@RequestMapping(value="rest/edocgrants", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allEDGrants() {
@@ -105,10 +106,10 @@ public class EconomyDocController {
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
+
     }
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_DEPARTMENTHEAD"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="rest/edocgrants/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateEDGrant(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -118,7 +119,7 @@ public class EconomyDocController {
 			log.debug("updateEDGrant, edVO "+ReflectionToStringBuilder.toString(edVO, ToStringStyle.MULTI_LINE_STYLE));
 			edVO.setId(id);
 			edVO = edService.saveEDGrant(edVO);
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocgrants").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(edVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
@@ -128,7 +129,7 @@ public class EconomyDocController {
         }
     }
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_DEPARTMENTHEAD"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="rest/edocgrants", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createEDGrant(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -137,7 +138,7 @@ public class EconomyDocController {
 			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			edVO = edService.saveEDGrant(edVO);
 
-			
+
 
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+edVO.getId().toString()).build().toUriString());
@@ -151,7 +152,7 @@ public class EconomyDocController {
         }
     }
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_DEPARTMENTHEAD"),("ROLE_SUBJECTCOORDINATOR")})
 	@RequestMapping(value = "rest/edocgrants/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteEDGrant(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -166,7 +167,7 @@ public class EconomyDocController {
 
 
 	/* Funding models */
-		
+
     @RequestMapping(value="rest/fundingmodels", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allFMs() {
@@ -179,10 +180,10 @@ public class EconomyDocController {
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
+
     }
- 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="rest/fundingmodels/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFM(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -190,7 +191,7 @@ public class EconomyDocController {
         try {
 			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			fm = fmRepo.save(fm);
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fm);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
@@ -200,8 +201,8 @@ public class EconomyDocController {
         }
     }
 
- 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="rest/fundingmodels", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFM(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -222,7 +223,7 @@ public class EconomyDocController {
     }
 
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
 	@RequestMapping(value = "rest/fundingmodels/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteFM(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -239,7 +240,7 @@ public class EconomyDocController {
 
 
 	/* EconomyDocument */
-	
+
 	@RequestMapping(value="rest/edocs", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allEDs() {
@@ -250,10 +251,10 @@ public class EconomyDocController {
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
+
     }
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_DEPARTMENTHEAD"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="rest/edocs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateED(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -263,7 +264,7 @@ public class EconomyDocController {
 			log.debug("updateED, edVO "+ReflectionToStringBuilder.toString(edVO, ToStringStyle.MULTI_LINE_STYLE));
 			edVO.setId(id);
 			edVO = edService.saveEDoc(edVO);
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(edVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
@@ -273,7 +274,7 @@ public class EconomyDocController {
         }
     }
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_DEPARTMENTHEAD"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="rest/edocs", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createED(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -282,7 +283,7 @@ public class EconomyDocController {
 			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			edVO = edService.saveEDoc(edVO);
 
-			
+
 
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+edVO.getId().toString()).build().toUriString());
@@ -296,7 +297,7 @@ public class EconomyDocController {
         }
     }
 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_DEPARTMENTHEAD"),("ROLE_SUBJECTCOORDINATOR")})
 	@RequestMapping(value = "rest/edocs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteED(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -311,7 +312,7 @@ public class EconomyDocController {
 
 
 	/* Examiners */
-	
+
     @RequestMapping(value = "/view/examiners", method = RequestMethod.GET)
     public String viewExaminers(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
 			log.debug("viewExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
@@ -319,11 +320,11 @@ public class EconomyDocController {
        try {
 
 			EconomyDocument edoc = emRepo.findByYear(year);
-						
+
 			model.addAttribute("serverTime", new Date());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("staff", staffService);
-			
+
     		return "Examiners";
         } catch (Exception e) {
 			log.error("viewEconomyDoc, caught a pesky exception "+ e);
@@ -331,7 +332,7 @@ public class EconomyDocController {
 		}
 	}
 
-	
+
 
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)
@@ -342,9 +343,9 @@ public class EconomyDocController {
 //			Map<CourseGroup, CourseInstance> ciMap = new HashMap<CourseGroup, CourseInstance>();
 			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
 			EconomyDocument edoc = emRepo.findByYear(year);
-			
-			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup()); 
-			
+
+			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
+
 			for (CourseInstance ci : edoc.getCourseInstances()) {
 //				ciMap.put(ci.getCourse().getCourseGroup(), ci);
 				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
@@ -366,7 +367,7 @@ public class EconomyDocController {
 			model.addAttribute("sums", new TableSum());
 			model.addAttribute("models", fmRepo.findDistinctByEconDoc(edoc));
 			emRepo.save(edoc);
-			
+
     		return "EconomyDocView";
 //    		return "EconomyDocAdjustmentView";
         } catch (Exception e) {
@@ -403,7 +404,7 @@ public class EconomyDocController {
         model.put("headers", headers);
 
         response.setContentType( "application/ms-excel" );
-        response.setHeader( "Content-disposition", "attachment; filename=" + "Kursekonomidokument-" + edoc.getYear() + ".xls" );         
+        response.setHeader( "Content-disposition", "attachment; filename=" + "Kursekonomidokument-" + edoc.getYear() + ".xls" );
         return new ModelAndView(new EconomyDocExcel(), model);
     }
 
@@ -419,7 +420,7 @@ public class EconomyDocController {
 		java.util.Collections.sort(list);
 		return list;
 	}
-	
+
 
 	private class TableSum {
 		public Map<CourseGroup, Float> colSum(Map<CourseGroup,Map<Department,Float>> table){
@@ -430,8 +431,8 @@ public class EconomyDocController {
 					s += f;
 				}
 				csum.put(cg,s);
-			}			
-			log.debug("csum " + csum); 
+			}
+			log.debug("csum " + csum);
 			return csum;
 		}
 		public Map<Department, Float> rowSum(Map<CourseGroup,Map<Department,Float>> table){
@@ -444,8 +445,8 @@ public class EconomyDocController {
 						rsum.put(dep,table.get(cg).get(dep));
 					}
 				}
-			}			
-			log.debug("rsum " + rsum); 
+			}
+			log.debug("rsum " + rsum);
 			return rsum;
 		}
 		public Float totalSum(Map<Object, Float> arr) {
@@ -455,9 +456,9 @@ public class EconomyDocController {
 			}
 			return s;
 		}
-	}	
-	
-/* 
+	}
+
+/*
 	@RequestMapping(value="rest/test", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> test() {
@@ -468,8 +469,8 @@ public class EconomyDocController {
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
+
     }
  */
 
-} 
+}

@@ -80,7 +80,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController("/")
 @SpringBootApplication
 @CrossOrigin(origins = "http://localhost:1841")
-@Import({StaticResourceConfiguration.class, LuntanSecurityConfig.class})
+@Import({StaticResourceConfiguration.class, LuntanSecurityConfig.class, LuntanMethodSecurityConfig.class})
 @ComponentScan(basePackages = {"se.uu.ebc.luntan.service","se.uu.ebc.luntan.web","se.uu.ebc.luntan.security"})
 public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomcat container */
 
@@ -88,7 +88,7 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
 
 	private final String BASE_DN = "";
 //	private final String BASE_DN = "cn=People,dc=uu,dc=se";
-	
+
     @Autowired
     private Environment env;
 
@@ -101,9 +101,9 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
 	@Bean
 	public InternalResourceViewResolver defaultViewResolver() {
 		return new InternalResourceViewResolver();
-	}	
+	}
 
- 
+
 
 	@Bean
     public AuditorAware<String> auditorProvider() {
@@ -119,7 +119,7 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
 
         return contextSource;
     }
-    
+
 
 
     @Bean
@@ -133,8 +133,8 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
 		SpringApplication.run(Luntan.class, args);
 	}
 
- 
-/* 
+
+/*
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
 		CommonsMultipartResolver resolver=new CommonsMultipartResolver();
@@ -145,7 +145,7 @@ public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomca
 
 
 	@RequestMapping("/")
-	public RedirectView directToIndex() 
+	public RedirectView directToIndex()
 	{
     	RedirectView redirectView = new RedirectView();
     	redirectView.setUrl("index.html");

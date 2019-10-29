@@ -32,7 +32,6 @@ import se.uu.ebc.luntan.security.RESTAuthenticationEntryPoint;
 //@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableAutoConfiguration
 @EnableWebMvcSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	static Logger log = Logger.getLogger(LuntanSecurityConfig.class.getName());
@@ -94,22 +93,22 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
- 
- 
- 
+
+
+
     @Bean
     public RESTAuthenticationEntryPoint restcasAuthenticationEntryPoint() {
         RESTAuthenticationEntryPoint restcasAuthenticationEntryPoint = new RESTAuthenticationEntryPoint();
         restcasAuthenticationEntryPoint.setCasAuthenticationEntryPoint(casAuthenticationEntryPoint());
         return restcasAuthenticationEntryPoint;
     }
- 
 
- 
+
+
    @Override
     protected void configure(HttpSecurity http) throws Exception {
 		log.debug("configure()");
- 
+
         http
             .addFilter(casAuthenticationFilter()).csrf().disable();
 
@@ -121,7 +120,7 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
 				.authorizeRequests().antMatchers("/**").permitAll();
 		} else {
 			http.authorizeRequests()
-				.antMatchers("/index.html").authenticated()
+				.antMatchers("/index.*").authenticated()
 				.antMatchers("/loginredirect.html").authenticated()
 				.antMatchers("/InREST.html").authenticated()
 				.antMatchers("/login/**").permitAll()
@@ -130,15 +129,15 @@ System.out.println("serviceProperties() " + serviceProperties.getService());
 				.antMatchers("/rest/**").authenticated()
 				.antMatchers("/view/**").authenticated()
 				.antMatchers("/**").authenticated();
- 
+
 		}
 
- 			
+
         http
             .exceptionHandling()
                 .authenticationEntryPoint(restcasAuthenticationEntryPoint());
     }
- 
+
 //    @Override
     @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

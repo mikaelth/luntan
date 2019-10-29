@@ -1,5 +1,5 @@
 package se.uu.ebc.luntan.web;
- 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
- 
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -58,7 +59,7 @@ public class CourseController {
 
 
 	/* Courses */
-	
+
     @RequestMapping(value="/courses", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allCourses() {
@@ -69,10 +70,10 @@ public class CourseController {
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
+
     }
-	 
-//	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="/courses/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourse(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -83,7 +84,7 @@ public class CourseController {
 			Course cold = courseRepo.findById(id).get();
 			cold.copyProps(cnew);
 			cnew = courseRepo.save(cold);
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").deepSerialize(cnew);
 			restResponse = new StringBuilder(restResponse).insert(1, "'success': true,").toString();
 
@@ -94,7 +95,7 @@ public class CourseController {
     }
 
 
-	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="/courses", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourse(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -115,7 +116,7 @@ public class CourseController {
     }
 
 
-	@PreAuthorize("hasRole('ROLE_COREDATAADMIN')")
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
 	@RequestMapping(value = "/courses/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteCourse(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -132,7 +133,7 @@ public class CourseController {
 
 
 	/* CourseInstances */
-	
+
     @RequestMapping(value="/cis", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allCourseInstances() {
@@ -144,11 +145,11 @@ public class CourseController {
 			log.debug("Caught a pesky exception in allCourseInstances() "+ e + ", " +e.getCause());
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
-    }
- 
 
-//	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="/cis/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourseInstance(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -159,7 +160,7 @@ public class CourseController {
 			log.debug("updateCourseInstance, grantDistribution "+ReflectionToStringBuilder.toString(ciVO.getGrantDistribution(), ToStringStyle.MULTI_LINE_STYLE));
 			ciVO.setId(id);
 			ciVO = courseService.saveCourseInstance(ciVO);
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
@@ -168,9 +169,9 @@ public class CourseController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
- 	
- 
-//	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="/cis", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourseInstance(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -191,7 +192,7 @@ public class CourseController {
     }
 
 
-//	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
 	@RequestMapping(value = "/cis/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteCourseInstance(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -207,7 +208,7 @@ public class CourseController {
 
 
 	/* CourseGrants */
-/*		
+/*
     @RequestMapping(value="/cgs", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> allCourseGrants() {
@@ -220,9 +221,9 @@ public class CourseController {
 			logger.error("allCourseGrants got a pesky exception: "+ e + e.getCause());
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-  	
+
     }
- 
+
 	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cgs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateCourseGrant(@RequestBody String json, @PathVariable("id") Long id) {
@@ -233,7 +234,7 @@ public class CourseController {
 			logger.debug("updateCourseGrant, cgVO "+ReflectionToStringBuilder.toString(cgVO, ToStringStyle.MULTI_LINE_STYLE));
 			cgVO.setId(id);
 			cgVO = courseService.saveCourseGrant(cgVO);
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cgs").transform(new DateNullTransformer("yyyy-MM-dd"), "setDate").serialize(cgVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
@@ -243,7 +244,7 @@ public class CourseController {
         }
     }
 
- 
+
 	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
     @RequestMapping(value="/cgs", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createCourseGrant(@RequestBody String json, UriComponentsBuilder uriBuilder) {
@@ -277,5 +278,5 @@ public class CourseController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-*/	
-} 
+*/
+}

@@ -6,7 +6,7 @@ Ext.define('Luntan.view.main.List', {
     xtype: 'mainlist',
 
     requires: [
-        'Luntan.store.Personnel'
+//        'Luntan.store.Personnel'
     ],
 
     title: 'Personnel',

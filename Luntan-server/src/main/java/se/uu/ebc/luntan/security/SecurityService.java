@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 import java.util.ArrayList;
 
+import se.uu.ebc.luntan.enums.UserRoleType;
 
 import org.apache.log4j.Logger;
 
@@ -30,11 +31,11 @@ public class SecurityService implements LuntanUserService {
 	private final boolean CREDENTIALS_NON_EXPIRED = true;
 	private final boolean ACCOUNT_NON_LOCKED = true;
 	private final String ROLE_PREFIX = "ROLE_";
-	
+
     private Logger logger = Logger.getLogger(SecurityService.class.getName());
-	
+
     /**
-     * @see se.uu.ebc.portax.security.SecurityService#loadUserByUsername(String)
+     * @see se.uu.ebc.luntan.security.SecurityService#loadUserByUsername(String)
      */
     public UserDetails loadUserByUsername(String username)
         throws UsernameNotFoundException
@@ -46,12 +47,12 @@ public class SecurityService implements LuntanUserService {
        if (username == null || username.trim().length() == 0)
         {
             throw new IllegalArgumentException(
-                "se.uu.ebc.portaxnotes.security.loadUserByUsername(String username) - 'username' can not be null or empty");
+                "se.uu.ebc.luntan.security.loadUserByUsername(String username) - 'username' can not be null or empty");
         }
         try
         {
 			User localUser = userRepo.findUserByUsername(username);
-		
+
 			if (logger.isDebugEnabled()) {
 				logger.debug("MTh handleLoadUserByUsername, got user "+localUser);
 			}
@@ -61,13 +62,13 @@ public class SecurityService implements LuntanUserService {
 			}
 
 			List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-/* 
-			for (UserRole userRole : localUser.getUserRoles()) {
-				authorities.add( new SimpleGrantedAuthority(ROLE_PREFIX + userRole.getRole().toString().toUpperCase()) );
+
+			for (UserRoleType userRole : localUser.getUserRoles()) {
+				authorities.add( new SimpleGrantedAuthority(ROLE_PREFIX + userRole.toString().toUpperCase()) );
 			}
- */
-			authorities.add( new SimpleGrantedAuthority("ROLE_USER") );
-			
+
+//			authorities.add( new SimpleGrantedAuthority("ROLE_USER") );
+
 			return new org.springframework.security.core.userdetails.User(localUser.getUsername(), "token", ENABLED, ACCOUNT_NON_EXPIRED, CREDENTIALS_NON_EXPIRED, ACCOUNT_NON_LOCKED, authorities);
 		} catch (Throwable th)
         {
@@ -79,8 +80,8 @@ public class SecurityService implements LuntanUserService {
     }
 
     @Override
-    public UserDetails loadUserDetails(Authentication token) 
-    	throws UsernameNotFoundException 
+    public UserDetails loadUserDetails(Authentication token)
+    	throws UsernameNotFoundException
     {
 		logger.debug("MTh loadUserDetails, got token "+token);
 		logger.debug("MTh loadUserDetails, got principal "+(String)token.getPrincipal());
