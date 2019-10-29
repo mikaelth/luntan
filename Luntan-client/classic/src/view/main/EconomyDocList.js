@@ -9,7 +9,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 
 	controller: 'edoclist',
 	viewModel: 'edocmodel',
-/* 
+/*
 	viewModel: {
 		data: {
 			current : {
@@ -37,10 +37,35 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 
 //	bind: {store: '{fundingmodels}'},
 	store: 'EconomyDocStore',
-		
+
 //	features: [{ ftype: 'grouping',startCollapsed: true }],
 
     columns: [
+		{xtype:'actioncolumn',
+            width:80, align: 'center',
+            items: [{
+				iconCls: 'x-fa fa-list-alt',
+				tooltip: 'Visa Luntan',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('view/economydoc?year=').concat(rec.get('year')));
+				}
+            }, {
+				iconCls: 'x-fa fa-file-excel-o',
+				tooltip: 'Exportera till Excel',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('excel/economydoc?year=').concat(rec.get('year')));
+				}
+			},{
+				iconCls: 'x-fa fa-user',
+				tooltip: 'Lista examinatorer',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('view/examiners?year=').concat(rec.get('year')));
+				}
+			}]
+        },
 		{ xtype: 'checkcolumn', text: 'Klona', dataIndex: 'cloneCourses', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
 		{ xtype: 'checkcolumn', text: 'Låst', dataIndex: 'locked', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
 		{ text: 'År', dataIndex: 'year', editor: 'textfield', filter: 'number', align: 'left', width: 100},
@@ -55,7 +80,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 				lastQuery: '',
 				displayField: 'label',
 			    valueField: 'label'
-				
+
 			})
 		},
 		{ text: 'Senast ändrad av', dataIndex: 'lastModifiedBy', filter: 'string', align: 'left', width: 150 },
