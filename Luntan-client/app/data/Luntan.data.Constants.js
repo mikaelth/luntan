@@ -5,5 +5,7 @@ Ext.define("Luntan.data.Constants", {
 //	BASE_URL : "http://localhost:8080/",
 // 	BASE_URL : "https://bemanning.ebc.uu.se/luntan/"
 //	BASE_URL : "https://syst50.ebc.uu.se/luntan/"
-	BASE_URL : "https://fabricius.ebc.uu.se/luntan/"
+//	BASE_URL : "https://fabricius.ebc.uu.se/luntan/"
+	BASE_URL: Luntan.data.config.Baseurl.URL_BASE,
+
  });
