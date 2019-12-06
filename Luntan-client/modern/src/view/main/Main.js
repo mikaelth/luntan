@@ -1,9 +1,9 @@
 /**
  * This class is the main view for the application. It is specified in app.js as the
- * "mainView" property. That setting causes an instance of this class to be created and
- * added to the Viewport container.
+ * "mainView" property. That setting automatically applies the "viewport"
+ * plugin causing this view to become the body element (i.e., the viewport).
  *
- * TODO - Replace the content of this view to suit the needs of your application.
+ * TODO - Replace this content of this view to suite the needs of your application.
  */
 Ext.define('Luntan.view.main.Main', {
     extend: 'Ext.tab.Panel',
@@ -13,49 +13,146 @@ Ext.define('Luntan.view.main.Main', {
         'Ext.MessageBox',
 
         'Luntan.view.main.MainController',
-        'Luntan.view.main.MainModel',
-        'Luntan.view.main.List'
+        'Luntan.view.main.MainModel'
     ],
 
     controller: 'main',
     viewModel: 'main',
 
-    defaults: {
-        tab: {
-            iconAlign: 'top'
+    ui: 'navigation',
+
+    tabBarHeaderPosition: 1,
+    titleRotation: 0,
+    tabRotation: 0,
+
+    header: {
+        layout: {
+            align: 'stretchmax'
         },
-        styleHtmlContent: true
+        title: {
+            bind: {
+                text: '{name}'
+            },
+            flex: 0
+        },
+        iconCls: 'fa-th-list'
     },
 
-    tabBarPosition: 'bottom',
+    tabBar: {
+        flex: 1,
+        layout: {
+            align: 'stretch',
+            overflowHandler: 'none'
+        }
+    },
 
-    items: [
-        {
-            title: 'Home',
-            iconCls: 'x-fa fa-home',
-            layout: 'fit',
-            // The following grid shares a store with the classic version's grid as well!
-            items: [{
-                xtype: 'mainlist'
-            }]
-        },{
-            title: 'Users',
-            iconCls: 'x-fa fa-user',
-            bind: {
-                html: '{loremIpsum}'
-            }
-        },{
-            title: 'Groups',
-            iconCls: 'x-fa fa-users',
-            bind: {
-                html: '{loremIpsum}'
-            }
-        },{
-            title: 'Settings',
-            iconCls: 'x-fa fa-cog',
-            bind: {
-                html: '{loremIpsum}'
+    responsiveConfig: {
+        tall: {
+            headerPosition: 'top'
+        },
+        wide: {
+            headerPosition: 'left'
+        }
+    },
+
+    defaults: {
+        bodyPadding: 20,
+        tabConfig: {
+            plugins: 'responsive',
+            responsiveConfig: {
+                wide: {
+                    iconAlign: 'left',
+                    textAlign: 'left'
+                },
+                tall: {
+                    iconAlign: 'top',
+                    textAlign: 'center',
+                    width: 120
+                }
             }
         }
-    ]
+    },
+
+    items: [{
+        title: 'Nådiga luntor',
+        iconCls: 'fa-legal',
+        // The following grid shares a store with the classic version's grid as well!
+
+		viewModel: {
+			data: {
+
+				current : {
+					edoc : null
+				}
+
+			}
+		},
+
+        items: [{
+        	xtype: 'edoclist',
+        	height: '600'
+        },{
+        	xtype: 'edgrantlist',
+        	height: '400'
+        }]
+    },{
+        title: 'Uppdrag',
+        iconCls: 'fa-balance-scale',
+        items: [{
+            xtype: 'citasklist',
+			height: 900
+        }]
+    }, {
+        title: 'Modeller',
+        iconCls: 'fa-dollar',
+        items: [{
+            xtype: 'fmlist',
+			height: 600
+        },{
+            xtype: 'fmtabledlist',
+			height: 400
+        }]
+    }, {
+        title: 'Kurstillfällen',
+        iconCls: 'fa-pencil',
+        items: [{
+            xtype: 'cilist',
+			height: 900
+        }]
+    }, {
+        title: 'Klona kurstillfällen',
+        iconCls: 'fa-pencil',
+        items: [{
+            xtype: 'ciclonelist',
+			height: 900
+        }]
+    }, {
+        title: 'Kurser',
+        iconCls: 'fa-book',
+        items: [{
+            xtype: 'courselist',
+			height: 900
+        }]
+     }, {
+        title: 'Användare',
+        iconCls: 'fa-user',
+        items: [{
+            xtype: 'userlist',
+			height: 900
+        }]
+	}, {
+        title: 'Gå till startsidan',
+        reference: 'goBackTab',
+        iconCls: ' fa-map'
+    }, {
+        title: 'Logga ut',
+        reference: 'logOutTab',
+        iconCls: 'fa-cog'
+    }],
+
+    listeners: {
+ 		beforeTabChange: 'onTabChange'
+ 	}
+
+
 });

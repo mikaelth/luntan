@@ -37,20 +37,31 @@ import flexjson.transformer.NullTransformer;
 
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 import java.security.Principal;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Document;
+
+import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+
 import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
+import se.uu.ebc.luntan.repo.CourseRepo;
 
 import se.uu.ebc.luntan.service.EconomyDocumentService;
 import se.uu.ebc.luntan.service.FundingModelService;
@@ -59,6 +70,7 @@ import se.uu.ebc.luntan.service.StaffService;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument ;
 import se.uu.ebc.luntan.entity.FundingModel ;
+import se.uu.ebc.luntan.entity.Course ;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
@@ -70,12 +82,13 @@ import se.uu.ebc.luntan.util.DateNullTransformer;
 
 import se.uu.ebc.luntan.web.view.EconomyDocExcel;
 
+@Slf4j
 @Controller
 @RequestMapping(value = "/")
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class EconomyDocController {
 
-    private Logger log = Logger.getLogger(EconomyDocController.class.getName());
+//    private Logger log = Logger.getLogger(EconomyDocController.class.getName());
 
 	@Autowired
 	EconomyDocumentRepo emRepo;
@@ -92,6 +105,9 @@ public class EconomyDocController {
 
  	@Autowired
 	StaffService staffService;
+
+ 	@Autowired
+	CourseRepo courseRepo;
 
 
 	/* EconomyDocumentGrants */
@@ -408,6 +424,63 @@ public class EconomyDocController {
         return new ModelAndView(new EconomyDocExcel(), model);
     }
 
+
+
+	/* Courses by programme listing */
+
+	@RequestMapping("/view/programcourses")
+    public String getCoursesByProgrammes(Model model) {
+
+		Map<String,ProgCourse> courseMap = new HashMap<String,ProgCourse>();
+        List<String> programmes = Arrays.asList("TTB2M", "TMB2Y", "TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBK2M", "TBI2M", "TMB2M");
+
+		for (String pKod : programmes) {
+			log.debug("pKod: "+ pKod);
+			for (String kKod : findCoursesInSP(pKod)) {
+				log.debug("kKod: "+ kKod);
+				if (!courseMap.containsKey(kKod)) {
+					ProgCourse pc = new ProgCourse();
+					Course c = courseRepo.findByCode(kKod);
+					if (c == null) {c = new Course();}
+					pc.setCourse(c);
+					courseMap.put(kKod, pc );
+				}
+				courseMap.get(kKod).getProgrammes().add(pKod);
+			}
+		}
+
+		List<String> courseList = new ArrayList<String>();
+		courseList.addAll(courseMap.keySet());
+		Collections.sort(courseList);
+
+        model.addAttribute("serverTime", new Date());
+        model.addAttribute("programmes", programmes);
+        model.addAttribute("courses", courseMap);
+        model.addAttribute("courseList", courseList);
+        return "ProgramCourseSummary";
+    }
+
+
+
+	private List<String> findCoursesInSP(String pKod) {
+		String kKodPattern = ".*kKod=(\\d\\w{2}\\d{3}).*";
+		List<String> courses = new ArrayList<String>();
+		try {
+			Document doc = Jsoup.connect("https://www.uu.se/utbildning/utbildningar/selma/studieplan/?pKod="+pKod).get();
+			log.debug("Program: "+ doc.title());
+			Elements links = doc.select("a[href*=kKod]");
+			for (Element el : links) {
+				String kKod = el.toString().replaceAll(kKodPattern, "$1");
+				courses.add(kKod);
+				log.debug("Found: "+ kKod + "\t" + pKod);
+			}
+		} catch (Exception e) {
+			log.error("Got a pesky exception, "+e);
+		} finally {
+			return courses;
+		}
+    }
+
 	/**
 	 * <p>This is a simple description of the method asSortedList
 	 * </p>
@@ -455,6 +528,16 @@ public class EconomyDocController {
 				s+=f;
 			}
 			return s;
+		}
+	}
+
+	@Data
+	private class ProgCourse {
+		private Course course;
+		private Set<String> programmes = new HashSet<String>();
+
+		public String inProg(String pKod) {
+			return programmes.contains(pKod) ? "X" : "";
 		}
 	}
 

@@ -1,0 +1,50 @@
+<html lang="se-SE">
+	<head>
+		<title th:text="#{display.bemanning.welcome.title}"> Startsida - Välkommen till Nådiga Luntan !! </title>
+		<meta http-equiv="Content-Type" content="text/html; charset:UTF-8" />
+	<link rel="stylesheet" type="text/css" media="screen, print" href="/layout/default-application.css" th:href="@{/layout/default-application.css}"></link>
+	<link rel="stylesheet" type="text/css" media="screen, print" href="../layout/default.css" th:href="@{/layout/default.css}"></link>
+	</head>
+	<body>
+		<div id="container">
+			<div id="content">
+				<div>
+<!--
+					<h1 th:text="#{display.bemanning.welcome.header}+', ' +${user.givenName}">
+ -->
+					<h1 th:text="#{display.bemanning.welcome.header}">
+						Startsida - Välkommen till Nådiga Luntan
+					</h1>
+				</div>
+
+				<div id="viewByPerson" class="action">
+					<h3 th:text="#{view.assignments}">
+						Bemanning
+					</h3>
+					<div class="trigger">
+						<p>
+							<a href="view/ViewByPerson" th:href="@{/view/ViewByPerson}" th:text="#{display.person.assignment.linktext}">Visa per person</a>
+						</p>
+					</div>
+					<div class="trigger">
+						<p>
+							<a href="view/ViewByCourse" th:href="@{/view/ViewByCourse}" th:text="#{display.course.assignment.linktext}">Visa per kurs</a>
+						</p>
+					</div>
+				</div>
+<!--
+				<div th:if="${#authorization.expression('hasAnyRole(''ROLE_ADMINISTRATOR'',''ROLE_DIRECTOROFSTUDIES'',''ROLE_PHDADMIN'',''ROLE_COREDATAADMIN'',''ROLE_SYSADMIN'')')}">
+					<div id="viewEdits" class="action">
+						<h3 th:text="#{view.edits}"></h3>
+						<a href="Luntan/index.html" th:href="@{/Luntan/index.html}" th:text="#{edit.mode.linktext}">Gå till redigeringsläge</a>
+					</div>
+				</div>
+ -->
+
+				<div class="footer">
+					<p th:text="'Luntan ' + #{build.release.minor}+ ', build ' + #{build.timestamp}" />
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

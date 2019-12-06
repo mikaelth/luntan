@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Assembly progress sheet</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+#assemblies {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#assemblies td, #assemblies th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#assemblies tr:nth-child(even){background-color: #f2f2f2;}
+
+#assemblies tr:hover {background-color: #ddd;}
+
+#assemblies th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+</head>
+<body>
+	<h1>Kurser listade på program</h1>
+	<table id = "assemblies">
+		<tr>
+			<th>Kurskod</th>
+			<th>Kurs</th>
+			<th:block th:each="programme: ${programmes}">
+				<th th:text="${programme}" />
+			</th:block>
+		</tr>
+
+		<tr th:each="course: ${courseList}">
+			<td th:text="${course}" />
+			<td th:text="${courses.get(course).getCourse().getDesignation()}" />
+			<th:block th:each="programme: ${programmes}">
+				<td th:text="${courses.get(course).inProg(programme)}" />
+			</th:block>
+		</tr>
+	</table>
+	<p>
+		Current time is <span th:text="${serverTime}" />
+	</p>
+</body>
+</html>
