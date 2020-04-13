@@ -132,6 +132,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
  
 			}
 		},
+/* 
 		{ text: 'Examinatorer', dataIndex: 'examiners', align: 'left', filter: 'list', flex: 1,
 			renderer: function(value, p, r) { 
 				if (value.length > 0) { 
@@ -152,6 +153,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 			    valueField: 'employeeNumber'
 				
 			})},
+ */
 		{ text: 'Kommentarer', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 
 	],

@@ -35,6 +35,7 @@ import flexjson.transformer.DateTransformer;
 import flexjson.transformer.NullTransformer;
 //import se.uu.ebc.bemanning.util.DateNullTransformer;
 
+import java.util.regex.Pattern;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -431,8 +432,22 @@ public class EconomyDocController {
 	@RequestMapping("/view/programcourses")
     public String getCoursesByProgrammes(Model model) {
 
+/*
+		TBM1K&pInr=BIOL	Kandidatprogram i biologi/molekylärbiologi
+		TBM1K&pInr=BIKG	Kandidatprogram i biologi/molekylärbiologi, ingång för samhällsvetare
+		TMV1K			Kandidatprogram i miljövetenskap
+
+		TTB2M			Masterprogram i tillämpad bioteknik
+		TBK2M			Masterprogram i bioinformatik
+		TBI2M			Masterprogram i biologi
+		TMB2M			Masterprogram i molekylär bioteknik
+
+		TMB2Y			Civilingenjörsprogrammet i molekylär bioteknik
+		UGY2Y			Ämneslärarprogrammet med inriktning mot arbete i gymnasieskolan
+*/
+
 		Map<String,ProgCourse> courseMap = new HashMap<String,ProgCourse>();
-        List<String> programmes = Arrays.asList("TTB2M", "TMB2Y", "TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBK2M", "TBI2M", "TMB2M");
+        List<String> programmes = Arrays.asList("TTB2M", "TMB2Y", "TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBK2M", "TBI2M", "TMB2M", "UGY2Y");
 
 		for (String pKod : programmes) {
 			log.debug("pKod: "+ pKod);
@@ -464,6 +479,9 @@ public class EconomyDocController {
 
 	private List<String> findCoursesInSP(String pKod) {
 		String kKodPattern = ".*kKod=(\\d\\w{2}\\d{3}).*";
+//		String luntanCode = "(1BG|1MB|1DL|1KB|8BL|1GV|1BL|3MK)\\d{3}";
+		String luntanCode = "(1BG|1MB|8BL|1BL)\\d{3}";
+		Pattern p = Pattern.compile(luntanCode);
 		List<String> courses = new ArrayList<String>();
 		try {
 			Document doc = Jsoup.connect("https://www.uu.se/utbildning/utbildningar/selma/studieplan/?pKod="+pKod).get();
@@ -471,7 +489,10 @@ public class EconomyDocController {
 			Elements links = doc.select("a[href*=kKod]");
 			for (Element el : links) {
 				String kKod = el.toString().replaceAll(kKodPattern, "$1");
-				courses.add(kKod);
+//				courses.add(kKod);
+				if (p.matcher(kKod).matches()) {
+					courses.add(kKod);
+				}
 				log.debug("Found: "+ kKod + "\t" + pKod);
 			}
 		} catch (Exception e) {

@@ -3,7 +3,11 @@ package  se.uu.ebc.luntan.entity;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -116,10 +120,15 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @JoinColumn(name = "MODEL_FK")
 	private FundingModel fundingModel;
 
+/* 
 	@ElementCollection
 //	@MapKeyEnumerated(EnumType.STRING)    
 //    private Set<Name> examiners = new HashSet<Name>();;
-    private Set<String> examiners = new HashSet<String>();;
+//	  private Map<String,Integer> examiners = new LinkedHashMap<String, Integer>();
+//    private List<String> examiners = new ArrayList<String>();
+    private List<Examiner> examiners = new ArrayList<Examiner>();
+//    private Set<String> examiners = new HashSet<String>();
+ */
 
 
 	@Transient

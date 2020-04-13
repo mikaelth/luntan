@@ -62,6 +62,10 @@ public abstract class Auditable {
     	return this.lastModifiedDate;
     }
 
+    public Date getCreationDate()
+    {
+    	return this.creationDate;
+    }
 
 	
 }

@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.FundingModel;
+import se.uu.ebc.luntan.entity.Examiner;
 import se.uu.ebc.luntan.enums.CIDesignation;
 import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.enums.StudentModelNumberCase;
@@ -52,7 +53,8 @@ public class CourseInstanceVO {
 	private boolean balanceRequest = false;
 	private boolean firstInstance;
 	
-	private Set<String> examiners;
+//	private Set<String> examiners;
+//	private List<Examiner> examiners;
 
     private Map<Department,Float> grantDistribution;
 	
@@ -293,7 +295,8 @@ public class CourseInstanceVO {
 		this.firstInstance = xe.isFirstInstance();		
 //		this.firstInstance = xe.getFirstInstance();		
 
-		this.examiners = xe.getExaminers();
+//		this.examiners = xe.getExaminers();
+//		this.examiners = new ArrayList(xe.getExaminers().keySet());
 		
 		this.grantDistribution = xe.getGrantDistribution();
 		this.modelStudentNumber = xe.getModelStudentNumber();

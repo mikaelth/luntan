@@ -1,36 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Assembly progress sheet</title>
+	<title>Kurser per program</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<style>
-#assemblies {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-#assemblies td, #assemblies th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#assemblies tr:nth-child(even){background-color: #f2f2f2;}
-
-#assemblies tr:hover {background-color: #ddd;}
-
-#assemblies th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
-</style>
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
 </head>
 <body>
 	<h1>Kurser listade på program</h1>
-	<table id = "assemblies">
+	<table id = "courses">
 		<tr>
 			<th>Kurskod</th>
 			<th>Kurs</th>
@@ -48,7 +25,7 @@
 		</tr>
 	</table>
 	<p>
-		Current time is <span th:text="${serverTime}" />
+		Tid för access <span th:text="${serverTime}" />
 	</p>
 </body>
 </html>

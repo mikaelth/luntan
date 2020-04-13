@@ -1,19 +1,37 @@
 package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
+import se.uu.ebc.luntan.enums.EduBoard;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Slf4j
+@Getter
+@Setter
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "COURSE")
 public class Course  extends Auditable {
@@ -55,11 +73,21 @@ public class Course  extends Auditable {
     @Column(name = "CREDITS", precision = 12)
     @NotNull
     private Float credits;
+
+    @Column(name = "BOARD", length = 255)
+	@Enumerated(EnumType.STRING)    
+    private EduBoard board;
     
+/* 
+    @OneToMany(mappedBy = "course")
+    @OrderBy("rank ASC")
+    private List<Examiner> examiners = new ArrayList<Examiner>();
+ */
  
  
  	/* Constructors */
  	
+/* 
  	public Course() {}
  	
  	public Course (String code, String seName, Float credits, String note) {
@@ -69,6 +97,14 @@ public class Course  extends Auditable {
  		this.note = note;
  	}
      
+ */
+ 	public Course (String code, String seName, Float credits, String note, EduBoard board) {
+ 		this.code = code;
+ 		this.seName = seName;
+ 		this.credits = credits;
+ 		this.note = note;
+ 		this.board = board;
+ 	}
 
 
 	/* Setters and getters */
@@ -81,7 +117,6 @@ public class Course  extends Auditable {
     public void setCourseInstances(Set<CourseInstance> courseInstances) {
         this.courseInstances = courseInstances;
     }
- */
     
     public String getCode() {
         return code;
@@ -125,6 +160,8 @@ public class Course  extends Auditable {
     public void setCredits(Float credits) {
         this.credits = credits;
     }
+ */
+ 
     
     /* Business methods */
     
@@ -137,6 +174,7 @@ public class Course  extends Auditable {
 		this.seName = c.getSeName();
 		this.courseGroup = c.getCourseGroup();
 		this.note = c.getNote();
-		this.credits = c.getCredits();    
+		this.credits = c.getCredits();
+		this.board = c.getBoard();    
     }
 }

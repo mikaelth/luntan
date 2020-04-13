@@ -121,7 +121,8 @@ public class EntityTest {
 	private void testCourse() {
 
 		try {		
-			Course course = new Course ("1BG217", "Marinbiologi", 15.0f, "En test");
+//			Course course = new Course ("1BG217", "Marinbiologi", 15.0f, "En test");
+			Course course = new Course ("1BG217", "Marinbiologi", 15.0f, "En test", se.uu.ebc.luntan.enums.EduBoard.NUN);
 
 			Set<Department> acntSet = new HashSet<Department>();
 			acntSet.add(Department.IBG);

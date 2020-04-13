@@ -27,7 +27,7 @@ Ext.define('Luntan.view.fundingmodels.EconomyDocModel', {
 		currentEconomyDoc: {
 			// We need to bind deep to be notified on each model change
 			bind: {
-				bindTo: '{edocList.selection}', //--> reference configurated on the grid view (reference: ouList)
+				bindTo: '{edocList.selection}', //--> reference configurated on the grid view (reference: edocList)
 				deep: true
 			},
 			get: function(edoc) {

@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -178,7 +179,7 @@ public class CourseService {
     		ci.setFirstInstance(cVO.isFirstInstance());
     		ci.setNote(cVO.getNote());
     		
-			ci.setExaminers(cVO.getExaminers());
+//			ci.setExaminers(cVO.getExaminers());
 			
     		ci.setGrantDistribution(cVO.getGrantDistribution());
 

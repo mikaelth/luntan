@@ -6,7 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import javax.naming.directory.Attribute;
@@ -24,6 +25,7 @@ import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.SearchScope;
+import org.springframework.ldap.query.ContainerCriteria;
 import org.springframework.ldap.support.LdapUtils;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Service;
@@ -31,11 +33,29 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 import lombok.extern.slf4j.Slf4j;
 
+import se.uu.ebc.luntan.repo.CourseRepo;
+// import se.uu.ebc.luntan.repo.ExaminerRepo;
+// import se.uu.ebc.luntan.repo.ExaminersDecisionRepo;
+// 
+// import se.uu.ebc.luntan.vo.ExaminerVO;
+// import se.uu.ebc.luntan.entity.Examiner;
+
 import se.uu.ebc.ldap.Staff;
 
 @Service
 @Slf4j
 public class StaffService {
+
+/* 
+    @Autowired
+	CourseRepo courseRepo;
+
+    @Autowired
+	ExaminerRepo examinerRepo;
+
+    @Autowired
+	ExaminersDecisionRepo edRepo;
+ */
  
     @Autowired
 	LdapTemplate ldapTemplate;
@@ -80,17 +100,25 @@ public class StaffService {
    }
 
     public List<Staff> getTeachersBiology () {
+		List<Staff> theStaff = getBiologyTeachers();
+		theStaff.addAll(getOtherDeptsTeachers());
+		return theStaff;
+	}
 
+    private List<Staff> getBiologyTeachers () {
+
+/* 
         LdapQuery query = query()
         		.base(BASE_DN)
                 .where("objectclass").is("person")
                 .and(query()
-                	.where("title").is("universitetslektor")
-                	.or("title").is("professor")
-                	.or("title").is("biträdande universitetslektor")
-                	.or("title").is("forskarassistent")
-                	.or("title").is("adjunkt")
-                	)
+                	.where("title").like("universitetslektor*")
+                	.or("title").like("professor*")
+                	.or("title").like("seniorprofessor*")
+                	.or("title").like("biträdande universitetslektor*")
+                	.or("title").like("forskarassistent*")
+                	.or("title").like("adjunkt*")
+                )
                 .and(query()
                 	.where("ou").is("Systematisk biologi")
                 	.or("ou").is("Jämförande fysiologi")
@@ -112,13 +140,101 @@ public class StaffService {
 					.or("ou").is("Molekylär systembiologi")
 					.or("ou").is("Molekylär biofysik")
 
+					.or("ou").is("Mikrobiell kemi")
+					.or("ou").is("Naturresurser och Hållbar utveckling")
+					.or("ou").is("Signaler och system")
+
 					.or("ou").is("Institutionen för biologisk grundutbildning")
+				)
+				.and(query()
+					.where("title").not().like("professor emer*")
+				);
+ */
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("universitetslektor*")
+                	.or("title").like("professor*")
+                	.or("title").like("seniorprofessor*")
+                	.or("title").like("biträdande universitetslektor*")
+                	.or("title").like("forskarassistent*")
+                	.or("title").like("adjunkt*")
+                )
+                .and(query()
+                	.where("department").like("Institutionen för organismbiologi*")
+                	.or("department").like("Institutionen för cell- och molekylärbiologi*")
+                	.or("department").like("Institutionen för ekologi och genetik*")
+ 					.or("department").like("Institutionen för biologisk grundutbildning*")
+				)
+				.and(query()
+					.where("title").not().like("professor emer*")
 				);
 
         return ldapTemplate.search(query, new StaffAttributesMapper());
     }
+ 
+     private List<Staff> getOtherDeptsTeachers () {
 
+ 
+/* 
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("universitetslektor*")
+                	.or("title").like("professor*")
+                	.or("title").like("seniorprofessor*")
+                	.or("title").like("biträdande universitetslektor*")
+                	.or("title").like("forskarassistent*")
+                	.or("title").like("adjunkt*")
+                )
+                .and(query()
+                	.where("ou").is("Mikrobiell kemi")
+					.or("ou").is("Naturresurser och Hållbar utveckling")
+					.or("ou").is("Signaler och system")
 
+				)
+                .and(query()
+                	.where("cn").is("Mats Gustafsson")
+					.or("cn").is("Karin Stensjö")
+					.or("cn").is("Patrik Rönnbäck")
+
+				)
+				.and(query()
+					.where("title").not().like("professor emer*")
+				);
+ */
+
+		List<String> otherTeachers = new ArrayList<String>(Arrays.asList("Mats Gustafsson", "Karin Stensjö", "Patrik Rönnbäck"));
+		ContainerCriteria criteria = query().where("cn").is(otherTeachers.remove(0));
+		for (String name : otherTeachers) {
+			criteria = criteria.or("cn").is(name);
+		}
+		
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("universitetslektor*")
+                	.or(query().where("title").like("professor*").and("title").not().like("professor emer*"))
+                	.or("title").like("seniorprofessor*")
+                	.or("title").like("biträdande universitetslektor*")
+                	.or("title").like("forskarassistent*")
+                	.or("title").like("adjunkt*")
+                )
+                .and(query()
+                	.where("ou").is("Mikrobiell kemi")
+					.or("ou").is("Naturresurser och Hållbar utveckling")
+					.or("ou").is("Signaler och system")
+
+				)
+                .and(criteria);
+		
+ 
+        return ldapTemplate.search(query, new StaffAttributesMapper());
+    }
+ 
  
     /**
      * Custom staff attributes mapper, maps the attributes to the staff POJO
@@ -138,6 +254,7 @@ public class StaffService {
 				Attribute title = attrs.get("title");
 				Attribute phone = attrs.get("telephonenumber");
 				Attribute mail = attrs.get("mail");
+				Attribute department = attrs.get("department");
 			
 				if (ou != null){
 					person.setDepartment((String)ou.get());
@@ -151,6 +268,9 @@ public class StaffService {
 				if (mail != null){
 					person.setMail((String)mail.get());
 				}
+				if (department != null){
+					person.setFullDepartment((String)department.get());
+				}
 
             } catch (Exception e) {
 				log.error("Got a pesky exception: "  + e);
@@ -161,5 +281,6 @@ public class StaffService {
             
         }
     }
+ 
  
 }

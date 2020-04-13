@@ -10,6 +10,8 @@ Ext.define('Luntan.view.main.EDGrantList', {
 	controller: 'edgrantlist',
 	viewModel: 'edocmodel',
 
+
+
 	bind: {
 		store: '{edocgrants}',
 		title: '<b>Gemansamma poster i luntan {current.edoc.year}</b>'

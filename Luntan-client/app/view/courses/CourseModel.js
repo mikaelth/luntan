@@ -8,7 +8,8 @@ Ext.define('Luntan.view.courses.CourseModel', {
 			edocId : '',
 			edoc : null,
 			ci : null,
-			cid : null
+			cid : null,
+			fcid : null
 		},
 		cloning: {
         	cloneDestED: null,
@@ -66,7 +67,9 @@ Ext.define('Luntan.view.courses.CourseModel', {
 		},
 		examiners : {
 			type: 'chained',
-			source: 'TeacherStore'
+			source: 'ExaminerStore',
+			filters: [{property: 'courseId', value: '{current.fcid}', exactMatch: true}, {property: 'decided', value: false, exactMatch: true}]
+			
 		}
 /*
 		courses: {
@@ -141,6 +144,18 @@ Ext.define('Luntan.view.courses.CourseModel', {
             get: function(cid) {
             	this.set('current.cid', cid);
                 return cid;
+            }
+ 
+		},
+        currentFormalCourse: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{courselist.selection.id}', //--> reference configurated on the grid view (reference: ciList)
+                deep: true
+            },
+            get: function(fcid) {
+            	this.set('current.fcid', fcid);
+                return fcid;
             }
  
 		}

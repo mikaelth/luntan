@@ -46,7 +46,7 @@ Ext.define('Luntan.view.fundingmodels.FundingModel', {
         currentFM: {
             // We need to bind deep to be notified on each model change
             bind: {
-                bindTo: '{fmList.selection}', //--> reference configurated on the grid view (reference: ouList)
+                bindTo: '{fmList.selection}', //--> reference configurated on the grid view (reference: fmList)
                 deep: true
             },
             get: function(fm) {

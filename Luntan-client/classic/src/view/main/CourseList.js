@@ -8,7 +8,8 @@ Ext.define('Luntan.view.main.CourseList', {
     title: 'Kurser',
 
 	controller: 'courselist',
-	viewModel: {type:'coursemodel'},
+//	viewModel: {type:'coursemodel'},
+//	viewModel: 'examinermodel',
 
 
 	store: 'CourseStore',

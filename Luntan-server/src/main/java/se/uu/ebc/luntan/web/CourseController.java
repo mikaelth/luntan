@@ -37,11 +37,16 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.service.CourseService;
+import se.uu.ebc.luntan.service.ExaminersService;
+import se.uu.ebc.luntan.service.StaffService;
+
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.repo.CourseRepo;
+import se.uu.ebc.luntan.repo.ExaminerRepo;
 import se.uu.ebc.luntan.util.DateNullTransformer;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
 import se.uu.ebc.luntan.vo.CourseVO;
+import se.uu.ebc.luntan.vo.ExaminerVO;
 
 @Controller
 @RequestMapping(value = "/rest")
@@ -55,8 +60,13 @@ public class CourseController {
 	CourseService courseService;
 
 	@Autowired
+	ExaminersService examinerService;
+
+	@Autowired
 	CourseRepo courseRepo;
 
+	@Autowired
+	ExaminerRepo examinerRepo;
 
 	/* Courses */
 
@@ -205,6 +215,105 @@ public class CourseController {
         }
     }
 
+	/* Examiners */
+
+    @RequestMapping(value="/examiners", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allExaminers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateTransformer("yyyy-MM-dd"), Date.class).serialize(examinerService.getAllExaminers()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/examiners/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateExaminer(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			ExaminerVO exVO = new JSONDeserializer<ExaminerVO>().use(null, ExaminerVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("updateExaminer, exVO "+ReflectionToStringBuilder.toString(exVO, ToStringStyle.MULTI_LINE_STYLE));
+			exVO.setId(id);
+			exVO = examinerService.saveExaminer(exVO);
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(exVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/examiners", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createExaminer(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			ExaminerVO exVO = new JSONDeserializer<ExaminerVO>().use(null, ExaminerVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			exVO = examinerService.saveExaminer(exVO);
+            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+exVO.getId().toString()).build().toUriString());
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(exVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@RequestMapping(value = "/examiners/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	public ResponseEntity<String> deleteExaminer(@PathVariable("id") Long id) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			examinerService.deleteExaminer(id);
+            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@RequestMapping(value="/test", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> test() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(examinerService.getAvailableNUN()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+	/* ExaminersLists */
+
+    @RequestMapping(value="/examinerslists", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allExaminersLists() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateTransformer("yyyy-MM-dd"), Date.class).serialize(examinerService.getAllExaminersLists()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 
 	/* CourseGrants */

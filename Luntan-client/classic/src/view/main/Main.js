@@ -118,7 +118,7 @@ Ext.define('Luntan.view.main.Main', {
         iconCls: 'fa-pencil',
         items: [{
             xtype: 'cilist', 
-			height: 900
+			height: 800
         }]
     }, {
         title: 'Klona kurstillfällen',
@@ -130,9 +130,13 @@ Ext.define('Luntan.view.main.Main', {
     }, {
         title: 'Kurser',
         iconCls: 'fa-book',
+       	viewModel: 'examinermodel',
         items: [{
             xtype: 'courselist', 
-			height: 900
+			height: 800
+        }, {
+            xtype: 'examinerlist', 
+			height: 400
         }]
      }, {
         title: 'Användare',

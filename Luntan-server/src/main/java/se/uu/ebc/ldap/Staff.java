@@ -34,5 +34,6 @@ public final class Staff {
     private @Attribute(name = "ou") String department;
     private @Attribute(name = "telephoneNumber") String phone;
     private @Attribute(name = "mail") String mail;
+    private @Attribute(name = "department") String fullDepartment;
  
  }

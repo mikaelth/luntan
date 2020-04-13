@@ -1,5 +1,7 @@
 Ext.define('Luntan.model.CourseInstance', {
     extend: 'Ext.data.Model',
+	requires: ['Luntan.model.Examiner'],
+
 	proxy: {
 		type: 'rest',
 		url: Luntan.data.Constants.BASE_URL.concat('rest/cis'),
@@ -39,7 +41,7 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'balanceRequest', type: 'boolean'},
 		{name: 'firstInstance', type: 'boolean'},
 		{name: 'note', type: 'string'},
-		{name: 'examiners', type: 'auto'},
+//		{name: 'examiners', type: 'auto'},
 		{name: 'grantDistribution', type: 'auto'},
 		{name: 'IBG', type: 'float', 
 			convert: function(v,record){
@@ -73,7 +75,14 @@ Ext.define('Luntan.model.CourseInstance', {
 				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['IOB'];
 			}
 		}
-    ]
+    ], 
+    hasMany:[{
+			foreignKey: 'courseInstance_id',          /* rule 3, 5 */
+			associationKey: 'examiners',    /* rule 4, 5 */
+			name: 'examiners',              /* rule 6 */
+			model: 'Luntan.model.Examiner'   /* rule 7 */
+		}],
+
 
 /* 
     validators: {
@@ -83,5 +92,3 @@ Ext.define('Luntan.model.CourseInstance', {
  */
 
 });
-
-

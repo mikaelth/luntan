@@ -86,6 +86,18 @@ public class AuxItemsController {
     	return theList;
     }
 
+	@RequestMapping("/eduboards")
+    public List<Map<String, String>> eduBoard() {
+    	List theList = new ArrayList<Map<String, String>>();
+    	for (EduBoard s : EduBoard.values()) {
+			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
+			vMap.put("id", s.name());
+			vMap.put("displayname", s.toString());
+    		theList.add(vMap);
+    	}
+    	return theList;
+    }
+
 	@RequestMapping("/years")
     public List<Map<String, String>> usedYears() {
     	List theList = new ArrayList<Map<String, String>>();
