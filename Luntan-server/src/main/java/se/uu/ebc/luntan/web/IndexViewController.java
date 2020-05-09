@@ -52,8 +52,8 @@ import se.uu.ebc.luntan.security.UserRepo;
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class IndexViewController {
 
-    private String roleArr[] = { "ROLE_DIRECTOROFSTUDIES", "ROLE_ADMINISTRATOR", "ROLE_PHDADMIN" };
-    private Set<String> rolesForAll = new HashSet(Arrays.asList(roleArr));
+//     private String roleArr[] = { "ROLE_DIRECTOROFSTUDIES", "ROLE_ADMINISTRATOR", "ROLE_PHDADMIN" };
+//     private Set<String> rolesForAll = new HashSet(Arrays.asList(roleArr));
 
 
 	@Autowired

@@ -34,11 +34,8 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
 import lombok.extern.slf4j.Slf4j;
 
 import se.uu.ebc.luntan.repo.CourseRepo;
-// import se.uu.ebc.luntan.repo.ExaminerRepo;
-// import se.uu.ebc.luntan.repo.ExaminersDecisionRepo;
-// 
-// import se.uu.ebc.luntan.vo.ExaminerVO;
-// import se.uu.ebc.luntan.entity.Examiner;
+import se.uu.ebc.luntan.entity.ExternalTeacher;
+import se.uu.ebc.luntan.repo.ExternalTeacherRepo;
 
 import se.uu.ebc.ldap.Staff;
 
@@ -46,50 +43,14 @@ import se.uu.ebc.ldap.Staff;
 @Slf4j
 public class StaffService {
 
-/* 
-    @Autowired
-	CourseRepo courseRepo;
-
-    @Autowired
-	ExaminerRepo examinerRepo;
-
-    @Autowired
-	ExaminersDecisionRepo edRepo;
- */
- 
     @Autowired
 	LdapTemplate ldapTemplate;
 
+    @Autowired
+	ExternalTeacherRepo externalsRepo;
+
 	private final String BASE_DN = "cn=People,dc=uu,dc=se";
 
-    // business methods
- 
-/* 
- public List<String> search(Name dn) {
-    return ldapTemplate
-      .search(
-		"",
-        "dn=" + dn, 
-        (AttributesMapper<String>) attrs -> (String) attrs.get("ou").get());
-}
-
-	public List<String> search(String username) {
-		return ldapTemplate
-		  .search(
-			"",
-			"uid=" + username, 
-			(AttributesMapper<String>) attrs -> (String) attrs.get("ou").get());
-	}
-
-	public Staff findByEmployeeNumber(String employeeNumber) {
-      LdapQuery query = query()
-        		.base(BASE_DN)
-                .where("objectclass").is("person")
-                .and(query().where("employeeNumber").is(employeeNumber));
-
-        return ldapTemplate.search(query, new UserAttributesMapper());
-	}
- */
 
    public Staff findStaff(String dn) {
       return ldapTemplate.lookup(dn, new StaffAttributesMapper());
@@ -107,49 +68,6 @@ public class StaffService {
 
     private List<Staff> getBiologyTeachers () {
 
-/* 
-        LdapQuery query = query()
-        		.base(BASE_DN)
-                .where("objectclass").is("person")
-                .and(query()
-                	.where("title").like("universitetslektor*")
-                	.or("title").like("professor*")
-                	.or("title").like("seniorprofessor*")
-                	.or("title").like("biträdande universitetslektor*")
-                	.or("title").like("forskarassistent*")
-                	.or("title").like("adjunkt*")
-                )
-                .and(query()
-                	.where("ou").is("Systematisk biologi")
-                	.or("ou").is("Jämförande fysiologi")
-                	.or("ou").is("Fysiologisk botanik")
-                 	.or("ou").is("Miljötoxikologi")
-                 	.or("ou").is("Människans evolution")
-					.or("ou").is("Evolution och utvecklingsbiologi")
-
-					.or("ou").is("Zooekologi")
-					.or("ou").is("Växtekologi och evolution")
-					.or("ou").is("Evolutionsbiologi")
-					.or("ou").is("Limnologi")
-
-					.or("ou").is("Beräkningsbiologi och bioinformatik")
-					.or("ou").is("Mikrobiologi")
-					.or("ou").is("Molekylär evolution")
-					.or("ou").is("Strukturbiologi")
-					.or("ou").is("Molekylärbiologi")
-					.or("ou").is("Molekylär systembiologi")
-					.or("ou").is("Molekylär biofysik")
-
-					.or("ou").is("Mikrobiell kemi")
-					.or("ou").is("Naturresurser och Hållbar utveckling")
-					.or("ou").is("Signaler och system")
-
-					.or("ou").is("Institutionen för biologisk grundutbildning")
-				)
-				.and(query()
-					.where("title").not().like("professor emer*")
-				);
- */
         LdapQuery query = query()
         		.base(BASE_DN)
                 .where("objectclass").is("person")
@@ -176,40 +94,14 @@ public class StaffService {
  
      private List<Staff> getOtherDeptsTeachers () {
 
- 
-/* 
-        LdapQuery query = query()
-        		.base(BASE_DN)
-                .where("objectclass").is("person")
-                .and(query()
-                	.where("title").like("universitetslektor*")
-                	.or("title").like("professor*")
-                	.or("title").like("seniorprofessor*")
-                	.or("title").like("biträdande universitetslektor*")
-                	.or("title").like("forskarassistent*")
-                	.or("title").like("adjunkt*")
-                )
-                .and(query()
-                	.where("ou").is("Mikrobiell kemi")
-					.or("ou").is("Naturresurser och Hållbar utveckling")
-					.or("ou").is("Signaler och system")
-
-				)
-                .and(query()
-                	.where("cn").is("Mats Gustafsson")
-					.or("cn").is("Karin Stensjö")
-					.or("cn").is("Patrik Rönnbäck")
-
-				)
-				.and(query()
-					.where("title").not().like("professor emer*")
-				);
- */
-
-		List<String> otherTeachers = new ArrayList<String>(Arrays.asList("Mats Gustafsson", "Karin Stensjö", "Patrik Rönnbäck"));
-		ContainerCriteria criteria = query().where("cn").is(otherTeachers.remove(0));
-		for (String name : otherTeachers) {
-			criteria = criteria.or("cn").is(name);
+ 		List<ExternalTeacher> teachers = externalsRepo.findAll();
+		ContainerCriteria criteria = null;
+		for (ExternalTeacher teacher : teachers) {
+			if (criteria == null) {
+				criteria = query().where("cn").is(teacher.getName()).and(query().where("ou").is(teacher.getDepartment()));
+			} else {
+				criteria = criteria.or(query().where("cn").is(teacher.getName()).and(query().where("ou").is(teacher.getDepartment())));
+			}
 		}
 		
         LdapQuery query = query()
@@ -223,12 +115,6 @@ public class StaffService {
                 	.or("title").like("forskarassistent*")
                 	.or("title").like("adjunkt*")
                 )
-                .and(query()
-                	.where("ou").is("Mikrobiell kemi")
-					.or("ou").is("Naturresurser och Hållbar utveckling")
-					.or("ou").is("Signaler och system")
-
-				)
                 .and(criteria);
 		
  

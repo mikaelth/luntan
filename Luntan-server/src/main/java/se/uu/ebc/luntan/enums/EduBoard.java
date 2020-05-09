@@ -2,7 +2,7 @@ package se.uu.ebc.luntan.enums;
 
 public enum EduBoard
 {
-	EDU("Institutionen för utbildningvetenskap"),
+	EDU("Institutionen för pedagogik, didaktik och utbildningsstudier"),
 	NUN("Naturvetenskapliga utbildningsnämnden"),
 	TUN("Tekniska utbildningsnämnden");
 

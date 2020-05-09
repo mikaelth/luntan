@@ -215,6 +215,7 @@ public class CourseController {
         }
     }
 
+
 	/* Examiners */
 
     @RequestMapping(value="/examiners", method = RequestMethod.GET)
@@ -230,7 +231,7 @@ public class CourseController {
 
     }
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_STAFFDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="/examiners/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateExaminer(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -251,7 +252,7 @@ public class CourseController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_STAFFDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
     @RequestMapping(value="/examiners", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createExaminer(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -272,7 +273,7 @@ public class CourseController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_STAFFDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
 	@RequestMapping(value = "/examiners/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteExaminer(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -300,6 +301,7 @@ public class CourseController {
     }
 
 
+
 	/* ExaminersLists */
 
     @RequestMapping(value="/examinerslists", method = RequestMethod.GET)
@@ -317,75 +319,5 @@ public class CourseController {
 
 
 	/* CourseGrants */
-/*
-    @RequestMapping(value="/cgs", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<String> allCourseGrants() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        try {
-// 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cgs").transform(new NullTransformer(), "setDate").transform(new DateTransformer("yyyy-MM-dd"), "setDate").serialize(courseService.getAllCourseGrants()), headers, HttpStatus.OK);
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cgs").transform(new DateNullTransformer("yyyy-MM-dd"), "setDate").serialize(courseService.getAllCourseGrants()), headers, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("allCourseGrants got a pesky exception: "+ e + e.getCause());
-			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
-    @RequestMapping(value="/cgs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateCourseGrant(@RequestBody String json, @PathVariable("id") Long id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        try {
-			CourseGrantVO cgVO = new JSONDeserializer<CourseGrantVO>().use(null, CourseGrantVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
-			logger.debug("updateCourseGrant, cgVO "+ReflectionToStringBuilder.toString(cgVO, ToStringStyle.MULTI_LINE_STYLE));
-			cgVO.setId(id);
-			cgVO = courseService.saveCourseGrant(cgVO);
-
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cgs").transform(new DateNullTransformer("yyyy-MM-dd"), "setDate").serialize(cgVO);
-			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
-
-            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
-    @RequestMapping(value="/cgs", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createCourseGrant(@RequestBody String json, UriComponentsBuilder uriBuilder) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        try {
-			CourseGrantVO cgVO = new JSONDeserializer<CourseGrantVO>().use(null, CourseGrantVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
-			cgVO = courseService.saveCourseGrant(cgVO);
-            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
-            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+cgVO.getId().toString()).build().toUriString());
-
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cgs").transform(new DateNullTransformer("yyyy-MM-dd"), "setDate").serialize(cgVO);
-			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
-
-            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-	@PreAuthorize("hasRole('ROLE_DIRECTOROFSTUDIES')")
-	@RequestMapping(value = "/cgs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-	public ResponseEntity<String> deleteCourseGrant(@PathVariable("id") Long id) {
-		HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        try {
-			courseService.deleteCourseGrant(id);
-            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-*/
+	/* Removed in v. 45 */
 }
