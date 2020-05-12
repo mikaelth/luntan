@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.boot.info.BuildProperties;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -59,8 +60,17 @@ public class IndexViewController {
 	@Autowired
 	UserRepo userRepo;
 
+	@Autowired
+	BuildProperties buildProperties;
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String indexPage(Model model, Principal principal, HttpServletRequest request) {
+
+			log.debug("Build name "+buildProperties.getName());
+			log.debug("Build version "+buildProperties.getVersion());
+			log.debug("Build time "+buildProperties.getTime());
+			log.debug("Build artifact "+buildProperties.getArtifact());
+
 			log.debug("indexPage, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 //			log.debug("indexPage, principal "+ReflectionToStringBuilder.toString(principal, ToStringStyle.MULTI_LINE_STYLE));
 // 			log.debug("indexPage, user "+ReflectionToStringBuilder.toString(userRepo.findUserByUsername(principal.getName()), ToStringStyle.MULTI_LINE_STYLE));
