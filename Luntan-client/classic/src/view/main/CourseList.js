@@ -9,10 +9,14 @@ Ext.define('Luntan.view.main.CourseList', {
 
 	controller: 'courselist',
 //	viewModel: {type:'coursemodel'},
-//	viewModel: 'examinermodel',
 
 
 	store: 'CourseStore',
+
+	bind: {
+//		store: '{courses}',
+		title: '<b>Kurser</b>'
+	},
 	
 	features: [{ ftype: 'grouping',startCollapsed: false }],
 

@@ -1,16 +1,17 @@
-Ext.define('Luntan.view.main.ExaminerList', {
+Ext.define('Luntan.view.main.ListedExaminerList', {
     extend: 'Luntan.view.main.BasicListGrid',
     requires: [
     ],
-    xtype: 'examinerlist',
-	reference: 'examinerList',
+    xtype: 'listedexaminerlist',
+	reference: 'listedExaminerList',
 
     title: '<b>Examinatorer</b>',
 
-	controller: 'examinerlist',
+	controller: 'listedexaminerlist',
 //	viewModel: {type:'coursemodel'},
 //	viewModel: 'examinermodel',
 
+/* 
     refreshRank:function(){
         // custom method
         this.getStore().each(function(rec,ind){
@@ -51,16 +52,72 @@ Ext.define('Luntan.view.main.ExaminerList', {
             }
         }
     },
+ */
 
 	bind: {
-		store: '{examiners}',
+		store: '{listedexaminers}',
 		title: '<b>Examinatorer</b>'
 	},
 		
+	dockedItems: [{
+		xtype: 'toolbar',
+		items: [
+		 			{
+						text: 'Hämta alla',
+						reference: 'btnReload',
+						disabled: false,
+						 listeners: {
+							click: 'onReload'
+						}
+					}, 
+		 			{
+						text: 'Skriv ut',
+						reference: 'btnPrint',
+						disabled: false,
+						handler: function() {
+							Ext.ux.grid.Printer.printAutomatically = false;
+							Ext.ux.grid.Printer.closeAutomaticallyAfterPrint = false;
+							Ext.ux.grid.Printer.print(this.up('grid'));   
+						}
+					}, 
+					'->', /*{
+//						text: 'Remove',
+						text: 'Tag bort post',
+						reference: 'btnRemove',
+						disabled: true,
+						 listeners: {
+							click: 'onRemove'
+						}
+					}, {
+//						text: 'Create',
+						text: 'Ny post',
+						reference: 'btnCreate',
+						listeners: {
+							click: 'onCreate'
+						}
+					}, */{
+//						text: 'Save',
+						text: 'Spara till db',
+						reference: 'btnSave',
+						listeners: {
+							click: 'onSave'
+						}
+					}
+
+			]
+	}],
 
     columns: [
+		{ text: 'Kurs', dataIndex: 'courseId', align: 'left', flex: 1,
+			renderer: function(value) {
+				if (Ext.getStore('CourseStore').getById(value) != undefined) {
+					return Ext.getStore('CourseStore').getById(value).get('formName');
+				} else {
+					return value;
+				}
+        	}
+		},
 		{ text: 'Rang', dataIndex: 'rank', filter: 'number', align: 'left', width: 100},
-		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
 		{ text: 'Examinator', dataIndex: 'ldapEntry', align: 'left', flex: 1,
 		    renderer: function(value) {
 				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
@@ -77,7 +134,12 @@ Ext.define('Luntan.view.main.ExaminerList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'name',
-			    valueField: 'employeeNumber'
+			    valueField: 'employeeNumber',
+			    listeners: {
+			    	focus: function(qPlan, eOpts) {
+			    		console.log(qPlan);
+			    	}
+			    }
 			}
 		},
 		{ text: 'Program', dataIndex: 'ldapEntry', align: 'left', flex: 1,

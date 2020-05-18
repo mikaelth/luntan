@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
@@ -42,7 +43,8 @@ import se.uu.ebc.luntan.aux.GrantMaps;
 public class EconomyDocGrant  extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
     

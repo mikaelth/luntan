@@ -65,9 +65,6 @@ public class ExaminersDecision extends ExaminersList {
 	@Enumerated(EnumType.STRING)    
     private EduBoard board;
     
-    @Column(name = "NOTE")
-    private String note;
-
 	@ElementCollection
 	private List<String> defaultExaminers = new ArrayList<String>();
 

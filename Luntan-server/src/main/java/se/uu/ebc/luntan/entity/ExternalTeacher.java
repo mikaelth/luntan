@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 // import javax.persistence.MapKeyEnumerated;
 // import javax.persistence.Enumerated;
 // import javax.persistence.EnumType;
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -36,7 +37,8 @@ import se.uu.ebc.luntan.enums.*;
 public class ExternalTeacher extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
 

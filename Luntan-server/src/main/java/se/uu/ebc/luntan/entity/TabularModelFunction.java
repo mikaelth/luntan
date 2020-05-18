@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ElementCollection;
+import org.hibernate.annotations.GenericGenerator;
 
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlBuilder;
@@ -32,7 +33,8 @@ public class TabularModelFunction  extends Auditable {
     private static Logger log = Logger.getLogger(TabularModelFunction.class.getName());
 	
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
     

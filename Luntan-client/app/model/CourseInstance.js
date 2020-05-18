@@ -75,13 +75,14 @@ Ext.define('Luntan.model.CourseInstance', {
 				return typeof record.data.grantDistribution === "undefined" || record.data.grantDistribution === null ? '' : record.data.grantDistribution['IOB'];
 			}
 		}
-    ], 
-    hasMany:[{
-			foreignKey: 'courseInstance_id',          /* rule 3, 5 */
-			associationKey: 'examiners',    /* rule 4, 5 */
-			name: 'examiners',              /* rule 6 */
-			model: 'Luntan.model.Examiner'   /* rule 7 */
-		}],
+    ] 
+    
+//     hasMany:[{
+// 			foreignKey: 'courseInstance_id',          /* rule 3, 5 */
+// 			associationKey: 'examiners',    /* rule 4, 5 */
+// 			name: 'examiners',              /* rule 6 */
+// 			model: 'Luntan.model.Examiner'   /* rule 7 */
+// 		}],
 
 
 /* 

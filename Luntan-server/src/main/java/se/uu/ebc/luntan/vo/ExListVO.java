@@ -42,12 +42,12 @@ public class ExListVO extends AuditableVO{
 		log.debug("In ExListVO constructor, " + xe);
 
 		this.id = xe.getId();
+		this.note = xe.getNote();
+		this.decided = xe.decided();
 		
 		if (xe instanceof ExaminersDecision){
 			this.board = ((ExaminersDecision)xe).getBoard();
-			this.decided = ((ExaminersDecision)xe).decided();
 			this.decisionDate = ((ExaminersDecision)xe).getDecisionDate();
-			this.note = ((ExaminersDecision)xe).getNote();
 			this.defaultExaminers = ((ExaminersDecision)xe).getDefaultExaminers();}
 		}
 	

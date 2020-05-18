@@ -7,20 +7,51 @@
 </head>
 <body>
 
-	<h1 th:text="'Examinatorer biologi ' + ${edoc.year} + ' – ' + (${edoc.locked} ? 'slutlig version, ' + ${#dates.format(edoc.lastModifiedDate,'yyyy-MM-dd')}: 'arbetsdokument, ' +  ${#dates.format(serverTime,'yyyy-MM-dd')})" />
+	<h1 th:text="'Examinatorer biologi ' +  ${#dates.format(serverTime,'yyyy-MM-dd')}" />
 
-		<table id = "course_instances">
+<!-- 
+			<div id="selectYear" class="action">
+				<h3>
+					Välj år och enhet
+				</h3>
+				<div class="trigger">
+					<form action="#" th:action="@{/view/ViewStaffSummary}" th:object="${budgetYear}" method="post">
+						<select name="year">
+							<option th:each="selectYear : ${budgetYear.allYears}" th:value="${selectYear}" th:text="${selectYear}" th:selected="${ selectYear==year }">År</option>
+						</select>
+						<select name="ou">
+							<option th:each="selectDept : ${activeDepts}" th:value="${selectDept.id}" th:text="${selectDept.svName}" th:selected="${ selectDept==budgetDept }">Enhet</option>
+						</select>
+							<input type="checkbox" name="Skapa underlag" th:checked="${createDocument}"/>
+      						<input type="submit" value="V&auml;lj" id="form_submit" />
+					</form>
+				</div>
+			</div>
+ -->
+		<div th:each="brd: ${boards}">
+		<h2 th:text="${brd}" />
+		<table class='examiner_table'>
 			<tr>
 				<th>Kurs</th>
 				<th>Examinatorer</th>
 			</tr>
-			<tr th:each="ci: ${edoc.courseInstances}">
-				<td th:text="${ci.designation}" />
+			<tr th:each="ex, itemStat: ${examiners.get(brd)}" th:class="${ex.rank}==1 ? first : other">
+				<th:block th:with="newCourse = ${itemStat.first} or ${ex.course.code} != ${examiners.get(brd)[__${itemStat.index}-1__].course.code}">
+					<td th:text="${ex.rank}==1 ? |${ex.course.code} ${ex.course.seName}, ${ex.course.credits} hp| : ''" />
+					<th:block th:object = "${staffMap.get(ex.examiner)}">
+						<td th:text="|*{name}, *{title}, *{department}|" />
+					</th:block>
+				</th:block>
+<!-- 
+					<td th:text="|*{name}: |" />
+				<td th:text="${ex.examiner}" />
 				<th:block th:each="ex: ${ci.examiners}">
 					<td class='alnright' th:text="${staff.findbyEmployeeNumber(ex).name}" />
 				</th:block>
+ -->
 			</tr>
 		</table>
+		</div>
 	<p>
 		Current time is <span th:text="${serverTime}" />
 	</p>

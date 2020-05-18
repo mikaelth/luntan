@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
@@ -58,7 +60,8 @@ import javax.naming.Name;
 public abstract class ExaminersList extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     protected Long id;
     
@@ -76,7 +79,10 @@ public abstract class ExaminersList extends Auditable {
 	private List<String> defaultExaminers = new ArrayList<String>();
  */
 
-    @OneToMany(mappedBy = "examinerList")
+    @Column(name = "NOTE")
+    private String note;
+
+    @OneToMany(mappedBy = "examinerList", cascade = CascadeType.ALL)
 	protected Set<Examiner> examiners = new HashSet<Examiner>();
 
 	@Column(name="LIST_STATUS", insertable = false, updatable = false)

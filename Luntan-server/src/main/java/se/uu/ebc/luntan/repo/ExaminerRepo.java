@@ -19,7 +19,15 @@ import java.util.List;
 @Transactional //(readOnly = true)
 public interface ExaminerRepo extends JpaRepository<Examiner, Long>, JpaSpecificationExecutor<Examiner>{
 
-	@Query("SELECT e FROM Examiner AS e WHERE (e.examinerList.listStatus = 1 AND e.course.board = ?1)")
-	public Set<Examiner> findAvailableByBoard(EduBoard board);
+//	@Query("SELECT e FROM Examiner AS e WHERE (e.examinerList.listStatus = 1 AND e.course.board = ?1)")
+	@Query("SELECT e FROM Examiner AS e WHERE (e.examinerList.listStatus = 1 AND e.course.board = ?1) ORDER BY e.course.board, e.course.code, e.rank")
+	public List<Examiner> findAvailableByBoard(EduBoard board);
+
+	@Query("SELECT DISTINCT e.examiner FROM Examiner AS e")
+	public Set<String> findDesignatedLDAPEntries();
+
+	@Query("SELECT e FROM Examiner AS e WHERE e.examinerList.listStatus = 1 ORDER BY e.course.board, e.course.code, e.rank")
+	public List<Examiner> findAvailable();
+
 	
 }

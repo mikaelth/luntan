@@ -6,6 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -18,7 +21,7 @@ import javax.naming.Name;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
@@ -36,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.entity.ExternalTeacher;
 import se.uu.ebc.luntan.repo.ExternalTeacherRepo;
+import se.uu.ebc.luntan.repo.ExaminerRepo;
 
 import se.uu.ebc.ldap.Staff;
 
@@ -48,6 +52,9 @@ public class StaffService {
 
     @Autowired
 	ExternalTeacherRepo externalsRepo;
+
+    @Autowired
+	ExaminerRepo examinerRepo;
 
 	private final String BASE_DN = "cn=People,dc=uu,dc=se";
 
@@ -64,6 +71,16 @@ public class StaffService {
 		List<Staff> theStaff = getBiologyTeachers();
 		theStaff.addAll(getOtherDeptsTeachers());
 		return theStaff;
+	}
+	
+	@Cacheable("examinermap")
+	public Map<String, Staff> getDesignatedExaminers() {
+		Map<String, Staff> staffMap = new HashMap<String, Staff>();
+		Set<String> designatedStaff = examinerRepo.findDesignatedLDAPEntries();
+		for (String employeeNumber : designatedStaff) {
+			staffMap.put(employeeNumber,findbyEmployeeNumber(employeeNumber));
+		}
+		return staffMap;
 	}
 
     private List<Staff> getBiologyTeachers () {

@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import org.hibernate.annotations.GenericGenerator;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.EduBoard;
@@ -37,7 +38,8 @@ import lombok.AllArgsConstructor;
 public class Course  extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
     

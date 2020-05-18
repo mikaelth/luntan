@@ -21,6 +21,7 @@ import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import org.hibernate.annotations.GenericGenerator;
 
 import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.enums.CourseGroup;
@@ -48,7 +49,8 @@ public class EconomyDocument  extends Auditable {
 //    private static Logger log = Logger.getLogger(EconomyDocument.class.getName());
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
     

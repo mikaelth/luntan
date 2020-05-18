@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -51,16 +52,17 @@ import javax.persistence.IdClass;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Entity
-@Table(name = "EXAMINER", uniqueConstraints=@UniqueConstraint(columnNames={"COURSE_FK","LIST_FK" /*, "RANK" */}))
+@Table(name = "EXAMINER", uniqueConstraints=@UniqueConstraint(columnNames={"COURSE_FK","LIST_FK","LDAP_ENTRY", "RANK" }))
 public class Examiner extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
 
     @ManyToOne
-//    @NotNull
+    @NotNull
     @JoinColumn(name = "LIST_FK")
 	private ExaminersList examinerList;
 	
@@ -88,6 +90,6 @@ public class Examiner extends Auditable {
 	// Business methods
 	
 	public boolean decided() {
-		return examinerList.decided();
+		return examinerList == null ? false : examinerList.decided();
 	}
 }

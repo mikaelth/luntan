@@ -139,6 +139,17 @@ Ext.define('Luntan.view.main.Main', {
 			height: 400
         }]
      }, {
+        title: 'Examinatorer',
+        iconCls: 'fa-users',
+       	viewModel: 'examinermodel',
+        items: [{
+            xtype: 'examinerslisting', 
+			height: 300
+        }, {
+            xtype: 'listedexaminerlist', 
+			height: 800
+        }]
+     }, {
         title: 'Användare',
         iconCls: 'fa-user',
         items: [{

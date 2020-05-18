@@ -3,7 +3,7 @@ Ext.define('Luntan.store.TeacherStore', {
     requires: ['Ext.data.proxy.Rest', 'Ext.data.reader.Json'],
     alias: 'store.teacher',
 	model: 'Luntan.model.Teacher',
-	sorters: {property:'familyName', direction: 'ASC'},
+//	sorters: [{property:'familyName', direction: 'ASC'},{property:'givenName', direction: 'ASC'}],
     autoLoad: false
 });
 

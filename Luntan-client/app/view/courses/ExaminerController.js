@@ -17,6 +17,8 @@ Ext.define('Luntan.view.courses.ExaminerController', {
         var r = Ext.create('Luntan.model.Examiner');
 		r.set('rank', theStore.nextRank());
         r.set('courseId',thisCourseId);
+        r.set('decided',false);
+        r.set('decisionId',null);
 		
 		
 		var rec = theStore.insert(itemNum, r);
@@ -36,13 +38,62 @@ Ext.define('Luntan.view.courses.ExaminerController', {
             }
 		grid.ownerGrid.refreshRank();
    },
+   onSendBrd: function () 
+   {
+/* 
+		vm = this.getViewModel(),
+		dest = vm.get('edBrd'),
+
+		if(vm.get('itemstorage').getById(dest) !== null) {
+			sm.getSelected().each(function(item) {
+					item.set('storageId',dest);
+			});
+
+			sm.getStore().getSource().sync();
+			this.getViewModel().set('mvDestStorage',0);
+	        this.lookupReference('btnMove').disable();
+
+		}
+ */
+   },
 
    	onBeforeRender: function (grid) {
    	},
    	
    	init: function(view) {
 
-		view.down('toolbar').insert(3,'Skapa nytt underlag för ');
+//		view.down('toolbar').insert(3,'Skapa nytt underlag för ');
+/*		view.down('toolbar').insert(3,
+					{
+
+						xtype: 'combobox',
+						reference: 'comboCurrentYear',
+						bind: {value:'{edBrd}', store: '{availBoards}'},
+						width: 550,
+						typeAhead: true,
+						triggerAction: 'all',
+						queryMode: 'local',
+						lastQuery: '',
+						fieldLabel: 'Skapa nytt underlag för ',
+						labelWidth: 150,
+						displayField: 'displayname',
+						valueField: 'id',
+						listeners: {
+							select: function() {
+//								this.lookupReferenceHolder().lookupReference('btnCreate').enable();
+							}
+						}
+					});
+		view.down('toolbar').insert(4,
+					{
+							text: 'Skicka',
+							reference: 'btnSendBrd',
+							listeners: {
+								click: 'onSendBrd'
+							}
+					});
+
+ 
 		view.down('toolbar').insert(4,
 					{	xtype: 'button',
 						text: 'NUN',
@@ -61,8 +112,9 @@ Ext.define('Luntan.view.courses.ExaminerController', {
 							click: 'onShowOverview'
 						}
 					});
-		view.down('toolbar').insert(6,'->');
-
+ 
+		view.down('toolbar').insert(5,'->');
+*/
    	
    	}
 

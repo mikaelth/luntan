@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.security.Principal;
 import javax.servlet.http.HttpServletResponse;
@@ -63,18 +64,24 @@ import org.apache.log4j.Logger;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
 import se.uu.ebc.luntan.repo.CourseRepo;
+import se.uu.ebc.luntan.repo.ExaminersListRepo;
+import se.uu.ebc.luntan.repo.ExaminerRepo;
 
 import se.uu.ebc.luntan.service.EconomyDocumentService;
 import se.uu.ebc.luntan.service.FundingModelService;
 import se.uu.ebc.luntan.service.StaffService;
+import se.uu.ebc.luntan.service.ExaminersService;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument ;
 import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.entity.Course ;
+import se.uu.ebc.luntan.entity.ExaminersList ;
+import se.uu.ebc.luntan.entity.Examiner ;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.EduBoard;
 
 import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
@@ -109,6 +116,15 @@ public class EconomyDocController {
 
  	@Autowired
 	CourseRepo courseRepo;
+
+ 	@Autowired
+	ExaminersListRepo elRepo;
+
+ 	@Autowired
+	ExaminerRepo exRepo;
+
+ 	@Autowired
+	ExaminersService exService;
 
 
 	/* EconomyDocumentGrants */
@@ -331,16 +347,28 @@ public class EconomyDocController {
 	/* Examiners */
 
     @RequestMapping(value = "/view/examiners", method = RequestMethod.GET)
-    public String viewExaminers(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+//    public String viewExaminers(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+    public String viewExaminers(Model model, Principal principal, HttpServletRequest request) {
 			log.debug("viewExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
        try {
 
-			EconomyDocument edoc = emRepo.findByYear(year);
+//			List<ExaminersList> el = elRepo.findAll();
+//			List<Examiner> exs = exRepo.findAvailable();
+//			log.debug("Examines: " + exs);
+
+			Map<EduBoard,List<Examiner>> exMap = new HashMap<EduBoard,List<Examiner>>();
+			for (EduBoard board : EduBoard.values()) {
+				exMap.put(board,exRepo.findAvailableByBoard(board));
+			}			
+//			EconomyDocument edoc = emRepo.findByYear(year);
 
 			model.addAttribute("serverTime", new Date());
-			model.addAttribute("edoc", edoc);
-			model.addAttribute("staff", staffService);
+//			model.addAttribute("edoc", edoc);
+//			model.addAttribute("staff", staffService);
+			model.addAttribute("staffMap", staffService.getDesignatedExaminers());
+			model.addAttribute("examiners", exMap);
+			model.addAttribute("boards", exMap.keySet());
 
     		return "Examiners";
         } catch (Exception e) {

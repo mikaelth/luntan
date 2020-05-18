@@ -30,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 // import static org.springframework.ldap.query.LdapQueryBuilder.query;
 import org.springframework.stereotype.Service;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import lombok.extern.slf4j.Slf4j;
 
 import se.uu.ebc.luntan.repo.CourseRepo;
@@ -87,6 +90,7 @@ public class ExaminersService {
     }
 	
  
+/* 
 	public List<ExaminerVO> getAvailableNUN() throws Exception {
 		List<ExaminerVO> eVO = new ArrayList<ExaminerVO>();
 		try {	
@@ -115,10 +119,29 @@ public class ExaminersService {
 			
         }
     }
+ */
  
+ 	public List<ExaminerVO> getAvailableByBoard(EduBoard board) throws Exception {
+		List<ExaminerVO> eVO = new ArrayList<ExaminerVO>();
+		try {	
+			for (Examiner ex : examinerRepo.findAvailableByBoard(board)) {
+ 				eVO.add(new ExaminerVO(ex));
+ 			}
+         	return eVO;        	        
+        } catch (Exception e) {
+			log.error("getAvailableByBoard got a pesky exception: "+ e + e.getCause());
+
+			return null;
+			
+        }
+    }
+
 
     public ExaminerVO saveExaminer(ExaminerVO eVO) throws Exception {
     	Examiner ex = eVO.getId() == null ? toExaminer(eVO) : toExaminer(examinerRepo.findById(eVO.getId()).get(), eVO);
+
+		log.debug("saveExaminer, ex "+ReflectionToStringBuilder.toString(ex, ToStringStyle.MULTI_LINE_STYLE));
+
     	// only update if examiner is not tied to decision
     	if (!ex.decided()) {
     		examinerRepo.save(ex);
@@ -147,7 +170,7 @@ public class ExaminersService {
 			if (eVO.isDecided()) {
 				ex.setExaminerList(edRepo.findById(eVO.getDecisionId()).get());
 			} else {
-				ex.setExaminerList(getWorkingList());
+				ex.setExaminerList(this.getWorkingList());
 			}
 			ex.setExaminer(eVO.getLdapEntry()) ;
 			ex.setRank(eVO.getRank()) ;
@@ -179,6 +202,7 @@ public class ExaminersService {
 			theList = new ExaminersWorkingList();
 			exwlRepo.save(theList);
 		} 
+		log.debug("getWorkingList, theList "+ReflectionToStringBuilder.toString(theList, ToStringStyle.MULTI_LINE_STYLE));
 		
 		return theList;
 	}
@@ -201,13 +225,17 @@ public class ExaminersService {
         }
     }
 	
-    public ExListVO updateExaminersDecision (ExListVO exlVO) throws Exception {
-    	ExaminersDecision ed = edRepo.findById(exlVO.getId()).get();
+     public ExListVO updateExaminersDecision (ExListVO exlVO) throws Exception {
+		return new ExListVO(saveExaminersDecision(edRepo.findById(exlVO.getId()).get(), exlVO));
+    
+    }
+   public ExaminersDecision saveExaminersDecision (ExaminersDecision ed, ExListVO exlVO) throws Exception {
     	ed.setDecisionDate(exlVO.getDecisionDate());
+    	ed.setBoard(exlVO.getBoard());
     	ed.setNote(exlVO.getNote());
     	ed.setDefaultExaminers(exlVO.getDefaultExaminers());
    		edRepo.save(ed);
-		return new ExListVO(ed);
+		return ed;
     
     }
 
@@ -215,13 +243,26 @@ public class ExaminersService {
 		ExaminersDecision ed = edRepo.findById(edID).get();
 		edRepo.delete(ed);
     }
+
+    public synchronized ExListVO createExaminersDecision(ExListVO exlVO) throws Exception {
+		try {
+			ExaminersDecision exd = saveExaminersDecision(new ExaminersDecision(),exlVO);
+			cloneExaminers(exd);
+			return new ExListVO(exd);
+		} catch (Exception e) {
+			log.error("createExaminersDecision got a pesky exception: "+ e + e.getCause());
+			return null;
+		} 
+    }
     
     public List<ExaminerVO> createDecisionDocument() {
     	return null;
     }
 
-	private void cloneExaminers (ExaminersDecision exd) {
+	private void cloneExaminers (ExaminersDecision exd) throws Exception {
+		log.debug("cloning for " + exd.getBoard());
 		for (Examiner ex : examinerRepo.findAvailableByBoard(exd.getBoard())) {
+			log.debug("cloning for " + ex.getExaminer());
 			cloneExaminer(exd,ex);
 		}
 	}
