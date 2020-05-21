@@ -62,7 +62,9 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 		
 
     columns: [
+/* 
 		{ xtype: 'checkcolumn', text: 'Beslut', dataIndex: 'decided', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
+ */
 		{ text: 'Nämnd', dataIndex: 'board', filter: 'string', align: 'left', flex: 1,
 		    renderer: function(value) {
 				if (Ext.getStore('EduBoardStore').getById(value) != undefined) {
@@ -82,7 +84,9 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 			    valueField: 'id',
 			}
 		},
+/* 
 		{ text: 'Datum', dataIndex: 'decisionDate', filter: 'date', align: 'left', width: 150},
+ */
 		{ xtype: 'datecolumn',text: 'Beslutsdatum', dataIndex: 'decisionDate', format:'Y-m-d', editor: 'datefield', filter: 'date', align: 'left', width: 150},
 		{ text: 'Examinatorer', dataIndex: 'defaultExaminers', align: 'left', filter: 'list', flex: 1,
 			renderer: function(value, p, r) { 

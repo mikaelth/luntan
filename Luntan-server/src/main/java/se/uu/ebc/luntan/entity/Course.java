@@ -1,6 +1,7 @@
 package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -84,9 +85,12 @@ public class Course  extends Auditable {
     @OneToMany(mappedBy = "course")
     @OrderBy("rank ASC")
     private List<Examiner> examiners = new ArrayList<Examiner>();
- */
+
+    @OneToMany(mappedBy = "course")
+    private Set<CourseInstance> courseInstances = new HashSet<CourseInstance>();
  
- 
+*/ 
+
  	/* Constructors */
  	
 /* 

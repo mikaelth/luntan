@@ -472,11 +472,12 @@ public class EconomyDocController {
 		TMB2M			Masterprogram i molekylär bioteknik
 
 		TMB2Y			Civilingenjörsprogrammet i molekylär bioteknik
+		TMV2Y			Civilingenjörsprogrammet i miljö- och vattenteknik
 		UGY2Y			Ämneslärarprogrammet med inriktning mot arbete i gymnasieskolan
 */
 
 		Map<String,ProgCourse> courseMap = new HashMap<String,ProgCourse>();
-        List<String> programmes = Arrays.asList("TTB2M", "TMB2Y", "TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBK2M&pInr=BIOL", "TBK2M&pInr=DATA", "TBI2M", "TMB2M", "UGY2Y");
+        List<String> programmes = Arrays.asList("TTB2M", "TMB2Y", "TMV2Y", "TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBK2M&pInr=BIOL", "TBK2M&pInr=DATA", "TBI2M", "TMB2M", "UGY2Y");
 
 		for (String pKod : programmes) {
 			log.debug("pKod: "+ pKod);

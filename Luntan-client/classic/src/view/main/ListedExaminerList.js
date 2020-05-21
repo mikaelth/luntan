@@ -59,6 +59,7 @@ Ext.define('Luntan.view.main.ListedExaminerList', {
 		title: '<b>Examinatorer</b>'
 	},
 		
+/* 
 	dockedItems: [{
 		xtype: 'toolbar',
 		items: [
@@ -80,23 +81,23 @@ Ext.define('Luntan.view.main.ListedExaminerList', {
 							Ext.ux.grid.Printer.print(this.up('grid'));   
 						}
 					}, 
-					'->', /*{
-//						text: 'Remove',
-						text: 'Tag bort post',
-						reference: 'btnRemove',
-						disabled: true,
-						 listeners: {
-							click: 'onRemove'
-						}
-					}, {
-//						text: 'Create',
-						text: 'Ny post',
-						reference: 'btnCreate',
-						listeners: {
-							click: 'onCreate'
-						}
-					}, */{
-//						text: 'Save',
+					'->', {
+// 					text: 'Remove',
+// 						text: 'Tag bort post',
+// 						reference: 'btnRemove',
+// 						disabled: true,
+// 						 listeners: {
+// 							click: 'onRemove'
+// 						}
+// 					}, {
+// 					text: 'Create',
+// 						text: 'Ny post',
+// 						reference: 'btnCreate',
+// 						listeners: {
+// 							click: 'onCreate'
+// 						}
+// 					}, 
+// 					{
 						text: 'Spara till db',
 						reference: 'btnSave',
 						listeners: {
@@ -106,6 +107,7 @@ Ext.define('Luntan.view.main.ListedExaminerList', {
 
 			]
 	}],
+ */
 
     columns: [
 		{ text: 'Kurs', dataIndex: 'courseId', align: 'left', flex: 1,
