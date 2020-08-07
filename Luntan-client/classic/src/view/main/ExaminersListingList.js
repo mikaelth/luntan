@@ -62,9 +62,25 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 		
 
     columns: [
-/* 
+		{xtype:'actioncolumn',
+            width:40,
+            items: [{
+				iconCls: 'x-fa fa-list-alt',
+				tooltip: 'Visa examinatorslista',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('view/examiners?decision=').concat(rec.get('id')));				
+				}
+			}, {
+				iconCls: 'x-fa fa-file-excel-o',
+				tooltip: 'Exportera till Excel',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('excel/examiners?decision=').concat(rec.get('id')));
+				}
+			}]
+        },
 		{ xtype: 'checkcolumn', text: 'Beslut', dataIndex: 'decided', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
- */
 		{ text: 'Nämnd', dataIndex: 'board', filter: 'string', align: 'left', flex: 1,
 		    renderer: function(value) {
 				if (Ext.getStore('EduBoardStore').getById(value) != undefined) {

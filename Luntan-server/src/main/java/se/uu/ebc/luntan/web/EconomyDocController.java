@@ -77,6 +77,7 @@ import se.uu.ebc.luntan.entity.EconomyDocument ;
 import se.uu.ebc.luntan.entity.FundingModel ;
 import se.uu.ebc.luntan.entity.Course ;
 import se.uu.ebc.luntan.entity.ExaminersList ;
+import se.uu.ebc.luntan.entity.ExaminersDecision ;
 import se.uu.ebc.luntan.entity.Examiner ;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
@@ -89,6 +90,7 @@ import se.uu.ebc.luntan.vo.EDGVO;
 import se.uu.ebc.luntan.util.DateNullTransformer;
 
 import se.uu.ebc.luntan.web.view.EconomyDocExcel;
+import se.uu.ebc.luntan.web.view.ExaminersExcel;
 
 @Slf4j
 @Controller
@@ -348,7 +350,7 @@ public class EconomyDocController {
 
     @RequestMapping(value = "/view/examiners", method = RequestMethod.GET)
 //    public String viewExaminers(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
-    public String viewExaminers(Model model, Principal principal, HttpServletRequest request) {
+    public String viewExaminers(@RequestParam(value = "decision", required = true) Long examinerListingId, Model model, Principal principal, HttpServletRequest request) {
 			log.debug("viewExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
        try {
@@ -358,11 +360,21 @@ public class EconomyDocController {
 //			log.debug("Examines: " + exs);
 
 			Map<EduBoard,List<Examiner>> exMap = new HashMap<EduBoard,List<Examiner>>();
-			for (EduBoard board : EduBoard.values()) {
-				exMap.put(board,exRepo.findAvailableByBoard(board));
-			}			
+			ExaminersList el = elRepo.findById(examinerListingId).get();
+			if (el instanceof ExaminersDecision) {
+				exMap.put(((ExaminersDecision)el).getBoard(),exRepo.findByDecision(el));
+				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
+				model.addAttribute("defaultExaminers", ((ExaminersDecision)el).getDefaultExaminers());
+			} else {
+				for (EduBoard board : EduBoard.values()) {
+					exMap.put(board,exRepo.findAvailableByBoard(board));
+					model.addAttribute("decisionDate", new Date());
+					model.addAttribute("defaultExaminers", new ArrayList<String>());
+				}	
+			}
 //			EconomyDocument edoc = emRepo.findByYear(year);
 
+			
 			model.addAttribute("serverTime", new Date());
 //			model.addAttribute("edoc", edoc);
 //			model.addAttribute("staff", staffService);
@@ -372,11 +384,46 @@ public class EconomyDocController {
 
     		return "Examiners";
         } catch (Exception e) {
-			log.error("viewEconomyDoc, caught a pesky exception "+ e);
+			log.error("viewExaminers, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
 		}
 	}
 
+    @RequestMapping("/excel/examiners")
+    public ModelAndView viewExaminersExcelDoc(@RequestParam(value = "decision", required = true) Long examinerListingId, Principal principal, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> model = new HashMap<String, Object>();
+
+		ExaminersList el = elRepo.findById(examinerListingId).get();
+		List<Examiner> examiners = exRepo.findByDecision(el);
+		
+		if (el instanceof ExaminersDecision) {
+			model.put("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
+			model.put("defaultExaminers", ((ExaminersDecision)el).getDefaultExaminers());
+			model.put("board",((ExaminersDecision)el).getBoard());
+		} else {
+			model.put("decisionDate", new Date());
+			model.put("defaultExaminers", new ArrayList<String>());
+			model.put("board","någon");
+		}
+
+        model.put("exList", el);
+        model.put("examiners", examiners);
+		model.put("staffMap", staffService.getDesignatedExaminers());
+        model.put("sheetname", "Examinatorer, IBGs kurser, beslut av " + model.get("board"));
+
+        //Headers List
+        List<String> headers = new ArrayList<String>();
+        headers.add("Kurskod");
+        headers.add("Kursnamn");
+        headers.add("Primär examinator");
+        headers.add("Sekundära examinatorer");
+
+        model.put("headers", headers);
+
+        response.setContentType( "application/ms-excel" );
+        response.setHeader( "Content-disposition", "attachment; filename=" + "Examinatorslista-" + model.get("board") + ".xls" );
+        return new ModelAndView(new ExaminersExcel(), model);
+    }
 
 
 

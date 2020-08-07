@@ -72,6 +72,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	@Enumerated(EnumType.STRING)    
 	private CIDesignation extraDesignation;
 
+    @Column(name = "COURSE_LEADER")
+	private String courseLeader = "";
+
     @Column(name = "FIRSTINSTANCE")
 	private boolean firstInstance;
 

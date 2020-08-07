@@ -29,7 +29,7 @@
 			</div>
  -->
 		<div th:each="brd: ${boards}">
-		<h2 th:text="${brd}" />
+		<h2 th:text="${brd} +', beslut ' +  ${#dates.format(decisionDate,'yyyy-MM-dd')}" />
 		<table class='examiner_table'>
 			<tr>
 				<th>Kurs</th>
@@ -49,6 +49,19 @@
 					<td class='alnright' th:text="${staff.findbyEmployeeNumber(ex).name}" />
 				</th:block>
  -->
+			</tr>
+		</table>
+		<p />
+		<table class='default_examiner_table'>
+			<tr>
+				<th>Alla nedlagda kurser som inte är explicit listade</th>
+				<th>Examinatorer</th>
+			</tr>
+			<tr th:each="ex, itemStat: ${defaultExaminers}">
+				<td />
+				<th:block th:object = "${staffMap.get(ex)}">
+					<td th:text="|*{name}, *{title}, *{department}|" />
+				</th:block>
 			</tr>
 		</table>
 		</div>

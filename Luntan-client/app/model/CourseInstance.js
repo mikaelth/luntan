@@ -38,6 +38,7 @@ Ext.define('Luntan.model.CourseInstance', {
          		return data.modelCase.valueOf() == 'REG2YEARS';
      		}
 		},
+		{name: 'courseLeader', type: 'string'},
 		{name: 'balanceRequest', type: 'boolean'},
 		{name: 'firstInstance', type: 'boolean'},
 		{name: 'note', type: 'string'},

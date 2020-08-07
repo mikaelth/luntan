@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 
 import se.uu.ebc.luntan.entity.Examiner;
+import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.enums.EduBoard;
 
 import java.util.Set;
@@ -19,9 +20,11 @@ import java.util.List;
 @Transactional //(readOnly = true)
 public interface ExaminerRepo extends JpaRepository<Examiner, Long>, JpaSpecificationExecutor<Examiner>{
 
-//	@Query("SELECT e FROM Examiner AS e WHERE (e.examinerList.listStatus = 1 AND e.course.board = ?1)")
 	@Query("SELECT e FROM Examiner AS e WHERE (e.examinerList.listStatus = 1 AND e.course.board = ?1) ORDER BY e.course.board, e.course.code, e.rank")
 	public List<Examiner> findAvailableByBoard(EduBoard board);
+
+	@Query("SELECT e FROM Examiner AS e WHERE e.examinerList = ?1 ORDER BY e.course.code, e.rank")
+	public List<Examiner> findByDecision(ExaminersList decision);
 
 	@Query("SELECT DISTINCT e.examiner FROM Examiner AS e")
 	public Set<String> findDesignatedLDAPEntries();

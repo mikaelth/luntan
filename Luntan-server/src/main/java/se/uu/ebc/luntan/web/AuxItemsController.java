@@ -16,14 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 @RestController
 @RequestMapping(value = "/rest")
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class AuxItemsController {
 
-    private static Logger log = Logger.getLogger(AuxItemsController.class.getName());
+//    private static Logger log = Logger.getLogger(AuxItemsController.class.getName());
 
 	@Autowired
 	EconomyDocumentRepo econDocRepo;

@@ -21,12 +21,12 @@ import org.hibernate.annotations.GenericGenerator;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.EduBoard;
 
-import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter

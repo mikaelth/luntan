@@ -31,10 +31,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang3.SerializationUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class CourseService {
 
-    private static Logger logger = Logger.getLogger(CourseService.class.getName());
+//    private static Logger logger = Logger.getLogger(CourseService.class.getName());
 
 	@Autowired
 	CourseRepo courseRepo;
@@ -58,7 +61,7 @@ public class CourseService {
  			}
          	return cVO;        	        
         } catch (Exception e) {
-			logger.error("getAllCourses got a pesky exception: "+ e + e.getCause());
+			log.error("getAllCourses got a pesky exception: "+ e + e.getCause());
 
 			return null;
 			
@@ -99,7 +102,7 @@ public class CourseService {
 
 
 		} catch (Exception e) {
-			logger.error("toCourse got a pesky exception: "+ e + e.getCause());
+			log.error("toCourse got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return c;
 		}
@@ -114,12 +117,12 @@ public class CourseService {
 		List<CourseInstanceVO> cVO = new ArrayList<CourseInstanceVO>();
 		try {	
 			for (CourseInstance ci : ciRepo.findAll()) {
-				logger.debug("getAllCourseInstances, ci "+ReflectionToStringBuilder.toString(ci, ToStringStyle.MULTI_LINE_STYLE));
+				log.debug("getAllCourseInstances, ci "+ReflectionToStringBuilder.toString(ci, ToStringStyle.MULTI_LINE_STYLE));
  				cVO.add(new CourseInstanceVO(ci));
  			}
          	return cVO;        	        
         } catch (Exception e) {
-			logger.error("getAllCourseInstances got a pesky exception: "+ e + e.getCause());
+			log.error("getAllCourseInstances got a pesky exception: "+ e + e.getCause());
 
 			return null;
 			
@@ -129,6 +132,14 @@ public class CourseService {
 
     public CourseInstanceVO saveCourseInstance(CourseInstanceVO cVO) throws Exception {
     	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()).get(), cVO);
+    	ciRepo.save(ci);
+		return new CourseInstanceVO(ci);
+    
+    }
+
+    public CourseInstanceVO saveCourseLeader(CourseInstanceVO cVO) throws Exception {
+    	CourseInstance ci = ciRepo.findById(cVO.getId()).get();
+		ci.setCourseLeader(cVO.getCourseLeader());
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
     
@@ -173,6 +184,7 @@ public class CourseService {
 		try {
 			ci.setId(cVO.getId());
 			ci.setExtraDesignation(cVO.getExtraDesignation());
+			ci.setCourseLeader(cVO.getCourseLeader());
 			ci.setRegisteredStudents(cVO.getRegisteredStudents());
 			ci.setStartRegStudents(cVO.getStartRegStudents());
     		ci.setBalanceRequest(cVO.isBalanceRequest());
@@ -190,11 +202,11 @@ public class CourseService {
 			ci.setCourse(courseRepo.findById(cVO.getCourseId()).get());
 			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()).get());
 
-			if (cVO.getPreceedingCIId()!= null){
+			if (cVO.getPreceedingCIId()!= null && cVO.getBalancedEconomyDocId()!= 0){
 //				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()));
 				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()).get());
 			}
-			if (cVO.getBalancedEconomyDocId()!= null){
+			if (cVO.getBalancedEconomyDocId()!= null && cVO.getBalancedEconomyDocId()!= 0){
 //				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()));
 				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()).get());
 			}
@@ -204,7 +216,7 @@ public class CourseService {
 
 
 		} catch (Exception e) {
-			logger.error("toCourseInstance got a pesky exception: "+ e + e.getCause());
+			log.error("toCourseInstance got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return ci;
 		}

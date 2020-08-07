@@ -34,7 +34,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
+
+//import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.service.CourseService;
 import se.uu.ebc.luntan.service.ExaminersService;
@@ -51,12 +53,16 @@ import se.uu.ebc.luntan.vo.ExListVO;
 
 import se.uu.ebc.luntan.enums.EduBoard;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 @Controller
 @RequestMapping(value = "/rest")
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class CourseController {
 
-    private Logger log = Logger.getLogger(CourseController.class.getName());
+//    private Logger log = Logger.getLogger(CourseController.class.getName());
 
 
 	@Autowired
@@ -162,25 +168,35 @@ public class CourseController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR"),("ROLE_STAFFDIRECTOR")})
     @RequestMapping(value="/cis/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateCourseInstance(@RequestBody String json, @PathVariable("id") Long id) {
+    public ResponseEntity<String> updateCourseInstance(@RequestBody String json, @PathVariable("id") Long id, HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
 			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateCourseInstance, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			log.debug("updateCourseInstance, grantDistribution "+ReflectionToStringBuilder.toString(ciVO.getGrantDistribution(), ToStringStyle.MULTI_LINE_STYLE));
+			log.debug("updateCourseInstance, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
 			ciVO.setId(id);
-			ciVO = courseService.saveCourseInstance(ciVO);
 
+			/* If role is STAFFDIRECTOR, only allow updating course leader */
+			
+			if (request.isUserInRole("ROLE_STAFFDIRECTOR")) {
+				ciVO = courseService.saveCourseLeader(ciVO);
+			} else {
+				ciVO = courseService.saveCourseInstance(ciVO);
+			}
+			
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+ 
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
 
@@ -217,6 +233,20 @@ public class CourseController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+/* 
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    private CourseInstanceVO updateEntireCourseInstance(CourseInstanceVO ciVO) {
+		return courseService.saveCourseInstance(ciVO);
+
+    }
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR"),("ROLE_STAFFDIRECTOR")})
+    private CourseInstanceVO updateCourseLeader(CourseInstanceVO ciVO) {
+		return courseService.saveCourseLeader(ciVO);
+    }
+ */
 
 
 	/* Examiners */

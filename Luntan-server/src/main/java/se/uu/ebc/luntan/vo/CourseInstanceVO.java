@@ -36,6 +36,7 @@ public class CourseInstanceVO {
 	private Long courseId;
 	private String courseGroup;
 	private String courseDesignation;
+	private String courseLeader;
 	
 	private Long preceedingCIId;
 	private Long economyDocId;
@@ -279,6 +280,7 @@ public class CourseInstanceVO {
 		this.courseId = xe.getCourse().getId();
 		this.courseGroup =  xe.getCourse().getCourseGroup().toString();
 		this.courseDesignation =  xe.getCourse().getDesignation();
+		this.courseLeader =  xe.getCourseLeader();
 		
 		this.preceedingCIId = xe.getPreceedingCI() == null ? null : xe.getPreceedingCI().getId();
 		this.economyDocId = xe.getEconomyDoc().getId();

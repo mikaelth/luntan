@@ -166,16 +166,17 @@ public class ExaminersService {
 
 
 		try {
-			ex.setCourse(courseRepo.findById(eVO.getCourseId()).get());
-			if (eVO.isDecided()) {
-				ex.setExaminerList(edRepo.findById(eVO.getDecisionId()).get());
-			} else {
-				ex.setExaminerList(this.getWorkingList());
+			if (!ex.decided()) {			
+				ex.setCourse(courseRepo.findById(eVO.getCourseId()).get());
+				if (eVO.isDecided()) {
+					ex.setExaminerList(edRepo.findById(eVO.getDecisionId()).get());
+				} else {
+					ex.setExaminerList(this.getWorkingList());
+				}
+				ex.setExaminer(eVO.getLdapEntry()) ;
+				ex.setRank(eVO.getRank()) ;
+				ex.setNote(eVO.getNote()) ;
 			}
-			ex.setExaminer(eVO.getLdapEntry()) ;
-			ex.setRank(eVO.getRank()) ;
-			ex.setNote(eVO.getNote()) ;
-
 		} catch (Exception e) {
 			log.error("toExaminer got a pesky exception: "+ e + e.getCause());
 		} finally {

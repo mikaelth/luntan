@@ -2,7 +2,7 @@ package se.uu.ebc.luntan;
 
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,13 +28,16 @@ import se.uu.ebc.luntan.security.LuntanUserService;
 import se.uu.ebc.luntan.security.SecurityService;
 import se.uu.ebc.luntan.security.RESTAuthenticationEntryPoint;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 //@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableAutoConfiguration
 @EnableWebMvcSecurity
 public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	static Logger log = Logger.getLogger(LuntanSecurityConfig.class.getName());
+//	static Logger log = Logger.getLogger(LuntanSecurityConfig.class.getName());
 
 	@Value("${luntan.base.url}")
 	String baseUrl;
@@ -54,7 +57,8 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
         serviceProperties.setService(baseUrl + "/login/cas");
         serviceProperties.setSendRenew(false);
 		log.debug("serviceProperties() " + serviceProperties);
-System.out.println("serviceProperties() " + serviceProperties.getService());
+		log.debug("serviceProperties() " + serviceProperties.getService());
+//System.out.println("serviceProperties() " + serviceProperties.getService());
         return serviceProperties;
     }
 

@@ -11,6 +11,7 @@ public enum CourseGroup {
 	GOTLAND("Gotlandskurser"),
 	ENGINEER("Ingenjörskurser"),
 	KNO("KNO-kurser"),
+	CROSS("Tvärvetenskapliga kurser"),
 	TEACHERS("Lärarkurser"),
 	LIBART("Liberal Arts"),
 	BIOINF("Master Bioinformatik"),

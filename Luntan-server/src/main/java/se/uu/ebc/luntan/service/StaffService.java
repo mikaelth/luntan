@@ -138,6 +138,17 @@ public class StaffService {
         return ldapTemplate.search(query, new StaffAttributesMapper());
     }
  
+ 	public List<Staff> findByName(String name){
+		
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query().where("cn").is( "*" + name + "*" ));
+		
+ 
+        return ldapTemplate.search(query, new StaffAttributesMapper());
+ 	
+ 	}
  
     /**
      * Custom staff attributes mapper, maps the attributes to the staff POJO
