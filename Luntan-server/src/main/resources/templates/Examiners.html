@@ -39,7 +39,7 @@
 				<th:block th:with="newCourse = ${itemStat.first} or ${ex.course.code} != ${examiners.get(brd)[__${itemStat.index}-1__].course.code}">
 					<td th:text="${ex.rank}==1 ? |${ex.course.code} ${ex.course.seName}, ${ex.course.credits} hp| : ''" />
 					<th:block th:object = "${staffMap.get(ex.examiner)}">
-						<td th:text="|*{name}, *{title}, *{department}|" />
+						<td th:text="|*{name}, *{title}, *{fullDepartment}|" />
 					</th:block>
 				</th:block>
 <!-- 
@@ -51,6 +51,7 @@
  -->
 			</tr>
 		</table>
+<!-- 
 		<p />
 		<table class='default_examiner_table'>
 			<tr>
@@ -65,6 +66,7 @@
 			</tr>
 		</table>
 		</div>
+ -->
 	<p>
 		Current time is <span th:text="${serverTime}" />
 	</p>

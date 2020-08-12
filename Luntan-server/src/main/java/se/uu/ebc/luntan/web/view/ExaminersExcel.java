@@ -131,7 +131,7 @@ public class ExaminersExcel extends AbstractXlsView
 			cell.setCellValue(text);                    
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(staff.get(ex.getExaminer()).getName());                
+			text = new HSSFRichTextString(staff.get(ex.getExaminer()).getNameAndOu());                
 			cell.setCellValue(text);                    
 /* 
 

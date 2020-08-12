@@ -7,6 +7,7 @@ import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
 import org.springframework.ldap.odm.annotations.DnAttribute;
 import javax.naming.Name;
+import java.util.StringJoiner;
 
 import lombok.Data;
 
@@ -35,5 +36,17 @@ public final class Staff {
     private @Attribute(name = "telephoneNumber") String phone;
     private @Attribute(name = "mail") String mail;
     private @Attribute(name = "department") String fullDepartment;
+
+	// Business methods
+	
+	public String getNameAndOu () {
+	
+		StringJoiner staffJoiner = new StringJoiner(", ");
  
+		staffJoiner.add(name);
+		staffJoiner.add(title);		
+		staffJoiner.add(fullDepartment);
+		
+		return staffJoiner.toString();
+	} 
  }

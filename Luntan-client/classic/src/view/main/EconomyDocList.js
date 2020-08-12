@@ -57,14 +57,17 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 					var rec = grid.getStore().getAt(rowIndex);
 					window.open(Luntan.data.Constants.BASE_URL.concat('excel/economydoc?year=').concat(rec.get('year')));
 				}
-			},{
+			}
+/* 			,{
 				iconCls: 'x-fa fa-user',
 				tooltip: 'Lista examinatorer',
 				handler: function(grid, rowIndex, colIndex){
 					var rec = grid.getStore().getAt(rowIndex);
 					window.open(Luntan.data.Constants.BASE_URL.concat('view/examiners?year=').concat(rec.get('year')));
 				}
-			}]
+			}
+ */			
+ 			]
         },
 		{ xtype: 'checkcolumn', text: 'Klona', dataIndex: 'cloneCourses', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},
 		{ xtype: 'checkcolumn', text: 'Låst', dataIndex: 'locked', editor: 'checkboxfield', editable: true, align: 'center', width: 50, filter: 'boolean'},

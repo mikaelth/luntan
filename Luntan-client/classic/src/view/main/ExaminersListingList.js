@@ -65,7 +65,7 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 		{xtype:'actioncolumn',
             width:40,
             items: [{
-				iconCls: 'x-fa fa-list-alt',
+				iconCls: 'x-fa fa-user',
 				tooltip: 'Visa examinatorslista',
 				handler: function(grid, rowIndex, colIndex){
 					var rec = grid.getStore().getAt(rowIndex);

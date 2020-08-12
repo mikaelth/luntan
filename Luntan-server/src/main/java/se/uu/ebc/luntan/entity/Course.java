@@ -52,12 +52,7 @@ public class Course  extends Auditable {
         this.id = id;
     }
 
-    
-/* 
-    @OneToMany(mappedBy = "course")
-    private Set<CourseInstance> courseInstances;
- */
-    
+        
     @Column(name = "CODE", length = 255)
     @NotNull
     private String code;
