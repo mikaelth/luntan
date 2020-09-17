@@ -12,6 +12,7 @@ import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.FundingModel;
 import se.uu.ebc.luntan.enums.CIDesignation;
 import se.uu.ebc.luntan.enums.CourseGroup;
+import se.uu.ebc.luntan.enums.EduBoard;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -32,7 +33,8 @@ public class CourseVO {
     private CourseGroup courseGroup;
     private String note;
     private Float credits;
-	
+	private EduBoard board;
+		
  	/* Setters and getters */
  	   
 
@@ -121,6 +123,7 @@ public class CourseVO {
 		this.code = xe.getCode();
 		this.seName = xe.getSeName();
 		this.courseGroup = xe.getCourseGroup();
+		this.board = xe.getBoard();
 		this.note = xe.getNote();
 		this.credits = xe.getCredits();
 	}

@@ -39,6 +39,10 @@ public final class Staff {
 
 	// Business methods
 	
+	public String getSortingName () {
+		return familyName + ", " + givenName;
+	}
+
 	public String getNameAndOu () {
 	
 		StringJoiner staffJoiner = new StringJoiner(", ");

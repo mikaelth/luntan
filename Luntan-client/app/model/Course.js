@@ -20,6 +20,7 @@ Ext.define('Luntan.model.Course', {
 		{name: 'id', type: 'int'},
 		{name: 'code', type: 'string'},
 		{name: 'courseGroup', type: 'string'},
+		{name: 'board', type: 'string'},
 		{name: 'seName', type: 'string'},
 		{name: 'designation', type: 'string'},
 		{name: 'credits', type: 'float'},

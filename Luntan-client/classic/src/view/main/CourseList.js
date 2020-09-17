@@ -35,6 +35,7 @@ Ext.define('Luntan.view.main.CourseList', {
 		{ text: 'Kurskod', dataIndex: 'code', editor: 'textfield', filter: 'string', align: 'left', width: 100 },
 		{ text: 'Benämning', dataIndex: 'seName', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
 //		{ text: 'Engelsk benämning', dataIndex: 'enName', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
+		{ text: 'Poäng', dataIndex: 'credits', editor: 'textfield', align: 'left', width: 80 },
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('CourseGroupStore').getById(value) != undefined) {
@@ -54,8 +55,26 @@ Ext.define('Luntan.view.main.CourseList', {
 			    valueField: 'id',
 			}
 		},
+		{ text: 'Examinatorsbeslut', dataIndex: 'board', align: 'left', flex: 1,
+         	renderer: function(value) {
+				if (Ext.getStore('EduBoardStore').getById(value) != undefined) {
+					return Ext.getStore('EduBoardStore').getById(value).get('displayname');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{availBoards}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'displayname',
+			    valueField: 'id',
+			}
+		},
 //		{ text: 'Kursperiod', dataIndex: 'period', editor: 'textfield', align: 'left', width: 80 },
-		{ text: 'Poäng', dataIndex: 'credits', editor: 'textfield', align: 'left', width: 80 },
 		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 
 	],

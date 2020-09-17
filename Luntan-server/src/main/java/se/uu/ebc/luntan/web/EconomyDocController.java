@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -79,6 +81,7 @@ import se.uu.ebc.luntan.entity.Course ;
 import se.uu.ebc.luntan.entity.ExaminersList ;
 import se.uu.ebc.luntan.entity.ExaminersDecision ;
 import se.uu.ebc.luntan.entity.Examiner ;
+import se.uu.ebc.ldap.Staff ;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
@@ -349,7 +352,6 @@ public class EconomyDocController {
 	/* Examiners */
 
     @RequestMapping(value = "/view/examiners", method = RequestMethod.GET)
-//    public String viewExaminers(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
     public String viewExaminers(@RequestParam(value = "decision", required = true) Long examinerListingId, Model model, Principal principal, HttpServletRequest request) {
 			log.debug("viewExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
@@ -385,6 +387,53 @@ public class EconomyDocController {
     		return "Examiners";
         } catch (Exception e) {
 			log.error("viewExaminers, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
+
+    @RequestMapping(value = "/view/deptexaminers", method = RequestMethod.GET)
+    public String viewDepartmentExaminers(@RequestParam(value = "decision", required = true) Long examinerListingId, Model model, Principal principal, HttpServletRequest request) {
+			log.debug("viewDepartmentExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+
+       try {
+
+
+//			Map<String,List<Examiner>> deptMap = new HashMap<String,List<Examiner>>();
+			ExaminersList el = elRepo.findById(examinerListingId).get();
+			List<Examiner> examiners = new ArrayList<Examiner>(); 
+			Map<String, Staff> staffMap = staffService.getDesignatedExaminers();
+			
+			
+			if (el instanceof ExaminersDecision) {
+				examiners = exRepo.findByDecision(el);
+				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
+			} else {
+				for (EduBoard board : EduBoard.values()) {
+					examiners.addAll(exRepo.findAvailableByBoard(board));
+					model.addAttribute("decisionDate", new Date());
+				}	
+			}
+         		
+         	List<DeptExaminer> deptExaminers = examiners.stream()
+				.map(examiner -> {
+					DeptExaminer dex = new DeptExaminer(); // Convert examiner to DeptExaminer
+					dex.setExaminer(examiner);
+					dex.setStaff(staffMap.get(examiner.getExaminer()));
+					return dex;
+				})
+				.collect(Collectors.toList());
+
+         	deptExaminers.sort(Comparator.comparing(DeptExaminer::getDepartment).thenComparing(DeptExaminer::getName));
+   	
+   			
+			model.addAttribute("serverTime", new Date());
+//			model.addAttribute("staffMap", staffMap);
+			model.addAttribute("examiners", deptExaminers);
+// 			model.addAttribute("boards", exMap.keySet());
+
+    		return "DepartmentExaminers";
+        } catch (Exception e) {
+			log.error("viewDepartmentExaminers, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
 		}
 	}
@@ -636,6 +685,22 @@ public class EconomyDocController {
 
 		public String inProg(String pKod) {
 			return programmes.contains(pKod) ? "X" : "";
+		}
+	}
+
+	@Data
+	private class DeptExaminer {
+		private Staff staff;
+		private Examiner examiner;
+	
+		public String getDepartment() {
+			return staff.getFullDepartment();
+		}
+		public String getName() {
+			return staff.getSortingName();
+		}
+		public String getCourseCode() {
+			return examiner.getCourse().getCode();
 		}
 	}
 

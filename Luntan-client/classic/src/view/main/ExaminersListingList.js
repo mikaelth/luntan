@@ -63,9 +63,16 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 
     columns: [
 		{xtype:'actioncolumn',
-            width:40,
+            width:60,
             items: [{
 				iconCls: 'x-fa fa-user',
+				tooltip: 'Visa examinatorslista per organistaionsenhet och examinator',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('view/deptexaminers?decision=').concat(rec.get('id')));				
+				}
+			},{
+				iconCls: 'x-fa fa-list-alt',
 				tooltip: 'Visa examinatorslista',
 				handler: function(grid, rowIndex, colIndex){
 					var rec = grid.getStore().getAt(rowIndex);
