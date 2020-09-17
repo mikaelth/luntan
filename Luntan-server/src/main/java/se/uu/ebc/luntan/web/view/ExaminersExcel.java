@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.view.document.AbstractXlsView;
 
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import se.uu.ebc.ldap.Staff;
+import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.Examiner;
 import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.enums.Department;
@@ -44,6 +46,7 @@ public class ExaminersExcel extends AbstractXlsView
         ExaminersList el = (ExaminersList)model.get("exList");
         List<Examiner> examiners = (List<Examiner>)model.get("examiners");
         Map<String, Staff> staff = (Map<String, Staff>)model.get("staffMap");
+        Map<Course,List<Examiner>> em = (Map<Course,List<Examiner>>)model.get("exMap");
 
         List<String> numericColumns = new ArrayList<String>();
         if (model.containsKey("numericcolumns"))
@@ -60,33 +63,6 @@ public class ExaminersExcel extends AbstractXlsView
 		HSSFRow row; // = sheet.createRow(currentRow);
 		HSSFCell cell; //= row.createCell(1);
 		HSSFRichTextString text;
-/* 
-		HSSFRichTextString text = new HSSFRichTextString(sheetName);                
-		cell.setCellValue(text);                    
-		currentRow++;
-
-		row = sheet.createRow(currentRow);		
-		cell = row.createCell(1);
-		text = new HSSFRichTextString(experiment.getLaborator().getFirstName()+" "+experiment.getLaborator().getLastName());
-		cell.setCellValue(text);                    
-		HSSFCellStyle cellStyle = ((HSSFWorkbook)workbook).createCellStyle();
-		CreationHelper createHelper = ((HSSFWorkbook)workbook).getCreationHelper();
-		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd"));
-		cell = row.createCell(2);
-		cell.setCellStyle(cellStyle);		
-		cell.setCellValue(experiment.getDate());                    
-		currentRow++;
-
-		row = sheet.createRow(currentRow);		
-		cell = row.createCell(1);
-		text = new HSSFRichTextString(experiment.getExperimentKind().getExperimentType());
-		cell.setCellValue(text);                    
-		cell = row.createCell(2);
-		text = new HSSFRichTextString(experiment.getProtocol() == null ? "" : experiment.getProtocol().getDesignation());
-		cell.setCellValue(text);                    
-		currentRow++;
-		currentRow++;
- */
 
         //CREATE STYLE FOR HEADER
         HSSFCellStyle headerStyle = (HSSFCellStyle)workbook.createCellStyle();
@@ -96,7 +72,6 @@ public class ExaminersExcel extends AbstractXlsView
 
 		CreationHelper ch = workbook.getCreationHelper();
     	HSSFCellStyle styleCurrencyFormat = (HSSFCellStyle)workbook.createCellStyle();
-//    	styleCurrencyFormat.setDataFormat(HSSFDataFormat.getBuiltinFormat("# ##0 kr"));
     	styleCurrencyFormat.setDataFormat(ch.createDataFormat().getFormat("# ##0 kr"));
 
     	HSSFCellStyle stylePercentFormat = (HSSFCellStyle)workbook.createCellStyle();
@@ -118,60 +93,25 @@ public class ExaminersExcel extends AbstractXlsView
 
         //POPULATE VALUE ROWS/COLUMNS
         currentRow++;//exclude header
-        for(Examiner ex: examiners){
+        for(Course course: em.keySet()){
             row = sheet.createRow(currentRow);
         	currentColumn = 0;
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ex.getCourse().getCode());                
+			text = new HSSFRichTextString(course.getCode());                
 			cell.setCellValue(text);                    
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ex.getCourse().getSeName()+", "+ex.getCourse().getCredits()+" hp");                
+			text = new HSSFRichTextString(course.getSeName()+", "+course.getCredits()+" hp");                
 			cell.setCellValue(text);                    
 
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(staff.get(ex.getExaminer()).getNameAndOu());                
-			cell.setCellValue(text);                    
-/* 
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getRegisteredStudents() == null ? 0 : ci.getRegisteredStudents());
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleDecFormat);
-            cell.setCellValue(ci.getModelStudentNumber()*ci.getCourse().getCredits()/60);
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getFundingModel().getId());
-
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isFirstInstance() ? "X" : "");                
-			cell.setCellValue(text);                    
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeCIGrant());
-
-			for (Department dep : edoc.getAccountedDeptsSorted())
-			{            
-				cell = row.createCell(currentColumn++);
-				cell.setCellType(CellType.NUMERIC);
-				cell.setCellStyle(stylePercentFormat);
-				cell.setCellValue(ci.explicitGrantDist().get(dep));
-			}            
-			for (Department dep : edoc.getAccountedDeptsSorted())
-			{            
-				cell = row.createCell(currentColumn++);
-				cell.setCellType(CellType.NUMERIC);
-				cell.setCellStyle(styleCurrencyFormat);
-            	cell.setCellValue(ci.computeGrants().get(dep));
-			}            
- */
+			String examinerNames = em.get(course).stream()
+        		.map( ex -> staff.get(ex.getExaminer()).getName() )
+        		.collect( Collectors.joining( ", " ) );
+			cell = row.createCell(currentColumn++);
+			text = new HSSFRichTextString(examinerNames);                
+			cell.setCellValue(text);  
+                  
 			currentRow++;
         }
 

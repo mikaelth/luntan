@@ -444,6 +444,7 @@ public class EconomyDocController {
 
 		ExaminersList el = elRepo.findById(examinerListingId).get();
 		List<Examiner> examiners = exRepo.findByDecision(el);
+		Map<Course,List<Examiner>> exMap = new HashMap<Course,List<Examiner>>();
 		
 		if (el instanceof ExaminersDecision) {
 			model.put("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
@@ -455,6 +456,13 @@ public class EconomyDocController {
 			model.put("board","någon");
 		}
 
+		for (Examiner ex : examiners) {
+			if (!exMap.containsKey(ex.getCourse())) {
+				exMap.put(ex.getCourse(), new ArrayList<Examiner>());
+			} 
+			exMap.get(ex.getCourse()).add(ex);			
+		}
+        model.put("exMap", exMap);
         model.put("exList", el);
         model.put("examiners", examiners);
 		model.put("staffMap", staffService.getDesignatedExaminers());
@@ -464,8 +472,7 @@ public class EconomyDocController {
         List<String> headers = new ArrayList<String>();
         headers.add("Kurskod");
         headers.add("Kursnamn");
-        headers.add("Primär examinator");
-        headers.add("Sekundära examinatorer");
+        headers.add("Examinatorer");
 
         model.put("headers", headers);
 
