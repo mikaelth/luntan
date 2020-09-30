@@ -53,4 +53,9 @@ public final class Staff {
 		
 		return staffJoiner.toString();
 	} 
+	
+	public boolean isExaminerEligible() {
+	
+		return !title.toLowerCase().contains("forskare");
+	}
  }

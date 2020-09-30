@@ -59,17 +59,18 @@ public class StaffService {
 	private final String BASE_DN = "cn=People,dc=uu,dc=se";
 
 
-   public Staff findStaff(String dn) {
+	public Staff findStaff(String dn) {
       return ldapTemplate.lookup(dn, new StaffAttributesMapper());
    }
 
-   public Staff findbyEmployeeNumber (String employeeNumber) {
+	public Staff findbyEmployeeNumber (String employeeNumber) {
       return ldapTemplate.lookup(LdapNameBuilder.newInstance(BASE_DN).add("employeeNumber", employeeNumber).build(), new StaffAttributesMapper());
    }
 
-    public List<Staff> getTeachersBiology () {
+	public List<Staff> getTeachersBiology () {
 		List<Staff> theStaff = getBiologyTeachers();
 		theStaff.addAll(getOtherDeptsTeachers());
+		
 		return theStaff;
 	}
 	
@@ -83,7 +84,7 @@ public class StaffService {
 		return staffMap;
 	}
 
-    private List<Staff> getBiologyTeachers () {
+	private List<Staff> getBiologyTeachers () {
 
         LdapQuery query = query()
         		.base(BASE_DN)
@@ -95,6 +96,7 @@ public class StaffService {
                 	.or("title").like("biträdande universitetslektor*")
                 	.or("title").like("forskarassistent*")
                 	.or("title").like("adjunkt*")
+					.or("title").like("forskare*") // This is later flagged as not eligible for being an examiner
                 )
                 .and(query()
                 	.where("department").like("Institutionen för organismbiologi*")
@@ -109,7 +111,7 @@ public class StaffService {
         return ldapTemplate.search(query, new StaffAttributesMapper());
     }
  
-     private List<Staff> getOtherDeptsTeachers () {
+	private List<Staff> getOtherDeptsTeachers () {
 
  		List<ExternalTeacher> teachers = externalsRepo.findAll();
 		ContainerCriteria criteria = null;
@@ -131,6 +133,7 @@ public class StaffService {
                 	.or("title").like("biträdande universitetslektor*")
                 	.or("title").like("forskarassistent*")
                 	.or("title").like("adjunkt*")
+					.or("title").like("forskare*") // This is later flagged as not eligible for being an examiner
                 )
                 .and(criteria);
 		

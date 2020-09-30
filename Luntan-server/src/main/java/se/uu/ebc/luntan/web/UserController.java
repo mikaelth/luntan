@@ -147,7 +147,7 @@ public class UserController {
 				log.debug("Lookup: " + staffService.findStaff(person.getDn().toString()).toString());
 			}
 
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("staff").deepSerialize(staff), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").include("examinerEligible").rootName("staff").deepSerialize(staff), headers, HttpStatus.OK);
 		} catch (Exception e) {
  			log.error("Got a pesky exception: "  + e);
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);

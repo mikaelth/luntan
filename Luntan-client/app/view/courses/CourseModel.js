@@ -63,7 +63,14 @@ Ext.define('Luntan.view.courses.CourseModel', {
 		},
 		teachers : {
 			type: 'chained',
-			source: 'TeacherStore'
+			source: 'TeacherStore',
+			filters:[{property:'examinerEligible', value: true, exactMatch: true}],
+			sorters: [{property:'name', direction: 'ASC'}],
+		},
+		seniorStaff : {
+			type: 'chained',
+			source: 'TeacherStore',
+			sorters: [{property:'name', direction: 'ASC'}],
 		},
 		examiners : {
 			type: 'chained',

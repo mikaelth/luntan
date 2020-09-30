@@ -26,6 +26,25 @@ Ext.define('Luntan.view.main.CourseTaskList', {
 		{ text: 'ICM', dataIndex: 'ICM', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80 },
 		{ text: 'IEG', dataIndex: 'IEG', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80 },
 		{ text: 'IOB', dataIndex: 'IOB', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80},
+		{ text: 'Kursledare', dataIndex: 'courseLeader', align: 'left', flex: 1,
+		    renderer: function(value) {
+				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
+					return Ext.getStore('TeacherStore').getById(value).get('name');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{seniorStaff}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'name',
+			    valueField: 'employeeNumber'
+			}
+		},
 		{ text: 'Kommentarer', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 2 }
 
 	],
