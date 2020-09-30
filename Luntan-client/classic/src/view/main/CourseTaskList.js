@@ -17,7 +17,15 @@ Ext.define('Luntan.view.main.CourseTaskList', {
 
     columns: [
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', filter: 'string', width: 150 },
-		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', filter: 'string', flex: 1,         	
+		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', filter: 'string', flex: 1},
+		{ text: 'Extra', dataIndex: 'extraDesignation', filter: 'string', align: 'left', width: 100, 
+         	renderer: function(value) {
+				if (Ext.getStore('CIDesignationStore').getById(value) != undefined) {
+					return Ext.getStore('CIDesignationStore').getById(value).get('displayname');
+				} else {
+					return value;
+				}
+        	}
 		},
 		{ text: 'Studentantal', dataIndex: 'modelStudentNumber', filter: 'string', align: 'left', width: 100 },
 		{ text: 'Källa', dataIndex: 'modelCase', filter: 'string', align: 'left', width: 90 },

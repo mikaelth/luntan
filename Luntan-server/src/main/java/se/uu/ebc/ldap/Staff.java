@@ -36,6 +36,7 @@ public final class Staff {
     private @Attribute(name = "telephoneNumber") String phone;
     private @Attribute(name = "mail") String mail;
     private @Attribute(name = "department") String fullDepartment;
+    private boolean examinerEligible;
 
 	// Business methods
 	
@@ -54,8 +55,10 @@ public final class Staff {
 		return staffJoiner.toString();
 	} 
 	
+/* 
 	public boolean isExaminerEligible() {
 	
 		return !title.toLowerCase().contains("forskare");
 	}
+ */
  }

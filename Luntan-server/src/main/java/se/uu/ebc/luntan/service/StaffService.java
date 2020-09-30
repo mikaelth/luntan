@@ -69,7 +69,10 @@ public class StaffService {
 
 	public List<Staff> getTeachersBiology () {
 		List<Staff> theStaff = getBiologyTeachers();
+		theStaff.addAll(getBiologyOtherStaff());
+		theStaff.addAll(getIBGStaff());
 		theStaff.addAll(getOtherDeptsTeachers());
+		theStaff.addAll(getOtherDeptsOtherStaff());
 		
 		return theStaff;
 	}
@@ -96,7 +99,6 @@ public class StaffService {
                 	.or("title").like("biträdande universitetslektor*")
                 	.or("title").like("forskarassistent*")
                 	.or("title").like("adjunkt*")
-					.or("title").like("forskare*") // This is later flagged as not eligible for being an examiner
                 )
                 .and(query()
                 	.where("department").like("Institutionen för organismbiologi*")
@@ -108,9 +110,49 @@ public class StaffService {
 					.where("title").not().like("professor emer*")
 				);
 
-        return ldapTemplate.search(query, new StaffAttributesMapper());
+        return ldapTemplate.search(query, new StaffAttributesMapper(true));
     }
- 
+
+	private List<Staff> getBiologyOtherStaff () {
+
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("forskare*")
+               		.or("title").like("Postdoktor*")
+               		.or("title").like("post doc*")
+               		.or("title").like("doktorand*")
+                  )
+                .and(query()
+                	.where("department").like("Institutionen för organismbiologi*")
+                	.or("department").like("Institutionen för cell- och molekylärbiologi*")
+                	.or("department").like("Institutionen för ekologi och genetik*")
+ 					.or("department").like("Institutionen för biologisk grundutbildning*")
+				);
+
+        return ldapTemplate.search(query, new StaffAttributesMapper(false));
+    }
+    
+	private List<Staff> getIBGStaff () {
+
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("kursledare*")
+                	.or("title").like("kursassistent*")
+                	.or("title").like("projektledare*")
+                	.or("title").like("timlärare*")
+                	.or("title").like("utbildningssamordnare*")
+                 )
+                .and(query()
+                	.where("department").like("Institutionen för biologisk grundutbildning*")
+				);
+
+        return ldapTemplate.search(query, new StaffAttributesMapper(false));
+    }
+     
 	private List<Staff> getOtherDeptsTeachers () {
 
  		List<ExternalTeacher> teachers = externalsRepo.findAll();
@@ -133,12 +175,37 @@ public class StaffService {
                 	.or("title").like("biträdande universitetslektor*")
                 	.or("title").like("forskarassistent*")
                 	.or("title").like("adjunkt*")
-					.or("title").like("forskare*") // This is later flagged as not eligible for being an examiner
                 )
                 .and(criteria);
 		
  
-        return ldapTemplate.search(query, new StaffAttributesMapper());
+        return ldapTemplate.search(query, new StaffAttributesMapper(true));
+    }
+
+	private List<Staff> getOtherDeptsOtherStaff () {
+
+ 		List<ExternalTeacher> teachers = externalsRepo.findAll();
+		ContainerCriteria criteria = null;
+		for (ExternalTeacher teacher : teachers) {
+			if (criteria == null) {
+				criteria = query().where("cn").is(teacher.getName()).and(query().where("ou").is(teacher.getDepartment()));
+			} else {
+				criteria = criteria.or(query().where("cn").is(teacher.getName()).and(query().where("ou").is(teacher.getDepartment())));
+			}
+		}
+		
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("museiintendent*")
+                	.or("title").like("1:e museiintendent*")
+					.or("title").like("forskare*") 
+                )
+                .and(criteria);
+		
+ 
+        return ldapTemplate.search(query, new StaffAttributesMapper(false));
     }
  
  	public List<Staff> findByName(String name){
@@ -157,6 +224,8 @@ public class StaffService {
      * Custom staff attributes mapper, maps the attributes to the staff POJO
      */
     private class StaffAttributesMapper implements AttributesMapper<Staff> {
+        private boolean eligible;
+        
         public Staff mapFromAttributes(Attributes attrs) throws NamingException {
             Staff person = new Staff();
  			try {
@@ -189,6 +258,8 @@ public class StaffService {
 					person.setFullDepartment((String)department.get());
 				}
 
+				person.setExaminerEligible(eligible);
+				
             } catch (Exception e) {
 				log.error("Got a pesky exception: "  + e);
             } finally {
@@ -197,7 +268,12 @@ public class StaffService {
             }
             
         }
-    }
+        
+        public StaffAttributesMapper (boolean eligible) {
+        	this.eligible = eligible;
+        }
+         public StaffAttributesMapper () {}
+   }
  
  
 }
