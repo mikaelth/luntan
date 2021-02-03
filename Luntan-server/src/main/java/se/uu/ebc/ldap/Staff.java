@@ -41,9 +41,17 @@ public final class Staff {
 	// Business methods
 	
 	public String getSortingName () {
-		return familyName + ", " + givenName;
+		return familyName == null ? employeeNumber : familyName + ", " + givenName;
 	}
 
+	public String getDepartment() {
+		return department == null ? "MISSING" : department;
+	}
+
+	public String getFullDepartment() {
+		return fullDepartment == null ? "MISSING" : fullDepartment;
+	}
+	
 	public String getNameAndOu () {
 	
 		StringJoiner staffJoiner = new StringJoiner(", ");

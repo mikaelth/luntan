@@ -185,6 +185,7 @@ public class CourseService {
 		try {
 			ci.setId(cVO.getId());
 			ci.setExtraDesignation(cVO.getExtraDesignation());
+			ci.setInstanceCode(cVO.getInstanceCode());
 			ci.setCourseLeader(cVO.getCourseLeader());
 			ci.setRegisteredStudents(cVO.getRegisteredStudents());
 			ci.setStartRegStudents(cVO.getStartRegStudents());
@@ -203,7 +204,9 @@ public class CourseService {
 			ci.setCourse(courseRepo.findById(cVO.getCourseId()).get());
 			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()).get());
 
-			if (cVO.getPreceedingCIId()!= null && cVO.getBalancedEconomyDocId()!= 0){
+			log.debug("preceedingCIId: "+ cVO.getPreceedingCIId() + ", economyDocId: " + cVO.getBalancedEconomyDocId());
+
+			if (cVO.getPreceedingCIId()!= null /* && cVO.getBalancedEconomyDocId()!= 0 */){
 //				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()));
 				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()).get());
 			}

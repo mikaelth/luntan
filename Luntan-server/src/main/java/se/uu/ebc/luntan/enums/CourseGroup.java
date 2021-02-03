@@ -21,6 +21,7 @@ public enum CourseGroup {
 	PROGRAM("Programansvar"),
 	SUMMER("Sommarkurser"),
 	COMMISIONED("Uppdragsutbildning"),
+	LLL("Livslångt lärande"),
 	MISC("Övrigt");
 
 

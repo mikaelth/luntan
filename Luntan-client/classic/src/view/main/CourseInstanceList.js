@@ -19,7 +19,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
     columns: [
 		{ xtype: 'checkcolumn', text: 'Ny', dataIndex: 'firstInstance', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 50 },
 		{ xtype: 'checkcolumn', text: 'Balansera', dataIndex: 'balanceRequest', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'left', width: 50 },
-		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', width: 150 },
+		{ text: 'Kursgrupp', dataIndex: 'courseGroup', filter: 'list', align: 'left', width: 150 },
 		{ text: 'Kurs', dataIndex: 'courseId', align: 'left', flex: 2,
          	renderer: function(value) {
 				if (Ext.getStore('CourseStore').getById(value) != undefined) {
@@ -47,7 +47,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 			    }				
 			}
 		},
-		{ text: 'Extra benämning', dataIndex: 'extraDesignation', filter: 'string', align: 'left', flex: 1, 
+		{ text: 'Extra benämning', dataIndex: 'extraDesignation', filter: 'list', align: 'left', flex: 1, 
          	renderer: function(value) {
 				if (Ext.getStore('CIDesignationStore').getById(value) != undefined) {
 					return Ext.getStore('CIDesignationStore').getById(value).get('displayname');
@@ -75,6 +75,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
  */
 			}
 		},
+		{ text: 'Tillfälleskod', dataIndex: 'instanceCode', editor: 'textfield', filter: 'string', align: 'left', width: 80 },
 		{ text: 'Föregående kurs', dataIndex: 'preceedingCIId', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('CourseInstanceStore').getById(value) != undefined) {

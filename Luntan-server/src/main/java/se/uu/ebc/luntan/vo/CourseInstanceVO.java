@@ -44,6 +44,7 @@ public class CourseInstanceVO {
 	private Long fundingModelId;
 
 	private CIDesignation extraDesignation;
+	private String instanceCode;
 
 	private Integer registeredStudents;
 	private Integer startRegStudents;
@@ -290,6 +291,7 @@ public class CourseInstanceVO {
 		this.fundingModelId = xe.getFundingModel().getId();
 		
 		this.extraDesignation = xe.getExtraDesignation();
+		this.instanceCode = xe.getInstanceCode();
 		this.registeredStudents = xe.getRegisteredStudents();
 		this.startRegStudents = xe.getStartRegStudents();
 		

@@ -64,7 +64,17 @@ public class StaffService {
    }
 
 	public Staff findbyEmployeeNumber (String employeeNumber) {
-      return ldapTemplate.lookup(LdapNameBuilder.newInstance(BASE_DN).add("employeeNumber", employeeNumber).build(), new StaffAttributesMapper());
+		Staff s = new Staff();
+		try {
+			s = ldapTemplate.lookup(LdapNameBuilder.newInstance(BASE_DN).add("employeeNumber", employeeNumber).build(), new StaffAttributesMapper());
+		} catch (Exception e) {
+			s.setEmployeeNumber(employeeNumber);
+			s.setFamilyName(employeeNumber);
+			s.setGivenName(employeeNumber);			
+			s.setName(employeeNumber);			
+		} finally {      	
+			return s;
+		}
    }
 
 	public List<Staff> getTeachersBiology () {
