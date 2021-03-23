@@ -15,6 +15,7 @@ import se.uu.ebc.luntan.enums.EduBoard;
 
 import java.util.Set;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Transactional //(readOnly = true)
@@ -38,5 +39,8 @@ public interface ExaminerRepo extends JpaRepository<Examiner, Long>, JpaSpecific
 	@Query("SELECT e FROM Examiner AS e WHERE e.examinerList.listStatus = 1 ORDER BY e.course.board, e.course.code, e.rank")
 	public List<Examiner> findAvailable();
 
-	
+//	@Query(value="select distinct c.code,e.ldap_entry!=se.ldap_entry as different  from examiner as e join examiner as se on (e.`course_fk`=se.course_fk AND e.rank=se.rank) join course as c on e.course_fk=c.id where e.list_fk=?1 and se.list_fk=?2 UNION select distinct c.code,2 as different from examiner as e join course as c on e.course_fk=c.id where list_fk=?1 and course_fk not in (select distinct course_fk from examiner as se where list_fk=?2)", 
+//		nativeQuery=true)
+	@Query(value="select distinct c.code, group_concat(e.ldap_entry) != group_concat(se.ldap_entry) as different  from examiner as e join examiner as se on (e.`course_fk`=se.course_fk AND e.rank=se.rank) join course as c on e.course_fk=c.id where e.list_fk=?1 and se.list_fk=?2 group by e.course_fk, se.course_fk UNION select distinct c.code,2 as different from examiner as e join course as c on e.course_fk=c.id where list_fk=?1 and course_fk not in (select distinct course_fk from examiner as se where list_fk=?2)", 
+		nativeQuery=true)	public List<Object[]> compareELists(Long newId, Long prevId);
 }

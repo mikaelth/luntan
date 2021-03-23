@@ -35,6 +35,7 @@ import flexjson.transformer.DateTransformer;
 import flexjson.transformer.NullTransformer;
 //import se.uu.ebc.bemanning.util.DateNullTransformer;
 
+import java.math.BigInteger;
 import java.util.regex.Pattern;
 import java.util.Date;
 import java.util.ArrayList;
@@ -86,6 +87,7 @@ import se.uu.ebc.ldap.Staff ;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.enums.EduBoard;
+import se.uu.ebc.luntan.enums.DiffKind;
 
 import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
@@ -441,6 +443,7 @@ public class EconomyDocController {
     @RequestMapping("/excel/examiners")
     public ModelAndView viewExaminersExcelDoc(@RequestParam(value = "decision", required = true) Long examinerListingId, Principal principal, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, String> matchMap = new HashMap<String, String>();
 
 		ExaminersList el = elRepo.findById(examinerListingId).get();
 		List<Examiner> examiners = exRepo.findByDecision(el);
@@ -456,6 +459,28 @@ public class EconomyDocController {
 			model.put("board","någon");
 		}
 
+		if (el instanceof ExaminersDecision) {
+			log.debug( "Board: " +  ((ExaminersDecision)el).getBoard().name() );
+			log.debug( "Date: " + ((ExaminersDecision)el).getDecisionDate() );
+			ExaminersList pel = elRepo.findPreceeding( ((ExaminersDecision)el).getBoard().name(), ((ExaminersDecision)el).getDecisionDate() );
+			log.debug( "The previous decision: " +  pel);
+			List<Object[]> list = exRepo.compareELists(el.getId(), pel.getId());
+			log.debug( "Compare map: " + list );
+			for (Object[] ob : list){
+				String key = (String)ob[0];
+				BigInteger value = (BigInteger)ob[1];
+				switch (value.intValue()) {
+					case 1: matchMap.put(key,DiffKind.CHANGE.toString());break;
+					case 2: matchMap.put(key,DiffKind.NEW.toString());break;
+					case 3: matchMap.put(key,DiffKind.DELETE.toString());break;
+					default: matchMap.put(key,DiffKind.NONE.toString());
+				}
+				
+			}
+			log.debug( "Compare map: " + matchMap );
+
+		}
+
 		for (Examiner ex : examiners) {
 			if (!exMap.containsKey(ex.getCourse())) {
 				exMap.put(ex.getCourse(), new ArrayList<Examiner>());
@@ -463,6 +488,8 @@ public class EconomyDocController {
 			exMap.get(ex.getCourse()).add(ex);			
 		}
         model.put("exMap", exMap);
+//        model.put("matchMap", new HashMap<String, String>());
+        model.put("matchMap", matchMap);
         model.put("exList", el);
         model.put("examiners", examiners);
 		model.put("staffMap", staffService.getDesignatedExaminers());
@@ -473,6 +500,7 @@ public class EconomyDocController {
         headers.add("Kurskod");
         headers.add("Kursnamn");
         headers.add("Examinatorer");
+        headers.add("Kommentar");
 
         model.put("headers", headers);
 

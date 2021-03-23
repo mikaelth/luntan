@@ -47,6 +47,7 @@ public class ExaminersExcel extends AbstractXlsView
         List<Examiner> examiners = (List<Examiner>)model.get("examiners");
         Map<String, Staff> staff = (Map<String, Staff>)model.get("staffMap");
         Map<Course,List<Examiner>> em = (Map<Course,List<Examiner>>)model.get("exMap");
+        Map<String, String> mm = (Map<String, String>)model.get("matchMap");
 
         List<String> numericColumns = new ArrayList<String>();
         if (model.containsKey("numericcolumns"))
@@ -108,10 +109,16 @@ public class ExaminersExcel extends AbstractXlsView
 			String examinerNames = em.get(course).stream()
         		.map( ex -> staff.get(ex.getExaminer()).getName() )
         		.collect( Collectors.joining( ", " ) );
+
 			cell = row.createCell(currentColumn++);
 			text = new HSSFRichTextString(examinerNames);                
 			cell.setCellValue(text);  
                   
+			cell = row.createCell(currentColumn++);
+			text = new HSSFRichTextString( mm.get(course.getCode()) );                
+//			text = new HSSFRichTextString( course.getCode() );                
+			cell.setCellValue(text);  
+
 			currentRow++;
         }
 

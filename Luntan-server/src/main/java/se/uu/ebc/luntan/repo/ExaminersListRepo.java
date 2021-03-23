@@ -10,13 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 
 import se.uu.ebc.luntan.entity.ExaminersList;
+import se.uu.ebc.luntan.entity.ExaminersDecision;
+import se.uu.ebc.luntan.enums.EduBoard;
 
 import java.util.Set;
 import java.util.List;
+import java.util.Date;
 
 @Repository
 @Transactional //(readOnly = true)
 public interface ExaminersListRepo extends JpaRepository<ExaminersList, Long>, JpaSpecificationExecutor<ExaminersList>{
+
+
+	@Query(value="select * from examiners_list as el where board=?1 AND decision_date < ?2 order by decision_date DESC limit 1", 
+		nativeQuery=true)
+	public ExaminersDecision findPreceeding(String board, Date date);
 
 
 }
