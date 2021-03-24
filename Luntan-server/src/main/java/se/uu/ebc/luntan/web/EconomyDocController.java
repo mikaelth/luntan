@@ -459,13 +459,18 @@ public class EconomyDocController {
 			model.put("board","någon");
 		}
 
+		/* This is a hack to compare with the previous decision to tag differences */	
 		if (el instanceof ExaminersDecision) {
 			log.debug( "Board: " +  ((ExaminersDecision)el).getBoard().name() );
 			log.debug( "Date: " + ((ExaminersDecision)el).getDecisionDate() );
 			ExaminersList pel = elRepo.findPreceeding( ((ExaminersDecision)el).getBoard().name(), ((ExaminersDecision)el).getDecisionDate() );
 			log.debug( "The previous decision: " +  pel);
-			List<Object[]> list = exRepo.compareELists(el.getId(), pel.getId());
-			log.debug( "Compare map: " + list );
+			List<Object[]> list;
+			if (pel == null) {
+				list= exRepo.compareELists(el.getId(), el.getId());
+			} else {
+				list= exRepo.compareELists(el.getId(), pel.getId());
+			} 
 			for (Object[] ob : list){
 				String key = (String)ob[0];
 				BigInteger value = (BigInteger)ob[1];
@@ -477,8 +482,6 @@ public class EconomyDocController {
 				}
 				
 			}
-			log.debug( "Compare map: " + matchMap );
-
 		}
 
 		for (Examiner ex : examiners) {
@@ -487,8 +490,8 @@ public class EconomyDocController {
 			} 
 			exMap.get(ex.getCourse()).add(ex);			
 		}
+
         model.put("exMap", exMap);
-//        model.put("matchMap", new HashMap<String, String>());
         model.put("matchMap", matchMap);
         model.put("exList", el);
         model.put("examiners", examiners);
