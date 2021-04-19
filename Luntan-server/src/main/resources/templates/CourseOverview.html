@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Kursekonomidokument</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+</head>
+<body>
+
+	<h1 th:text="'Kursekonomidokument budgetåret ' + ${edoc.year} + ' – ' + (${edoc.locked} ? 'slutlig version, ' + ${#dates.format(edoc.lastModifiedDate,'yyyy-MM-dd')}: 'arbetsdokument, ' +  ${#dates.format(serverTime,'yyyy-MM-dd')})" />
+
+	<div th:each="cgrp: ${usedGroups}">
+		<h2 th:text="${cgrp}" />
+		<table id = "course_instances">
+			<tr>
+				<th>Kurs</th>
+				<th>hp</th>
+				<th>Ny</th>
+				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+					<th th:text="${dept}" />
+				</th:block>
+				<th>Kursledare</th>
+				<th>Examinatorer</th>
+			</tr>
+	<!-- 
+			<th:block th:each="cgrp: ${usedGroups}">
+	 -->
+			<tr th:each="ci: ${courseInstances.get(cgrp)}">
+	<!-- 
+			<tr th:each="ci: ${edoc.courseInstances}">
+	 -->
+				<td th:text="${ci.designation}" />
+				<td class='alnright' th:text="${ci.course.credits}" />
+				<td class='alnright' th:text="${ci.firstInstance} ? 'X' : ''" />
+				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
+					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+						<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)*100,1)}+ ' %'" />
+					</th:block>
+				</th:block>
+			</tr>
+	<!-- 
+			</th:block>
+	 -->
+		</table>
+	</div>
+
+	<br />
+	<br />
+	<p>
+		Current time is <span th:text="${serverTime}" />
+	</p>
+</body>
+</html>
+
