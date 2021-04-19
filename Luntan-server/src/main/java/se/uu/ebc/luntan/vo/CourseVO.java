@@ -34,6 +34,7 @@ public class CourseVO {
     private String note;
     private Float credits;
 	private EduBoard board;
+    private boolean inactive;
 		
  	/* Setters and getters */
  	   
@@ -126,6 +127,7 @@ public class CourseVO {
 		this.board = xe.getBoard();
 		this.note = xe.getNote();
 		this.credits = xe.getCredits();
+		this.inactive = xe.isInactive();
 	}
 	
 //	public CourseVO() {}

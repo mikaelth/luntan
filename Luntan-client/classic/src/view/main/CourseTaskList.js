@@ -16,9 +16,9 @@ Ext.define('Luntan.view.main.CourseTaskList', {
 	features: [{ ftype: 'grouping',startCollapsed: false }],
 
     columns: [
-		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', filter: 'string', width: 150 },
-		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', filter: 'string', flex: 1},
-		{ text: 'Extra', dataIndex: 'extraDesignation', filter: 'string', align: 'left', width: 100, 
+		{ text: 'Kursgrupp', dataIndex: 'courseGroup', filter: 'list', align: 'left', width: 150 },
+		{ text: 'Kurs', dataIndex: 'courseDesignation', filter: 'string', align: 'left', filter: 'string', flex: 1},
+		{ text: 'Extra', dataIndex: 'extraDesignation', filter: 'list', align: 'left', width: 100, 
          	renderer: function(value) {
 				if (Ext.getStore('CIDesignationStore').getById(value) != undefined) {
 					return Ext.getStore('CIDesignationStore').getById(value).get('displayname');
@@ -27,8 +27,8 @@ Ext.define('Luntan.view.main.CourseTaskList', {
 				}
         	}
 		},
-		{ text: 'Studentantal', dataIndex: 'modelStudentNumber', filter: 'string', align: 'left', width: 100 },
-		{ text: 'Källa', dataIndex: 'modelCase', filter: 'string', align: 'left', width: 90 },
+		{ text: 'Studentantal', dataIndex: 'modelStudentNumber', filter: 'number', align: 'left', width: 100 },
+		{ text: 'Källa', dataIndex: 'modelCase', filter: 'list', align: 'left', width: 90 },
 //		{ text: 'Regs', dataIndex: 'onRegs', xtype: 'checkcolumn', filter: 'boolean', align: 'left', width: 30 },
 		{ text: 'IBG', dataIndex: 'IBG', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80},
 		{ text: 'ICM', dataIndex: 'ICM', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80 },

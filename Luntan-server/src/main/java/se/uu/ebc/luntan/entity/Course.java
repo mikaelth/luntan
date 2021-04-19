@@ -76,6 +76,14 @@ public class Course  extends Auditable {
 	@Enumerated(EnumType.STRING)    
     private EduBoard board;
     
+    @Column(name = "INACTIVE")
+    private boolean inactive = false;
+
+/* 
+    @Column(name = "last_date")
+    protected Date lastGivendDate;
+ */
+
 /* 
     @OneToMany(mappedBy = "course")
     @OrderBy("rank ASC")

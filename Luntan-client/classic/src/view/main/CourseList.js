@@ -32,11 +32,12 @@ Ext.define('Luntan.view.main.CourseList', {
 				}
 			}]
         },
+		{ xtype: 'checkcolumn', text: 'Inaktiv', dataIndex: 'inactive', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 50, filter: 'boolean'},
 		{ text: 'Kurskod', dataIndex: 'code', editor: 'textfield', filter: 'string', align: 'left', width: 100 },
 		{ text: 'Benämning', dataIndex: 'seName', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
 //		{ text: 'Engelsk benämning', dataIndex: 'enName', editor: 'textfield', filter: 'string', align: 'left', flex: 1 },
 		{ text: 'Poäng', dataIndex: 'credits', editor: 'textfield', align: 'left', width: 80 },
-		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', flex: 1,
+		{ text: 'Kursgrupp', dataIndex: 'courseGroup', filter: 'list', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('CourseGroupStore').getById(value) != undefined) {
 					return Ext.getStore('CourseGroupStore').getById(value).get('displayname');
@@ -55,7 +56,18 @@ Ext.define('Luntan.view.main.CourseList', {
 			    valueField: 'id',
 			}
 		},
-		{ text: 'Examinatorsbeslut', dataIndex: 'board', align: 'left', flex: 1,
+/* 
+		{ xtype: 'checkcolumn', text: 'Ex-', dataIndex: 'id', editable: false, filter: 'boolean', align: 'center', width: 50, filter: 'boolean',
+			renderer: function (value) {
+				var none = 0;
+				if (Ext.getStore('ExaminerStore').findRecord('courseId', value) == null) {
+					none = 1;
+				} 
+				return "<input type='checkbox'" + (none ? "checked='checked'" : "") + ">";
+			}
+		},
+ */
+		{ text: 'Examinatorsbeslut', dataIndex: 'board', filter: 'list', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('EduBoardStore').getById(value) != undefined) {
 					return Ext.getStore('EduBoardStore').getById(value).get('displayname');

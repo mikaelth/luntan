@@ -100,6 +100,7 @@ public class CourseService {
 //			c.setPeriod(cvo.getPeriod()) ;
 			c.setNote(cvo.getNote()) ;
 			c.setCredits(cvo.getCredits()) ;
+    		c.setInactive(cvo.isInactive());
 
 
 		} catch (Exception e) {

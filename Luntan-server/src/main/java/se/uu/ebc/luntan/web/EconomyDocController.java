@@ -465,13 +465,14 @@ public class EconomyDocController {
 			log.debug( "Date: " + ((ExaminersDecision)el).getDecisionDate() );
 			ExaminersList pel = elRepo.findPreceeding( ((ExaminersDecision)el).getBoard().name(), ((ExaminersDecision)el).getDecisionDate() );
 			log.debug( "The previous decision: " +  pel);
-			List<Object[]> list;
+
+			List<Object[]> courseDiffList;
 			if (pel == null) {
-				list= exRepo.compareELists(el.getId(), el.getId());
+				courseDiffList= exRepo.compareELists(el.getId(), el.getId());
 			} else {
-				list= exRepo.compareELists(el.getId(), pel.getId());
+				courseDiffList= exRepo.compareELists(el.getId(), pel.getId());
 			} 
-			for (Object[] ob : list){
+			for (Object[] ob : courseDiffList){
 				String key = (String)ob[0];
 				BigInteger value = (BigInteger)ob[1];
 				switch (value.intValue()) {
@@ -481,6 +482,27 @@ public class EconomyDocController {
 					default: matchMap.put(key,DiffKind.NONE.toString());
 				}
 				
+			}
+		} else {
+			ExaminersList pel;
+			List<Object[]> courseDiffList = new ArrayList<Object[]>();
+			for(EduBoard theBoard : EduBoard.values()) {
+				pel = elRepo.findPreceeding( theBoard.name(), new Date() );
+				if (pel != null) {
+					courseDiffList.addAll( exRepo.compareELists( el.getId(), pel.getId(), theBoard.name() ) );
+					log.debug( "The previous decision: " +  pel);
+				}
+			}
+			for (Object[] ob : courseDiffList) {
+				String key = (String)ob[0];
+				BigInteger value = (BigInteger)ob[1];
+				log.debug( "The comparison: " +  key + ": " + value);
+				switch (value.intValue()) {
+					case 1: matchMap.put(key,DiffKind.CHANGE.toString());break;
+					case 2: matchMap.put(key,DiffKind.NEW.toString());break;
+					case 3: matchMap.put(key,DiffKind.DELETE.toString());break;
+					default: matchMap.put(key,DiffKind.NONE.toString());
+				}
 			}
 		}
 

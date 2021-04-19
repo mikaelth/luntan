@@ -18,6 +18,7 @@ Ext.define('Luntan.model.Course', {
 	idProperty: 'id',
     fields: [
 		{name: 'id', type: 'int'},
+		{name: 'inactive', type: 'boolean'},
 		{name: 'code', type: 'string'},
 		{name: 'courseGroup', type: 'string'},
 		{name: 'board', type: 'string'},
