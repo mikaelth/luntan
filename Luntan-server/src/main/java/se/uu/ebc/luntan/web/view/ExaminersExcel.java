@@ -1,22 +1,18 @@
 package se.uu.ebc.luntan.web.view;
 
-import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.CellType;
 
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.view.document.AbstractXlsView;
@@ -28,7 +24,6 @@ import se.uu.ebc.ldap.Staff;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.Examiner;
 import se.uu.ebc.luntan.entity.ExaminersList;
-import se.uu.ebc.luntan.enums.Department;
 
 public class ExaminersExcel extends AbstractXlsView
 {

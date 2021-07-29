@@ -8,6 +8,7 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
 			cid: null,
 			did: null,
 			edBrd : '',
+			cCourse: null
 		}
     },
     
@@ -110,6 +111,18 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
             get: function(cid) {
             	this.set('current.cid', cid);
                 return cid;
+            }
+ 
+		},
+        currentFormalCourse: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{courselist.selection}', //--> reference configurated on the grid view (reference: courselist)
+                deep: true
+            },
+            get: function(cCourse) {
+            	this.set('current.cCourse', cCourse);
+                return cCourse;
             }
  
 		},

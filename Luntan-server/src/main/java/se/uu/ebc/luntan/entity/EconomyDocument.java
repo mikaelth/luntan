@@ -29,7 +29,6 @@ import se.uu.ebc.luntan.aux.GrantMaps;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -63,7 +62,8 @@ public class EconomyDocument  extends Auditable {
     }
  */
 
-    
+    @OneToMany(mappedBy = "balancedEconomyDoc")
+    private Set<CourseInstance> balancedCourseInstances = new HashSet<CourseInstance>();    
  
     @OneToMany(mappedBy = "economyDoc")
     private Set<CourseInstance> courseInstances = new HashSet<CourseInstance>();
@@ -81,6 +81,9 @@ public class EconomyDocument  extends Auditable {
     
     @Column(name = "LOCKED", length = 255)
     private boolean locked = false;
+
+    @Column(name = "REGS_VALID")
+    private boolean registrationsValid = false;
     
     @Column(name = "NOTE", length = 255)
     private String note;

@@ -1,15 +1,9 @@
 package se.uu.ebc.luntan.vo;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Date;
 
-import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.entity.ExaminersDecision;
 import se.uu.ebc.luntan.enums.EduBoard;

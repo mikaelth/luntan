@@ -56,17 +56,9 @@ Ext.define('Luntan.view.main.CourseList', {
 			    valueField: 'id',
 			}
 		},
-/* 
-		{ xtype: 'checkcolumn', text: 'Ex-', dataIndex: 'id', editable: false, filter: 'boolean', align: 'center', width: 50, filter: 'boolean',
-			renderer: function (value) {
-				var none = 0;
-				if (Ext.getStore('ExaminerStore').findRecord('courseId', value) == null) {
-					none = 1;
-				} 
-				return "<input type='checkbox'" + (none ? "checked='checked'" : "") + ">";
-			}
-		},
- */
+
+		{ xtype: 'checkcolumn', text: '- Ex', dataIndex: 'noExaminer', editable: false, filter: 'boolean', align: 'center', width: 50, filter: 'boolean'},
+
 		{ text: 'Examinatorsbeslut', dataIndex: 'board', filter: 'list', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('EduBoardStore').getById(value) != undefined) {

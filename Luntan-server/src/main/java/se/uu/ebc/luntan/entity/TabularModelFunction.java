@@ -11,17 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ElementCollection;
 import org.hibernate.annotations.GenericGenerator;
 
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlExpression;
-import org.apache.commons.jexl3.JexlContext;
-import org.apache.commons.jexl3.MapContext;
 
 import org.apache.log4j.Logger;
 

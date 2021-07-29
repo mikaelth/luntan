@@ -6,14 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.security.access.annotation.Secured;
@@ -32,7 +25,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 import flexjson.transformer.DateTransformer;
-import flexjson.transformer.NullTransformer;
 //import se.uu.ebc.bemanning.util.DateNullTransformer;
 
 import java.math.BigInteger;
@@ -48,7 +40,6 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 import java.util.Set;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.security.Principal;
 import javax.servlet.http.HttpServletResponse;
@@ -535,6 +526,49 @@ public class EconomyDocController {
     }
 
 
+	/* EconomyDocument views */
+	
+    @RequestMapping(value = "/view/adjustmentdoc", method = RequestMethod.GET)
+    public String viewAdjustmentDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+			log.debug("viewAdjustmentDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+       try {
+			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
+			EconomyDocument edoc = emRepo.findByYear(year);
+
+for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
+	log.debug("mappedAdjustments " + edoc.getYear() + ", " + ci.mapAccumulatedGrantAdjustment());
+}
+
+//			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
+
+			for (CourseInstance ci : edoc.getCourseInstances()) {
+				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
+					ciMap.put(ci.getCourse().getCourseGroup(), new HashSet<CourseInstance>());
+				}
+				ciMap.get(ci.getCourse().getCourseGroup()).add(ci);
+			}
+			log.debug("viewAdjustmentDoc, course instances done");
+
+			for (CourseGroup cgrp : ciMap.keySet()) {
+				ciMap.put(cgrp, asSortedList(ciMap.get(cgrp)));
+			}
+			log.debug("viewAdjustmentDoc, course groups done");
+
+			model.addAttribute("serverTime", new Date());
+			model.addAttribute("edoc", edoc);
+			model.addAttribute("courseInstances", ciMap);
+			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
+			model.addAttribute("sums", new TableSum());
+			model.addAttribute("models", fmRepo.findDistinctByEconDoc(edoc));
+			emRepo.save(edoc);
+
+    		return "EconomyDocAdjustmentView";
+        } catch (Exception e) {
+			log.error("viewEconomyDoc, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
+	
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)
     public String viewEconomyDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {

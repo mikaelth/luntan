@@ -1,6 +1,5 @@
 package se.uu.ebc.luntan.web.view;
 
-import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -16,7 +15,6 @@ import org.apache.poi.ss.usermodel.CellType;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.springframework.web.servlet.view.document.AbstractXlsView;
 

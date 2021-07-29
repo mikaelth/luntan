@@ -1,9 +1,7 @@
 package  se.uu.ebc.luntan.aux;
 
-import java.util.Set;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.stream.*;
 
 import se.uu.ebc.luntan.enums.Department;

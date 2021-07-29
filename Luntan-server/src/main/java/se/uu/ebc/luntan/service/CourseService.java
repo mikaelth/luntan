@@ -2,17 +2,10 @@ package se.uu.ebc.luntan.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.Course;
@@ -29,7 +22,6 @@ import se.uu.ebc.luntan.repo.FundingModelRepo;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
-import org.apache.commons.lang3.SerializationUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -139,9 +131,18 @@ public class CourseService {
     
     }
 
+	/**
+	 * <p>The method saveCourseLeader is a limited update of a CourseInstance entity,
+	 * allowing only the course leader and the note to be changed.
+	 * </p>
+	 * @param cVO is a CourseInstance value object
+	 * @return is a CourseInstance value object based on the updated CourseInstance
+	 * @since 1.0
+	 */
     public CourseInstanceVO saveCourseLeader(CourseInstanceVO cVO) throws Exception {
     	CourseInstance ci = ciRepo.findById(cVO.getId()).get();
 		ci.setCourseLeader(cVO.getCourseLeader());
+		ci.setNote(cVO.getNote());
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
     
@@ -228,6 +229,24 @@ public class CourseService {
 	}
 
 
+	public void updateBalanceED () {	
+		try {
+			for (CourseInstance ci :  ciRepo.findBalanceRequestedNotHandled()) {
+				if( ci.getEconomyDoc().isRegistrationsValid() ) {
+					List<EconomyDocument> edList  = edRepo.availBalanceDoc(ci.getEconomyDoc().getYear());
+					if (edList != null) {
+						ci.setBalancedEconomyDoc(edList.get(0));
+						ciRepo.save(ci);
+						log.debug("To be balanced: " + ReflectionToStringBuilder.toString(ci, ToStringStyle.MULTI_LINE_STYLE));
+						log.debug("in document: " + edList.get(0).getYear() );
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("updateBalanceED caught a pesky exception, " + e);
+        }
 
+	
+	}
     
 }

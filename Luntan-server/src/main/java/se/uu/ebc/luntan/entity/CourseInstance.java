@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.HashSet;
-import java.util.TreeSet;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -16,11 +15,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.Embedded;
 import javax.persistence.ElementCollection;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -245,7 +242,8 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  	}
  	public Float computeAdjustedCIGrant() {
 // 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
-		return this.registeredStudents == null ? computeCIGrant() : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+//		return this.registeredStudents == null ? computeCIGrant() : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+		return this.economyDoc.isRegistrationsValid() ? fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance) : computeCIGrant();
  	}
  	
 	
@@ -332,6 +330,28 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		return grants;
 	
 	}
+
+
+	public Map<Integer,Map<Department,Float>> mapAccumulatedGrantAdjustment() {
+		Map<Integer,Map<Department,Float>> historyMap = new HashMap<Integer,Map<Department,Float>>();
+		return this.mapAccumulatedGrantAdjustment(historyMap);
+	}
+	
+	public Map<Integer,Map<Department,Float>> mapAccumulatedGrantAdjustment(Map<Integer,Map<Department,Float>> historyMap) {
+		try {		
+			historyMap.put(this.economyDoc.getYear(), this.computeGrantAdjustment());
+			if(this.preceedingCI != null && this.preceedingCI != this) {
+				historyMap.putAll(this.preceedingCI.mapAccumulatedGrantAdjustment(historyMap));
+			}
+		} catch (Exception e) {
+			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
+		} finally {
+			log.debug("Mapped accumulated adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ historyMap);		
+			return historyMap;
+		}
+
+	}
+
 	
 	/**
 	 * <p>Calculates the accumulated adjustment (computeGrantAdjustment()) of grants, 
@@ -343,13 +363,11 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	public Map<Department,Float> computeAccumulatedGrantAdjustment() {
 		Map<Department,Float> adjustment = new HashMap<Department,Float>();
 		try {		
-//			if(!(this.registeredStudents == null || this.registeredStudents == 0)) {
 			if(this.preceedingCI == null || this.preceedingCI == this) {
 				adjustment = this.computeGrantAdjustment();
 			} else {
 				adjustment = this.preceedingCI.isBalanceRequest() ? this.computeGrantAdjustment() : GrantMaps.sum(this.computeGrantAdjustment(), this.preceedingCI.computeAccumulatedGrantAdjustment());			
 			}
-//			}
 		} catch (Exception e) {
 			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
 		} finally {

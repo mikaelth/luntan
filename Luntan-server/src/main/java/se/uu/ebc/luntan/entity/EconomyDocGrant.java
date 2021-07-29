@@ -1,6 +1,5 @@
 package  se.uu.ebc.luntan.entity;
 
-import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -11,13 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Embedded;
 import javax.persistence.ElementCollection;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
@@ -25,16 +19,9 @@ import javax.persistence.EnumType;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.AccessLevel;
 
 import se.uu.ebc.luntan.enums.*;
-import se.uu.ebc.luntan.aux.GrantMaps;
 
 @Slf4j
 @Data

@@ -1,42 +1,28 @@
 package se.uu.ebc.luntan.service;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
 import javax.naming.NamingException;
-import javax.naming.Name;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.filter.AndFilter;
-import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.query.LdapQuery;
-import org.springframework.ldap.query.SearchScope;
 import org.springframework.ldap.query.ContainerCriteria;
-import org.springframework.ldap.support.LdapUtils;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Service;
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 import lombok.extern.slf4j.Slf4j;
 
-import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.entity.ExternalTeacher;
 import se.uu.ebc.luntan.repo.ExternalTeacherRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;

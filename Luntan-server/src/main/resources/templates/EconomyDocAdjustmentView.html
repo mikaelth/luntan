@@ -8,35 +8,40 @@
 </head>
 <body>
 
-	<h1 th:text="'Kursekonomidokument budgetåret ' + ${edoc.year} + ' – ' + (${edoc.locked} ? 'slutlig version, ' + ${#dates.format(edoc.lastModifiedDate,'yyyy-MM-dd')}: 'arbetsdokument, ' +  ${#dates.format(serverTime,'yyyy-MM-dd')})" />
+	<h1 th:text="'Justeringar i Kursekonomidokument budgetåret ' + ${edoc.year} + ' – ' + (${edoc.locked} ? 'slutlig version, ' + ${#dates.format(edoc.lastModifiedDate,'yyyy-MM-dd')}: 'arbetsdokument, ' +  ${#dates.format(serverTime,'yyyy-MM-dd')})" />
 
 	<div th:each="cgrp: ${usedGroups}">
 		<h2 th:text="${cgrp}" />
 		<table id = "course_instances">
+			<col>
+			<colgroup span="6"></colgroup>
+			<colgroup span="4"></colgroup>
+			<colgroup span="4"></colgroup>
+			<colgroup span="4"></colgroup>
 			<tr>
-				<th>Kurs</th>
-				<th>hp</th>
-				<th>Stud.</th>
-				<th>Reg.</th>
-				<th>Modell</th>
-				<th>Anslag</th>
+				<th colspan="6" scope="colgroup" />
+				<th colspan="4" scope="colgroup">Budgeterat</th>
+				<th colspan="4" scope="colgroup">Justering</th>
+				<th colspan="4" scope="colgroup">Ackumulerad justering</th>
+			</tr>
+			<tr>
+				<th scope=col>Kurs</th>
+				<th scope=col>hp</th>
+				<th scope=col>Stud.</th>
+				<th scope=col>Reg.</th>
+				<th scope=col>Modell</th>
+				<th scope=col>Anslag</th>
 				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-					<th th:text="${dept}" />
+					<th scope=col th:text="${dept}" />
 				</th:block>
 				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-					<th th:text="${dept}" />
+					<th scope=col th:text="${dept}" />
 				</th:block>
 				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-					<th th:text="${dept}" />
+					<th scope=col th:text="${dept}" />
 				</th:block>
 			</tr>
-	<!-- 
-			<th:block th:each="cgrp: ${usedGroups}">
-	 -->
 			<tr th:each="ci: ${courseInstances.get(cgrp)}">
-	<!-- 
-			<tr th:each="ci: ${edoc.courseInstances}">
-	 -->
 				<td th:text="${ci.designation}" />
 				<td class='alnright' th:text="${ci.course.credits}" />
 				<td class='alnright' th:text="${ci.modelStudentNumber}" />
@@ -48,95 +53,15 @@
 						<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
 					</th:block>
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)/1000,1)}+ ' kkr'" />
+						<td class='alnright' th:style ="${edoc.registrationsValid} ? '' : 'color: red' " th:text="${#numbers.formatInteger(gp.get(dept)/1000,1)}+ ' kkr'" />
 					</th:block>
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:text="${#numbers.formatInteger(ga.get(dept)/1000,1)}+ ' kkr'" />
+						<td class='alnright' th:style ="${edoc.registrationsValid} ? '' : 'color: red' " th:text="${#numbers.formatInteger(ga.get(dept)/1000,1)}+ ' kkr'" />
 					</th:block>
 				</th:block>
 			</tr>
-	<!-- 
-			</th:block>
-	 -->
 		</table>
 	</div>
-
-<!-- 
-	<h2 th:text="'Helårsstudenter över kursgrupper'" />
-	<table  id = "course_instance_summary" th:with="bigSum=${edoc.hstByCourseGroup()}">
-		<tr>
-			<th />
-			<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-				<th th:text="${dept}" />
-			</th:block>
-		</tr>
-		<tr th:each="cat: ${usedGroups}">
-			<td th:text="${cat.toString()}" />
-			<th:block th:with="dsum=${bigSum.get(cat)}">
-				<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-					<td class='alnright' th:text="${#numbers.formatDecimal(dsum.get(dept),1,1)}" />
-				</th:block>
-			</th:block>
-		</tr>
-	</table>
-
-
-	<h2 th:text="'Summerat över kursgrupper'" />
-	<table  id = "course_instance_summary" th:with="bigSum=${edoc.sumByCourseGroup()}">
-		<tr>
-			<th />
-			<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-				<th th:text="${dept}" />
-			</th:block>
-				<th th:text="Totalt" />
-		</tr>
-		<tr th:each="cat: ${usedGroups}">
-			<td th:text="${cat.toString()}" />
-			<th:block th:with="dsum=${bigSum.get(cat)}">
-				<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
-				</th:block>
-			</th:block>
-			<th:block th:with="csum=${sums.colSum(bigSum)}">
-				<td class='alnright' th:text="${#numbers.formatInteger(csum.get(cat)/1000,1)}+ ' kkr'" />
-			</th:block>
-		</tr>
-		<tr th:with="rsum= ${sums.rowSum(bigSum)}">
-			<td th:text="Totalt" />
-			<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-				<td class='alnright' th:text="${#numbers.formatInteger(rsum.get(dept)/1000,1)}+ ' kkr'" />
-			</th:block>
-			<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(rsum)/1000,1)}+ ' kkr'" />
-	
-		</tr>
-	</table>
-
-	<h2 th:text="'Differens som effekt av skillnad i faktiskt och beräknat antal registreringar'" />
-	<table id = "course_instance_adjustment" th:with="bigSum=${edoc.sumAdjustmentsByCourseGroup()}">
-		<tr>
-			<th />
-			<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-				<th th:text="${dept}" />
-			</th:block>
-		</tr>
-		<tr th:each="cat: ${bigSum.keySet()}">
-			<td th:text="${cat.toString()}" />
-			<th:block th:with="dsum=${bigSum.get(cat)}">
-				<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-					<td class='alnright' th:text="${#numbers.formatInteger(dsum.get(dept)/1000,1)}+ ' kkr'" />
-				</th:block>
-			</th:block>
-		</tr>
-		<tr th:with="rsum= ${sums.rowSum(bigSum)}">
-			<td th:text="Totalt" />
-			<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-				<td class='alnright' th:text="${#numbers.formatInteger(rsum.get(dept)/1000,1)}+ ' kkr'" />
-			</th:block>
-	
-		</tr>
-	</table>
-
- -->
 
 	<div>
 		<h2 th:text="'Modeller i beräkningarna'" />
@@ -153,9 +78,6 @@
 				<td class='alnleft' th:text="${model.expression}" />
 				<td class='alnleft' th:text="${model.note}" />
 			</tr>
-	<!-- 
-			</th:block>
-	 -->
 		</table>
 	</div>
 

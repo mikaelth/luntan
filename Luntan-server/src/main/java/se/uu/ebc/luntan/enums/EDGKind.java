@@ -1,6 +1,5 @@
 package se.uu.ebc.luntan.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public enum EDGKind
 {

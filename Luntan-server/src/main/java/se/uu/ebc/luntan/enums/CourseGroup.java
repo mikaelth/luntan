@@ -16,6 +16,7 @@ public enum CourseGroup {
 	LIBART("Liberal Arts"),
 	BIOINF("Master Bioinformatik"),
 	BIOTECH("Master Tillämpad bioteknik"),
+	BIOPHYS("Master Biofysik"),
 	ENVIRONMENT("Miljövetenskap"),
 	ADVANCED("Påbyggnadskurser"),
 	PROGRAM("Programansvar"),

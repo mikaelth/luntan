@@ -2,14 +2,9 @@ package se.uu.ebc.luntan.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.entity.EconomyDocGrant;
@@ -21,8 +16,6 @@ import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
 
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 
 @Service
@@ -99,6 +92,8 @@ public class EconomyDocumentService {
 			ed.setNote(edVO.getNote());
 			ed.setAccountedDepts(edVO.getAccountedDepts());
 			ed.setLocked(edVO.isLocked());
+			ed.setRegistrationsValid(edVO.isRegistrationsValid());
+			
 //			ed.setCourseInstances(edVO.getCourseInstances());
 
 			/* If lock status has changed, we need to update and save the course instances as well */

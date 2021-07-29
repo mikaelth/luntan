@@ -17,7 +17,31 @@ Ext.define('Luntan.view.courses.CourseController', {
     },
 
    	onBeforeRender: function (grid) {
-   	}
+   	},
 
-    
+   	onUpdateInactive: function () {
+   	},
+
+   	init: function (view) {
+
+						
+/* 
+		var tb = view.down('toolbar');
+		
+		tb.insert(1,
+			{
+				xtype: 'button',
+				showText: true,
+				tooltip:'Kontrollerar om det i kursplanen anges att Kursen är avvecklad',
+				text: 'Uppdatera inaktiva',
+				reference: 'btnInactiveUpdate',
+				disabled: false,
+				listeners: {
+				  click: 'onUpdateInactive'
+				}
+			});			
+        
+ */
+	}
+
 });

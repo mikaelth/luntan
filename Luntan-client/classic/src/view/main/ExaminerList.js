@@ -52,9 +52,19 @@ Ext.define('Luntan.view.main.ExaminerList', {
         }
     },
 
+	listeners: {
+		storechange: function (view) {
+			console.log("storechange", view);
+			var store = view.getStore().hasOwnProperty('source') ? view.getStore().getSource() : view.getStore();
+			store.on({'update': this.controller.onStoreContentUpdated, scope: this});
+			store.on({'remove': this.controller.onStoreContentRemoved, scope: this});
+
+		}
+	},
 	bind: {
 		store: '{examiners}',
-		title: '<b>Examinatorer</b>'
+		title: '<b>Examinatorer</b>',
+		parentCourse: '{currentFormalCourse}'
 	},
 		
 
@@ -121,6 +131,8 @@ Ext.define('Luntan.view.main.ExaminerList', {
 	],
 
 	config : {
+	
+		parentCourse: null
 	}
 
 

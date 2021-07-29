@@ -57,10 +57,26 @@ Ext.define('Luntan.view.courses.ExaminerController', {
  */
    },
 
+	onStoreContentUpdated: function (theStore, theRecords) {
+		console.log("Updated in controller")
+		this.up().getViewModel().data.current.cCourse.set('noExaminer',this.store.getCount());
+		this.up().getViewModel().data.current.cCourse.set('note',this.store.getCount());
+	},
+
+	onStoreContentRemoved: function (theStore, theRecords) {
+		console.log("Removed in controller")
+		this.up().getViewModel().data.current.cCourse.set('noExaminer',this.store.getCount()-1);
+		this.up().getViewModel().data.current.cCourse.set('note',this.store.getCount()-1);
+	},
+	
    	onBeforeRender: function (grid) {
    	},
    	
    	init: function(view) {
+			
+		console.log("Examiner controller init");
+//Ext.util.Observable.capture(view, function(evname) {console.log(evname, arguments);})
+    	
 
 //		view.down('toolbar').insert(3,'Skapa nytt underlag för ');
 /*		view.down('toolbar').insert(3,

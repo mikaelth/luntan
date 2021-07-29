@@ -4,22 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.annotation.Secured;
 
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -27,12 +21,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 import flexjson.transformer.DateTransformer;
-import flexjson.transformer.NullTransformer;
 //import se.uu.ebc.bemanning.util.DateNullTransformer;
+
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Document;
+
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import se.uu.ebc.luntan.service.CourseService;
 import se.uu.ebc.luntan.service.ExaminersService;
-import se.uu.ebc.luntan.service.StaffService;
 
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.repo.CourseRepo;
@@ -55,6 +51,8 @@ import se.uu.ebc.luntan.enums.EduBoard;
 
 import lombok.extern.slf4j.Slf4j;
 
+import se.uu.ebc.luntan.repo.CourseInstanceRepo;
+import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 
 @Slf4j
 @Controller
@@ -65,6 +63,8 @@ public class CourseController {
 //    private Logger log = Logger.getLogger(CourseController.class.getName());
 
 
+	private final String INACTIVE_STATEMENT = "Kursen är avvecklad";
+	
 	@Autowired
 	CourseService courseService;
 
@@ -73,6 +73,11 @@ public class CourseController {
 
 	@Autowired
 	CourseRepo courseRepo;
+
+	@Autowired
+	CourseInstanceRepo ciRepo;
+	@Autowired
+	EconomyDocumentRepo edRepo;
 
 	@Autowired
 	ExaminerRepo examinerRepo;
@@ -327,7 +332,11 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(examinerService.getAvailableByBoard(EduBoard.NUN)), headers, HttpStatus.OK);
+
+			courseService.updateBalanceED();
+			
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize("Done"), headers, HttpStatus.OK);
+// 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(examinerService.getAvailableByBoard(EduBoard.NUN)), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -403,6 +412,36 @@ public class CourseController {
         try {
 			examinerService.deleteExaminersDecision(id);
             return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/courses/checkinactive", method = RequestMethod.GET)
+    public ResponseEntity<String> checkInactiveCourses() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			List<Course> courses = courseRepo.findAll();
+
+			for (Course course : courses) {
+				if (!course.isInactive()) {
+					Document doc = Jsoup.connect("https://www.uu.se/utbildning/utbildningar/selma/kursplan/?kKod="+course.getCode()).get();
+					if (doc != null) {
+						Elements syllabus = doc.select("ul.syllabusFacts");
+						String theText = syllabus.text();
+						log.debug("Syllabus text for "+ course.getCode() + ", " + theText);
+						if (theText != null && theText.contains(INACTIVE_STATEMENT)) {
+							course.setInactive(true);
+							courseRepo.save(course);
+						}
+					}
+				}
+			}
+			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(courses), headers, HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }

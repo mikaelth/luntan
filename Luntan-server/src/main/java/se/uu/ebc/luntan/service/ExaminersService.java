@@ -1,20 +1,10 @@
 package se.uu.ebc.luntan.service;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
-import javax.naming.NamingException;
-import javax.naming.Name;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +39,6 @@ import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.entity.ExaminersWorkingList;
 import se.uu.ebc.luntan.enums.EduBoard;
 
-import se.uu.ebc.ldap.Staff;
 
 @Service
 @Slf4j

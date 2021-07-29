@@ -1,6 +1,5 @@
 package se.uu.ebc.luntan.security;
 
-import javax.persistence.TypedQuery;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
