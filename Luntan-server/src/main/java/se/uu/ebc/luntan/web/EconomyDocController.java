@@ -644,6 +644,46 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
     }
 
 
+    @RequestMapping(value = "/view/adjusted", method = RequestMethod.GET)
+    public String viewAdjusedtDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+			log.debug("viewAdjustmentDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+       try {
+			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
+			EconomyDocument edoc = emRepo.findByYear(year);
+
+for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
+	log.debug("mappedAdjustments " + edoc.getYear() + ", " + ci.mapAccumulatedGrantAdjustment());
+}
+
+//			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
+
+			for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
+				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
+					ciMap.put(ci.getCourse().getCourseGroup(), new HashSet<CourseInstance>());
+				}
+				ciMap.get(ci.getCourse().getCourseGroup()).add(ci);
+			}
+			log.debug("viewAdjustmentDoc, course instances done");
+
+			for (CourseGroup cgrp : ciMap.keySet()) {
+				ciMap.put(cgrp, asSortedList(ciMap.get(cgrp)));
+			}
+			log.debug("viewAdjustmentDoc, course groups done");
+
+			model.addAttribute("serverTime", new Date());
+			model.addAttribute("edoc", edoc);
+			model.addAttribute("courseInstances", ciMap);
+			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
+			model.addAttribute("sums", new TableSum());
+			model.addAttribute("models", fmRepo.findDistinctByEconDoc(edoc));
+			emRepo.save(edoc);
+
+    		return "EconomyDocAdjustmentView";
+        } catch (Exception e) {
+			log.error("viewEconomyDoc, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
 
 	/* Courses by programme listing */
 
@@ -723,7 +763,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
     }
 
 	/**
-	 * <p>This is a simple description of the method asSortedList
+	 * <p>The method asSortedList returns a sorted list from a collection of objects
 	 * </p>
 	 * @param c is a collection of objects
 	 * @return is a sorted list of objects
