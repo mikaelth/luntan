@@ -55,33 +55,6 @@ public class EconomyDocExcel extends AbstractXlsView
 		HSSFRow row; // = sheet.createRow(currentRow);
 		HSSFCell cell; //= row.createCell(1);
 		HSSFRichTextString text;
-/* 
-		HSSFRichTextString text = new HSSFRichTextString(sheetName);                
-		cell.setCellValue(text);                    
-		currentRow++;
-
-		row = sheet.createRow(currentRow);		
-		cell = row.createCell(1);
-		text = new HSSFRichTextString(experiment.getLaborator().getFirstName()+" "+experiment.getLaborator().getLastName());
-		cell.setCellValue(text);                    
-		HSSFCellStyle cellStyle = ((HSSFWorkbook)workbook).createCellStyle();
-		CreationHelper createHelper = ((HSSFWorkbook)workbook).getCreationHelper();
-		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd"));
-		cell = row.createCell(2);
-		cell.setCellStyle(cellStyle);		
-		cell.setCellValue(experiment.getDate());                    
-		currentRow++;
-
-		row = sheet.createRow(currentRow);		
-		cell = row.createCell(1);
-		text = new HSSFRichTextString(experiment.getExperimentKind().getExperimentType());
-		cell.setCellValue(text);                    
-		cell = row.createCell(2);
-		text = new HSSFRichTextString(experiment.getProtocol() == null ? "" : experiment.getProtocol().getDesignation());
-		cell.setCellValue(text);                    
-		currentRow++;
-		currentRow++;
- */
 
         //CREATE STYLE FOR HEADER
         HSSFCellStyle headerStyle = (HSSFCellStyle)workbook.createCellStyle();
@@ -165,44 +138,11 @@ public class EconomyDocExcel extends AbstractXlsView
 				cell.setCellStyle(styleCurrencyFormat);
             	cell.setCellValue(ci.computeGrants().get(dep));
 			}            
-/* 
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(stylePercentFormat);
-            cell.setCellValue(ci.explicitGrantDist().get(Department.ICM));
-            
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(stylePercentFormat);
-            cell.setCellValue(ci.explicitGrantDist().get(Department.IEG));
 
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(stylePercentFormat);
-            cell.setCellValue(ci.explicitGrantDist().get(Department.IOB));
+			cell = row.createCell(currentColumn++);
+			text = new HSSFRichTextString(ci.isSupplementary() ? "Tillagd som supplement " + ci.getCreationDate() : "");                
+			cell.setCellValue(text);                    
 
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeGrants().get(Department.IBG));
-            
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeGrants().get(Department.ICM));
-            
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeGrants().get(Department.IEG));
-            
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeGrants().get(Department.IOB));
-            
- */
             currentRow++;
         }
 

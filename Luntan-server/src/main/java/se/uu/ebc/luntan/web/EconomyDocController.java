@@ -671,6 +671,9 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
         for (Department dept : edoc.getAccountedDeptsSorted()) {
         	headers.add(dept.toString());
         }
+        headers.add("Kommentar");
+
+ 
         model.put("headers", headers);
 
         response.setContentType( "application/ms-excel" );

@@ -50,6 +50,13 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 					var rec = grid.getStore().getAt(rowIndex);
 					window.open(Luntan.data.Constants.BASE_URL.concat('view/economydoc?year=').concat(rec.get('year')));
 				}
+            },{
+				iconCls: 'x-fa fa-map-o',
+				tooltip: 'Visa eventuellt supplement till Luntan',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('view/supplementdoc?year=').concat(rec.get('year')));
+				}
             }, {
 				iconCls: 'x-fa fa-file-excel-o',
 				tooltip: 'Exportera till Excel',
@@ -58,7 +65,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 					window.open(Luntan.data.Constants.BASE_URL.concat('excel/economydoc?year=').concat(rec.get('year')));
 				}
 			}, {
-				iconCls: 'x-fa fa-clone',
+				iconCls: 'x-fa fa-upload',
 				tooltip: 'Importera antal registrerade studenter',
 				handler: function(grid, rowIndex, colIndex){
 					var rec = grid.getStore().getAt(rowIndex);
