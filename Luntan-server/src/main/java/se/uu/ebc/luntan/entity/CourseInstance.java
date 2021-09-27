@@ -78,6 +78,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @Column(name = "FIRSTINSTANCE")
 	private boolean firstInstance;
 
+    @Column(name = "REGSVALID", length = 255)
+	private boolean registrationValid;
+
     @Column(name = "REGSTUDENTS", length = 255)
 	private Integer registeredStudents;
 
@@ -111,6 +114,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @Column(name = "BALANCE")
     private boolean balanceRequest = false;
 
+    @Column(name = "BOOKEND")
+    private boolean bookendOnly = false;
+
     @ManyToOne
     @JoinColumn(name = "BALANCED_ECON_DOC_FK")
 	private EconomyDocument balancedEconomyDoc;
@@ -141,12 +147,42 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	
 	
 	/* Setters and getters */
- 
+	
+	public void setBalanceRequest(boolean balanceRequest) {
 
+		if ( !((this.balancedEconomyDoc == null || this.balancedEconomyDoc.isLocked()) && !balanceRequest) ) {
+			this.balanceRequest = balanceRequest;
+			this.balancedEconomyDoc = null;				
+		}
+		
+/* 
+		if ( this.balancedEconomyDoc.isLocked() ){
+			if (balanceRequest) {
+				this.balanceRequest = balanceRequest;
+				this.balancedEconomyDoc = null;		
+			} else {
+						
+			}
+		} else {
+			this.balanceRequest = balanceRequest;
+			this.balancedEconomyDoc = null;		
+		}
+ */
+	}
+ 
 	/* Constructors */
 	
 	
 	/* Business methods */
+	
+	
+	public boolean needBalancedDocument () {
+		return ( this.balanceRequest && this.balancedEconomyDoc == null && this.registeredStudents != null && this.registrationValid);
+	}
+
+	public boolean isSupplementary() {
+		return this.economyDoc.isLocked() ? this.creationDate.after(this.economyDoc.getLockDate()) : false;
+	}
 	
 	public String getDesignation() {
 		return course.getDesignation()+this.extraDesignation;
@@ -243,7 +279,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  	public Float computeAdjustedCIGrant() {
 // 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
 //		return this.registeredStudents == null ? computeCIGrant() : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
-		return this.economyDoc.isRegistrationsValid() ? fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance) : computeCIGrant();
+		return this.registrationValid ? fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance) : computeCIGrant();
  	}
  	
 	
@@ -340,7 +376,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	public Map<Integer,Map<Department,Float>> mapAccumulatedGrantAdjustment(Map<Integer,Map<Department,Float>> historyMap) {
 		try {		
 			historyMap.put(this.economyDoc.getYear(), this.computeGrantAdjustment());
-			if(this.preceedingCI != null && this.preceedingCI != this) {
+			if(this.preceedingCI != null && this.preceedingCI != this && !this.preceedingCI.isBalanceRequest()) {
 				historyMap.putAll(this.preceedingCI.mapAccumulatedGrantAdjustment(historyMap));
 			}
 		} catch (Exception e) {

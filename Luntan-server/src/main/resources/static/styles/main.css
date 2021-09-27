@@ -132,3 +132,48 @@
 
 .examiner_table tr.first{background-color: #f2f2f2;}
 .examiner_table tr.other{background-color: #ffffff;}
+
+tr.emph_row  {font-weight: bold;text-decoration: underline;}
+tr.normal_row {font-weight: normal;}
+
+#economy_doc_summary {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    margin-left:5%; 
+    margin-right:5%;
+}
+#economy_doc_summary td, #course_instances th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+#economy_doc_summary tr:nth-child(even){background-color: #f2f2f2;}
+#economy_doc_summary tr:hover {background-color: #ddd;}
+#economy_doc_summary th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#course_instances_update {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    margin-left:5%; 
+    margin-right:5%;
+}
+#course_instances_update td, #course_instances th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+#course_instances_update tr:nth-child(even){background-color: #f2f2f2;}
+#course_instances_update tr:hover {background-color: #ddd;}
+#course_instances_update th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}

@@ -10,77 +10,99 @@
 
 	<h1 th:text="'Justeringar i Kursekonomidokument budgetåret ' + ${edoc.year} + ' – ' + (${edoc.locked} ? 'slutlig version, ' + ${#dates.format(edoc.lastModifiedDate,'yyyy-MM-dd')}: 'arbetsdokument, ' +  ${#dates.format(serverTime,'yyyy-MM-dd')})" />
 
-	<div th:each="cgrp: ${usedGroups}">
-		<h2 th:text="${cgrp}" />
-		<table id = "course_instances">
-			<col>
-			<colgroup span="6"></colgroup>
-			<colgroup span="4"></colgroup>
-			<colgroup span="4"></colgroup>
-			<colgroup span="4"></colgroup>
+	<div th:unless="${courseInstances.size() == 0}">
+
+		<div th:each="cgrp: ${usedGroups}">
+			<h2 th:text="${cgrp}" />
+			<table id = "course_instances">
+				<col>
+				<colgroup span="8"></colgroup>
+				<colgroup span="4"></colgroup>
+				<colgroup span="4"></colgroup>
+				<colgroup span="4"></colgroup>
+				<tr>
+					<th colspan="8" scope="colgroup" />
+					<th colspan="4" scope="colgroup">Budgeterat</th>
+					<th colspan="4" scope="colgroup">Justering</th>
+					<th colspan="4" scope="colgroup">Ackumulerad justering</th>
+				</tr>
+				<tr>
+					<th scope=col>Kurs</th>
+					<th scope=col>hp</th>
+					<th scope=col>År</th>
+					<th scope=col>Stud.</th>
+					<th scope=col>Reg.</th>
+					<th scope=col>Modell</th>
+					<th scope=col>Anslag</th>
+					<th scope=col>Korrekt</th>
+					<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+						<th scope=col th:text="${dept}" />
+					</th:block>
+					<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+						<th scope=col th:text="${dept}" />
+					</th:block>
+					<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+						<th scope=col th:text="${dept}" />
+					</th:block>
+				</tr>
+				<tr th:each="ci: ${courseInstances.get(cgrp)}" th:class="${ci.balanceRequest ? 'emph_row' : 'normal_row'}">
+					<td th:text="${ci.designation}" />
+					<td class='alnright' th:text="${ci.course.credits}" />
+					<td class='alnright' th:text="${ci.economyDoc.year}" />
+					<td class='alnright' th:text="${ci.modelStudentNumber}" />
+					<td class='alnright' th:text="${ci.registeredStudents}" />
+					<td class='alnright' th:text="${ci.fundingModel.id}" />
+					<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
+					<td th:text="${#numbers.formatInteger(ci.computeAdjustedCIGrant()/1000,1)}+ ' kkr'" />
+					<th:block th:with="gd=${ci.computeGrants()},gp=${ci.computeGrantAdjustment()},ga=${ci.computeAccumulatedGrantAdjustment()}">
+						<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+							<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
+						</th:block>
+						<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+							<td class='alnright' th:style ="${edoc.registrationsValid} ? '' : 'color: red' " th:text="${#numbers.formatInteger(gp.get(dept)/1000,1)}+ ' kkr'" />
+						</th:block>
+						<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+							<td class='alnright' th:style ="${edoc.registrationsValid} ? '' : 'color: red' " th:text="${#numbers.formatInteger(ga.get(dept)/1000,1)}+ ' kkr'" />
+						</th:block>
+					</th:block>
+				</tr>
+			</table>
+		</div>
+
+		<h2 th:text="'Totalsumma'" />
+		<table id = "economy_doc_summary">
 			<tr>
-				<th colspan="6" scope="colgroup" />
-				<th colspan="4" scope="colgroup">Budgeterat</th>
-				<th colspan="4" scope="colgroup">Justering</th>
-				<th colspan="4" scope="colgroup">Ackumulerad justering</th>
+				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+					<th th:text="${dept}" />
+				</th:block>
 			</tr>
 			<tr>
-				<th scope=col>Kurs</th>
-				<th scope=col>hp</th>
-				<th scope=col>Stud.</th>
-				<th scope=col>Reg.</th>
-				<th scope=col>Modell</th>
-				<th scope=col>Anslag</th>
-				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-					<th scope=col th:text="${dept}" />
-				</th:block>
-				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-					<th scope=col th:text="${dept}" />
-				</th:block>
-				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-					<th scope=col th:text="${dept}" />
-				</th:block>
-			</tr>
-			<tr th:each="ci: ${courseInstances.get(cgrp)}">
-				<td th:text="${ci.designation}" />
-				<td class='alnright' th:text="${ci.course.credits}" />
-				<td class='alnright' th:text="${ci.modelStudentNumber}" />
-				<td class='alnright' th:text="${ci.registeredStudents}" />
-				<td class='alnright' th:text="${ci.fundingModel.id}" />
-				<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
-				<th:block th:with="gd=${ci.computeGrants()},gp=${ci.computeGrantAdjustment()},ga=${ci.computeAccumulatedGrantAdjustment()}">
+				<th:block th:with="gd=${edoc.totalAdjustmentSum()}">
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
-					</th:block>
-					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:style ="${edoc.registrationsValid} ? '' : 'color: red' " th:text="${#numbers.formatInteger(gp.get(dept)/1000,1)}+ ' kkr'" />
-					</th:block>
-					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:style ="${edoc.registrationsValid} ? '' : 'color: red' " th:text="${#numbers.formatInteger(ga.get(dept)/1000,1)}+ ' kkr'" />
+						<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr' : ''" />
 					</th:block>
 				</th:block>
 			</tr>
 		</table>
-	</div>
 
-	<div>
-		<h2 th:text="'Modeller i beräkningarna'" />
-		<table id = "models">
-			<tr>
-				<th>ID</th>
-				<th>Benämning</th>
-				<th>Formel</th>
-				<th>Kommentar</th>
-			</tr>
-			<tr th:each="model: ${models}">
-				<td class='alnleft' th:text="${model.id}" />
-				<td class='alnleft' th:text="${model.designation}" />
-				<td class='alnleft' th:text="${model.expression}" />
-				<td class='alnleft' th:text="${model.note}" />
-			</tr>
-		</table>
+		<div>
+			<h2 th:text="'Modeller i beräkningarna'" />
+			<table id = "models">
+				<tr>
+					<th>ID</th>
+					<th>Benämning</th>
+					<th>Formel</th>
+					<th>Kommentar</th>
+				</tr>
+				<tr th:each="model: ${models}" >
+					<td class='alnleft' th:text="${model.id}" />
+					<td class='alnleft' th:text="${model.designation}" />
+					<td class='alnleft' th:text="${model.expression}" />
+					<td class='alnleft' th:text="${model.note}" />
+				</tr>
+			</table>
+		</div>
 	</div>
-
 	<br />
 	<br />
 	<p>

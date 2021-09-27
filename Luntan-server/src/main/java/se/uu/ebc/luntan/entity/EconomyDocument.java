@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +47,6 @@ import lombok.Singular;
 @Table(name = "ECONOMYDOC", uniqueConstraints= @UniqueConstraint(columnNames={"YEAR"}))
 public class EconomyDocument  extends Auditable {
 
-//    private static Logger log = Logger.getLogger(EconomyDocument.class.getName());
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
@@ -53,15 +54,6 @@ public class EconomyDocument  extends Auditable {
     @Column(name = "ID")
     private Long id;
     
-/* 
-    public Long getId() {
-        return this.id;
-    }    
-    public void setId(Long id) {
-        this.id = id;
-    }
- */
-
     @OneToMany(mappedBy = "balancedEconomyDoc")
     private Set<CourseInstance> balancedCourseInstances = new HashSet<CourseInstance>();    
  
@@ -79,8 +71,11 @@ public class EconomyDocument  extends Auditable {
     @NotNull
     private Integer baseValue;
     
-    @Column(name = "LOCKED", length = 255)
+    @Column(name = "LOCKED")
     private boolean locked = false;
+
+    @Column(name = "LOCK_DATE")
+    private Date lockDate;
 
     @Column(name = "REGS_VALID")
     private boolean registrationsValid = false;
@@ -96,7 +91,6 @@ public class EconomyDocument  extends Auditable {
      
 	/* Constructors */
 	
-//	public EconomyDocument() {}
 
 	public EconomyDocument(Integer year, Integer baseValue, boolean locked, String note, Set<Department> accounetedDepts) {
 		this.year = year;
@@ -108,69 +102,17 @@ public class EconomyDocument  extends Auditable {
 
 
 	/* Setters and getters */
-
-/*
-	 public Set<Department> getAccountedDepts()
-	 {
-		return this.accountedDepts;
-	 }
-
-	 public void setAccountedDepts(Set<Department> accountedDepts)
-	 {
-		this.accountedDepts = accountedDepts;
-	 }
- 
-    public Integer getYear()
-    {
-    	return this.year;
-    }
-
-    public void setYear(Integer year)
-    {
-    	this.year = year;
-    }
-
-    
-    public Integer getBaseValue()
-    {
-    	return this.baseValue;
-    }
-
-    public void setBaseValue(Integer baseValue)
-    {
-    	this.baseValue = baseValue;
-    }
-
-    
-    public boolean isLocked() {
-    	return this.locked;
-    }
-    public void setLocked(boolean locked) {
-    	this.locked=locked;
-    }
-    
-    public String getNote()
-    {
-    	return this.note;
-    }
-
-    public void setNote(String note)
-    {
-    	this.note = note;
-    }
-
-
-    public Set<CourseInstance> getCourseInstances()
-    {
-    	return this.courseInstances;
-    }
-
-    public void setCourseInstances(Set<CourseInstance> courseInstances)
-    {
-    	this.courseInstances = courseInstances;
-    }
-
-*/
+	
+	public void setLocked(boolean locked) {
+		if (locked ^ this.locked) {
+			if (locked) {
+				this.lockDate = new Date();
+			} else {
+				this.lockDate = null;
+			}
+		} 
+		this.locked = locked;	
+	}
 
 	/* Business methods */
 
@@ -189,26 +131,51 @@ public class EconomyDocument  extends Auditable {
 		return this.courseInstances == null ? 0 : this.courseInstances.size();
 	}
 
+	public Map<Department,Float> grandTotalSumSupplement() {
+		return totalSumSupplement();
+	}
 	public Map<Department,Float> grandTotalSum() {
 		Map<Department,Float> bigSum = totalSum();
 		for (EconomyDocGrant edg : this.economyDocGrants) {
 			bigSum = GrantMaps.sum(bigSum, edg.getDistributedGrant());
 		}
 		log.debug("grandTotalSum(): " + bigSum);
+		bigSum = GrantMaps.sum(bigSum, totalAdjustmentSum());
+		log.debug("grandTotalSum(), with adjustments: " + bigSum);
 		return bigSum;
 	}
 	
+	public 	Map<Department,Float> totalSumSupplement() {
+		return	totalSum(true);
+	}	
 	public 	Map<Department,Float> totalSum() {
+		return	totalSum(false);
+	}	
+	private	Map<Department,Float> totalSum(boolean supplementaryCIs) {
 		Map<Department,Float> bigSum = new HashMap<Department,Float>();
-		for (CourseInstance ci : courseInstances) {
+		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.isSupplementary() == supplementaryCIs).collect(Collectors.toSet())) {
 			bigSum = (GrantMaps.sum(bigSum, ci.computeGrants()) );
 		}
 		return bigSum;
 	}
 
+	public	Map<Department,Float> totalAdjustmentSum() {
+		Map<Department,Float> bigSum = new HashMap<Department,Float>();
+		for (CourseInstance ci : balancedCourseInstances) {
+			bigSum = (GrantMaps.sum(bigSum, ci.computeAccumulatedGrantAdjustment()) );
+		}
+		return bigSum;
+	}
+
+	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroupSupplement() {
+		return sumByCourseGroup (true);
+	}	
 	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroup() {
+		return sumByCourseGroup (false);
+	}	
+	private Map<CourseGroup,Map<Department,Float>> sumByCourseGroup(boolean supplementaryCIs) {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
-		for (CourseInstance ci : courseInstances) {
+		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.isSupplementary() == supplementaryCIs).collect(Collectors.toSet())) {
 			if (!bigSum.containsKey(ci.getCourse().getCourseGroup())) {
 				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
 			}
@@ -218,9 +185,15 @@ public class EconomyDocument  extends Auditable {
 		return bigSum;
 	}
 
+	public  Map<CourseGroup,Map<Department,Float>> sumAdjustmentsByCourseGroupSupplement() {
+		return sumAdjustmentsByCourseGroup(true);
+	}
 	public  Map<CourseGroup,Map<Department,Float>> sumAdjustmentsByCourseGroup() {
+		return sumAdjustmentsByCourseGroup(false);
+	}
+	private Map<CourseGroup,Map<Department,Float>> sumAdjustmentsByCourseGroup(boolean supplementaryCIs) {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
-		for (CourseInstance ci : courseInstances) {
+		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.isSupplementary() == supplementaryCIs).collect(Collectors.toSet())) {
 			if (!bigSum.containsKey(ci.getCourse().getCourseGroup())) {
 				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
 			}
@@ -231,9 +204,15 @@ public class EconomyDocument  extends Auditable {
 		return bigSum;
 	}
 
+	public  Map<CourseGroup,Map<Department,Float>> hstByCourseGroupSupplement() {
+		return hstByCourseGroup(true);
+	}
 	public  Map<CourseGroup,Map<Department,Float>> hstByCourseGroup() {
+		return hstByCourseGroup(false);
+	}
+	private Map<CourseGroup,Map<Department,Float>> hstByCourseGroup(boolean supplementaryCIs) {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
-		for (CourseInstance ci : courseInstances) {
+		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.isSupplementary() == supplementaryCIs).collect(Collectors.toSet())) {
 			if (!bigSum.containsKey(ci.getCourse().getCourseGroup())) {
 				bigSum.put(ci.getCourse().getCourseGroup(), new HashMap<Department,Float>());
 			}
@@ -243,9 +222,4 @@ public class EconomyDocument  extends Auditable {
 		return bigSum;
 	}
 
-/* 
-	private void addCopiedCourse (CourseInstance ci) {
-		this.courseInstances.add(ci.copyToNewEDoc(this));
-	}
- */
 }

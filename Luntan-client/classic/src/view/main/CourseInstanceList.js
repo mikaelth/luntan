@@ -18,7 +18,12 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 
     columns: [
 		{ xtype: 'checkcolumn', text: 'Ny', dataIndex: 'firstInstance', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 50 },
-		{ xtype: 'checkcolumn', text: 'Balansera', dataIndex: 'balanceRequest', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'left', width: 50 },
+		{ xtype: 'checkcolumn', text: 'Balansera', dataIndex: 'balanceRequest', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 90 },
+		{ xtype: 'checkcolumn', text: 'Reg. giltig', dataIndex: 'registrationValid', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 100 },
+		{ xtype: 'checkcolumn', text: 'Supplement', dataIndex: 'supplement', /*editor: 'checkboxfield',*/ editable: false, filter: 'boolean', align: 'center', width: 100 },
+/* 
+		{ xtype: 'checkcolumn', text: 'Ges ej', dataIndex: 'bookendOnly', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 70 },
+ */
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', filter: 'list', align: 'left', width: 150 },
 		{ text: 'Kurs', dataIndex: 'courseId', align: 'left', flex: 2,
          	renderer: function(value) {

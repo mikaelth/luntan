@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Calendar;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.Course;
@@ -125,6 +126,7 @@ public class CourseService {
     
 
     public CourseInstanceVO saveCourseInstance(CourseInstanceVO cVO) throws Exception {
+		log.debug("saveCourseInstance");
     	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()).get(), cVO);
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
@@ -140,6 +142,7 @@ public class CourseService {
 	 * @since 1.0
 	 */
     public CourseInstanceVO saveCourseLeader(CourseInstanceVO cVO) throws Exception {
+		log.debug("saveCourseLeader");
     	CourseInstance ci = ciRepo.findById(cVO.getId()).get();
 		ci.setCourseLeader(cVO.getCourseLeader());
 		ci.setNote(cVO.getNote());
@@ -189,19 +192,16 @@ public class CourseService {
 			ci.setExtraDesignation(cVO.getExtraDesignation());
 			ci.setInstanceCode(cVO.getInstanceCode());
 			ci.setCourseLeader(cVO.getCourseLeader());
+			ci.setRegistrationValid(cVO.isRegistrationValid());
 			ci.setRegisteredStudents(cVO.getRegisteredStudents());
 			ci.setStartRegStudents(cVO.getStartRegStudents());
     		ci.setBalanceRequest(cVO.isBalanceRequest());
     		ci.setFirstInstance(cVO.isFirstInstance());
+    		ci.setBookendOnly(cVO.isBookendOnly());
     		ci.setNote(cVO.getNote());
-    		
-//			ci.setExaminers(cVO.getExaminers());
-			
+    					
     		ci.setGrantDistribution(cVO.getGrantDistribution());
 
-// 			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()));
-// 			ci.setCourse(courseRepo.findById(cVO.getCourseId()));
-//			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()));
 			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()).get());
 			ci.setCourse(courseRepo.findById(cVO.getCourseId()).get());
 			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()).get());
@@ -209,30 +209,38 @@ public class CourseService {
 			log.debug("preceedingCIId: "+ cVO.getPreceedingCIId() + ", economyDocId: " + cVO.getBalancedEconomyDocId());
 
 			if (cVO.getPreceedingCIId()!= null /* && cVO.getBalancedEconomyDocId()!= 0 */){
-//				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()));
 				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()).get());
 			}
-			if (cVO.getBalancedEconomyDocId()!= null && cVO.getBalancedEconomyDocId()!= 0){
-//				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()));
-				ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()).get());
+
+			if (ci.needBalancedDocument()) {
+				if (cVO.getBalancedEconomyDocId()!= null && cVO.getBalancedEconomyDocId()!= 0){
+					ci.setBalancedEconomyDoc(edRepo.findById(cVO.getBalancedEconomyDocId()).get());
+					log.debug("updated BalancedEconomyDoc with explicit from cVO: " + cVO.getBalancedEconomyDocId());
+				} else {
+					List<EconomyDocument> edList  = edRepo.availBalanceDoc(Calendar.getInstance().get(Calendar.YEAR));
+					if (edList != null) {
+						ci.setBalancedEconomyDoc(edList.get(0));
+						log.debug("updated BalancedEconomyDoc with firstOpen: " + ci.getBalancedEconomyDoc().getId());
+					} else {
+						log.debug("Could not update BalancedEconomyDoc with firstOpen" );
+					}
+				}			
 			}
-			
-
-
-
-
+		
 		} catch (Exception e) {
 			log.error("toCourseInstance got a pesky exception: "+ e + e.getCause());
+			log.error(ReflectionToStringBuilder.toString(e.getStackTrace(), ToStringStyle.MULTI_LINE_STYLE));
 		} finally {
 			return ci;
 		}
 	}
 
 
+/* 
 	public void updateBalanceED () {	
 		try {
 			for (CourseInstance ci :  ciRepo.findBalanceRequestedNotHandled()) {
-				if( ci.getEconomyDoc().isRegistrationsValid() ) {
+				if( ci.isRegistrationValid() ) {
 					List<EconomyDocument> edList  = edRepo.availBalanceDoc(ci.getEconomyDoc().getYear());
 					if (edList != null) {
 						ci.setBalancedEconomyDoc(edList.get(0));
@@ -249,4 +257,5 @@ public class CourseService {
 	
 	}
     
+ */
 }

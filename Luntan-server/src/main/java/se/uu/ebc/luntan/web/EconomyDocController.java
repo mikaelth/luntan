@@ -575,14 +575,12 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			log.debug("viewEconomyDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
        try {
-//			Map<CourseGroup, CourseInstance> ciMap = new HashMap<CourseGroup, CourseInstance>();
 			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
 			EconomyDocument edoc = emRepo.findByYear(year);
 
 			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
 
-			for (CourseInstance ci : edoc.getCourseInstances()) {
-//				ciMap.put(ci.getCourse().getCourseGroup(), ci);
+			for (CourseInstance ci : edoc.getCourseInstances().stream().filter(ci -> !ci.isSupplementary()).collect(Collectors.toSet())) {
 				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
 					ciMap.put(ci.getCourse().getCourseGroup(), new HashSet<CourseInstance>());
 				}
@@ -604,7 +602,44 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			emRepo.save(edoc);
 
     		return "EconomyDocView";
-//    		return "EconomyDocAdjustmentView";
+        } catch (Exception e) {
+			log.error("viewEconomyDoc, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
+
+    @RequestMapping(value = "/view/supplementdoc", method = RequestMethod.GET)
+    public String viewEconomyDocSupplement(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+			log.debug("viewEconomyDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+
+       try {
+			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
+			EconomyDocument edoc = emRepo.findByYear(year);
+
+			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroupSupplement());
+
+			for (CourseInstance ci : edoc.getCourseInstances().stream().filter(ci -> ci.isSupplementary()).collect(Collectors.toSet())) {
+				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
+					ciMap.put(ci.getCourse().getCourseGroup(), new HashSet<CourseInstance>());
+				}
+				ciMap.get(ci.getCourse().getCourseGroup()).add(ci);
+			}
+			log.debug("viewEconomyDocSupplement, course instances done");
+
+			for (CourseGroup cgrp : ciMap.keySet()) {
+				ciMap.put(cgrp, asSortedList(ciMap.get(cgrp)));
+			}
+			log.debug("viewEconomyDocSupplement, course groups done");
+
+			model.addAttribute("serverTime", new Date());
+			model.addAttribute("edoc", edoc);
+			model.addAttribute("courseInstances", ciMap);
+			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
+			model.addAttribute("sums", new TableSum());
+			model.addAttribute("models", fmRepo.findDistinctByEconDoc(edoc));
+			emRepo.save(edoc);
+
+    		return "EconomyDocSupplementView";
         } catch (Exception e) {
 			log.error("viewEconomyDoc, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
@@ -645,7 +680,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 
 
     @RequestMapping(value = "/view/adjusted", method = RequestMethod.GET)
-    public String viewAdjusedtDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+    public String viewAdjusetdDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
 			log.debug("viewAdjustmentDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
        try {
 			Map<CourseGroup, Collection<CourseInstance>> ciMap = new HashMap<CourseGroup, Collection<CourseInstance>>();
@@ -656,12 +691,24 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 }
 
 //			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
-
-			for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
+			Set<FundingModel> fms = new HashSet<FundingModel>();
+			
+			List<CourseInstance> expandedList = new ArrayList<CourseInstance>();
+			Set<CourseInstance> directList = edoc.getBalancedCourseInstances();
+			for (CourseInstance ci : directList) {
+				expandedList.add(ci);
+				expandedList = ciHistory(expandedList);
+			}
+			Collections.reverse(expandedList);
+					
+//			for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
+			for (CourseInstance ci : expandedList) {
 				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
-					ciMap.put(ci.getCourse().getCourseGroup(), new HashSet<CourseInstance>());
+					ciMap.put(ci.getCourse().getCourseGroup(), new ArrayList<CourseInstance>());
 				}
 				ciMap.get(ci.getCourse().getCourseGroup()).add(ci);
+				fms.add(ci.getFundingModel());
+				log.debug("viewAdjustmentDoc, course instance " + ci);
 			}
 			log.debug("viewAdjustmentDoc, course instances done");
 
@@ -673,9 +720,10 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			model.addAttribute("serverTime", new Date());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
+			model.addAttribute("courseSummaryInstances", directList);
 			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
 			model.addAttribute("sums", new TableSum());
-			model.addAttribute("models", fmRepo.findDistinctByEconDoc(edoc));
+			model.addAttribute("models", fms);
 			emRepo.save(edoc);
 
     		return "EconomyDocAdjustmentView";
@@ -685,6 +733,18 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 		}
 	}
 
+	private List<CourseInstance> ciHistory (List<CourseInstance> history) {
+		CourseInstance currentCI = history.get(history.size() - 1);
+		if (currentCI.getPreceedingCI() == null || currentCI == currentCI.getPreceedingCI() || currentCI.getPreceedingCI().isBalanceRequest()) {
+			return history;
+		} else {
+			history.add(currentCI.getPreceedingCI());
+			return ciHistory(history);
+		}
+	}
+	
+	
+	
 	/* Courses by programme listing */
 
 	@RequestMapping("/view/programcourses")

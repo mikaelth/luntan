@@ -23,5 +23,4 @@ public interface EconomyDocumentRepo extends JpaRepository<EconomyDocument, Long
 
 	@Query("SELECT ed FROM EconomyDocument AS ed where (ed.year >= ?1 AND ed.locked = false) order by ed.year ASC")
 	public List<EconomyDocument> availBalanceDoc (Integer year);
- 
-}
+ }

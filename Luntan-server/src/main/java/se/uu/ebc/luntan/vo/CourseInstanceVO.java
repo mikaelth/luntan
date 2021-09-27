@@ -26,6 +26,7 @@ public class CourseInstanceVO {
     private Long id;
 
 	private boolean locked; 
+	private boolean supplement; 
 	
 	private String ciDesignation;
 	
@@ -42,6 +43,7 @@ public class CourseInstanceVO {
 	private CIDesignation extraDesignation;
 	private String instanceCode;
 
+	private boolean registrationValid;
 	private Integer registeredStudents;
 	private Integer startRegStudents;
 	private Integer modelStudentNumber;
@@ -50,6 +52,7 @@ public class CourseInstanceVO {
     private String note;
 	private boolean balanceRequest = false;
 	private boolean firstInstance;
+	private boolean bookendOnly;
 	
 //	private Set<String> examiners;
 //	private List<Examiner> examiners;
@@ -63,192 +66,6 @@ public class CourseInstanceVO {
 		return this.locked;
 	}
  	   
-/* 
-
-	public Long getId()
-	{
-		return this.id;
-	}
-
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-
-
-	public Long getCourseId()
-	{
-		return this.courseId;
-	}
-
-	public void setCourseId(Long courseId)
-	{
-		this.courseId = courseId;
-	}
-
-
-	public Long getPreceedingCIId()
-	{
-		return this.preceedingCIId;
-	}
-
-	public void setPreceedingCIId(Long preceedingCIId)
-	{
-		this.preceedingCIId = preceedingCIId;
-	}
-
-
-	public Long getEconomyDocId()
-	{
-		return this.economyDocId;
-	}
-
-	public void setEconomyDocId(Long economyDocId)
-	{
-		this.economyDocId = economyDocId;
-	}
-
-
-	public Long getBalancedEconomyDocId()
-	{
-		return this.balancedEconomyDocId;
-	}
-
-	public void setBalancedEconomyDocId(Long balancedEconomyDocId)
-	{
-		this.balancedEconomyDocId = balancedEconomyDocId;
-	}
-
-
-	public Long getFundingModelId()
-	{
-		return this.fundingModelId;
-	}
-
-	public void setFundingModelId(Long fundingModelId)
-	{
-		this.fundingModelId = fundingModelId;
-	}
-
-
-	public CIDesignation getExtraDesignation()
-	{
-		return this.extraDesignation;
-	}
-
-	public void setExtraDesignation(CIDesignation extraDesignation)
-	{
-		this.extraDesignation = extraDesignation;
-	}
-
-
-	public Integer getRegisteredStudents()
-	{
-		return this.registeredStudents;
-	}
-
-	public void setRegisteredStudents(Integer registeredStudents)
-	{
-		this.registeredStudents = registeredStudents;
-	}
-
-
-	public Integer getStartRegStudents()
-	{
-		return this.startRegStudents;
-	}
-
-	public void setStartRegStudents(Integer startRegStudents)
-	{
-		this.startRegStudents = startRegStudents;
-	}
-
-
-	public Integer getModelStudentNumber()
-	{
-		return this.modelStudentNumber;
-	}
-
-	public void setModelStudentNumber(Integer modelStudentNumber)
-	{
-		this.modelStudentNumber = modelStudentNumber;
-	}
-
-
-    public String getNote()
-    {
-    	return this.note;
-    }
-
-    public void setNote(String note)
-    {
-    	this.note = note;
-    }
-
-
-    public boolean getBalanceRequest()
-    {
-    	return this.balanceRequest;
-    }
-
-    public boolean isBalanceRequest()
-    {
-    	return this.balanceRequest;
-    }
-    
-    public void setBalanceRequest(boolean balanceRequest)
-    {
-    	this.balanceRequest = balanceRequest;
-    }
-
-
-	public Map<Department,Float> getGrantDistribution() {
-		return this.grantDistribution;
-	}
-
-	public void setGrantDistribution(Map<Department,Float> grantDistribution) {
-		this.grantDistribution = grantDistribution;
-	}
-    
-
-
-	public String getCourseGroup()
-	{
-		return this.courseGroup;
-	}
-
-	public void setCourseGroup(String courseGroup)
-	{
-		this.courseGroup = courseGroup;
-	}
-
-
-	public String getCourseDesignation()
-	{
-		return this.courseDesignation;
-	}
-
-	public void setCourseDesignation(String courseDesignation)
-	{
-		this.courseDesignation = courseDesignation;
-	}
-
-
-	public boolean getFirstInstance()
-	{
-		return this.firstInstance;
-	}
-	public boolean isFirstInstance()
-	{
-		return this.firstInstance;
-	}
-
-	public void setFirstInstance(boolean firstInstance)
-	{
-		this.firstInstance = firstInstance;
-	}
- */
     
     /* Public methods */
 
@@ -282,21 +99,20 @@ public class CourseInstanceVO {
 		this.preceedingCIId = xe.getPreceedingCI() == null ? null : xe.getPreceedingCI().getId();
 		this.economyDocId = xe.getEconomyDoc().getId();
 		this.locked = xe.getEconomyDoc().isLocked();
+		this.supplement = xe.isSupplementary();
 		
 		this.balancedEconomyDocId = xe.getBalancedEconomyDoc() == null ? null : xe.getBalancedEconomyDoc().getId();
 		this.fundingModelId = xe.getFundingModel().getId();
 		
 		this.extraDesignation = xe.getExtraDesignation();
 		this.instanceCode = xe.getInstanceCode();
+		this.registrationValid = xe.isRegistrationValid();
 		this.registeredStudents = xe.getRegisteredStudents();
 		this.startRegStudents = xe.getStartRegStudents();
 		
 		this.balanceRequest = xe.isBalanceRequest();
 		this.firstInstance = xe.isFirstInstance();		
-//		this.firstInstance = xe.getFirstInstance();		
-
-//		this.examiners = xe.getExaminers();
-//		this.examiners = new ArrayList(xe.getExaminers().keySet());
+		this.bookendOnly = xe.isBookendOnly();		
 		
 		this.grantDistribution = xe.getGrantDistribution();
 		this.modelStudentNumber = xe.getModelStudentNumber();

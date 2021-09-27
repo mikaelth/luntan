@@ -21,6 +21,8 @@ Ext.define('Luntan.model.CourseInstance', {
     fields: [
 		{name: 'id', type: 'int'},
 		{name: 'locked', type: 'boolean'},
+		{name: 'supplement', type: 'boolean'},
+		{name: 'bookendOnly', type: 'boolean'},
 		{name: 'courseId', type: 'int'},
 		{name: 'ciDesignation', type: 'string'},
 		{name: 'courseGroup', type:'string'},
@@ -31,6 +33,7 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'fundingModelId', type: 'int'},
 		{name: 'extraDesignation', type: 'string'},
 		{name: 'instanceCode', type: 'string'},
+		{name: 'registrationValid', type: 'boolean'},
 		{name: 'registeredStudents', type: 'int'},
 		{name: 'startRegStudents', type: 'int'},
 		{name: 'modelStudentNumber', type: 'int'},

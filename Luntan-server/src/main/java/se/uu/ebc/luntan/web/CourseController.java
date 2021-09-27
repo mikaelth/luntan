@@ -13,6 +13,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.File;
+import java.io.Reader;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -30,8 +41,16 @@ import org.jsoup.nodes.Document;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Calendar;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 
 //import org.apache.log4j.Logger;
 
@@ -39,13 +58,19 @@ import se.uu.ebc.luntan.service.CourseService;
 import se.uu.ebc.luntan.service.ExaminersService;
 
 import se.uu.ebc.luntan.entity.Course;
+import se.uu.ebc.luntan.entity.CourseInstance;
+import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
+import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.util.DateNullTransformer;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
 import se.uu.ebc.luntan.vo.CourseVO;
 import se.uu.ebc.luntan.vo.ExaminerVO;
 import se.uu.ebc.luntan.vo.ExListVO;
+import se.uu.ebc.luntan.vo.CourseInstancesCSVUploadFB;
+import se.uu.ebc.luntan.vo.LADOKEntryVO;
+import se.uu.ebc.luntan.enums.UpdateStatus;
 
 import se.uu.ebc.luntan.enums.EduBoard;
 
@@ -81,6 +106,10 @@ public class CourseController {
 
 	@Autowired
 	ExaminerRepo examinerRepo;
+
+	@Autowired
+	EconomyDocumentRepo edocRepo;
+
 
 	/* Courses */
 
@@ -240,18 +269,110 @@ public class CourseController {
     }
 
 
-/* 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
-    private CourseInstanceVO updateEntireCourseInstance(CourseInstanceVO ciVO) {
-		return courseService.saveCourseInstance(ciVO);
+	@Secured({("ROLE_REGISTRATIONUPDATER")})
+	@RequestMapping(value = "/bulk/cibycsv", method = RequestMethod.GET)
+    public String viewCSVCIUploadRequest(@RequestParam(value = "year", required = true) Integer year, Model model, HttpServletRequest request) {
+		log.debug("viewCSVCIUploadRequest: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));		
+		try {			
+			CourseInstancesCSVUploadFB fb = new CourseInstancesCSVUploadFB();
+  			fb.setYear(year);
+			fb.setIgnoreExistingValues(false);
+			
+			model.addAttribute("years",edRepo.getYears());
+ 			model.addAttribute("formValues",fb);
+			log.debug("viewCSVCIUploadRequest: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));		
 
-    }
+			return "ViewCSVCIUpload";
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR"),("ROLE_STAFFDIRECTOR")})
-    private CourseInstanceVO updateCourseLeader(CourseInstanceVO ciVO) {
-		return courseService.saveCourseLeader(ciVO);
+        } catch (Exception e) {
+				log.error("viewCSVCIUploadRequest, pesky exception "+e);
+           return "{\"ERROR\":"+e.getMessage()+"\"}";        
+        }
+	}
+
+	@Secured({("ROLE_REGISTRATIONUPDATER")})
+	@RequestMapping(value="/bulk/requestUpdateRegsFromCSV", method = RequestMethod.POST, headers = "Accept=application/json")
+    public String requestUpdateRegsFromCSV(Model model, HttpServletRequest request, HttpServletResponse response, final CourseInstancesCSVUploadFB formValues) {
+
+		log.debug("FormValues: " + ReflectionToStringBuilder.toString(formValues, ToStringStyle.MULTI_LINE_STYLE));		
+		log.debug("Model: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+		log.debug("Request: " + ReflectionToStringBuilder.toString(request, ToStringStyle.MULTI_LINE_STYLE));
+		
+       // validate file
+        if (formValues.getCiFile().isEmpty()) {
+			log.error("No file received");
+            model.addAttribute("message", "Please select a CSV file to upload.");
+            model.addAttribute("status", false);
+        } else {
+
+// 			log.debug("Year: " + formValues.getYear());
+//			log.debug("File: " + formValues.getCiFile().toString());
+ 			EconomyDocument edoc = edocRepo.findByYear(formValues.getYear());
+ 			
+            // parse CSV file to create a list of `Specimen` objects
+            try (Reader reader = new BufferedReader(new InputStreamReader(formValues.getCiFile().getInputStream()))) {
+
+                // create csv bean reader
+                CsvToBean<LADOKEntryVO> csvToBean = new CsvToBeanBuilder(reader)
+                        .withType(LADOKEntryVO.class)
+                        .withSeparator(';')
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withSkipLines(9)
+                        .build();
+
+                // convert `CsvToBean` object to list of specimens
+                List<LADOKEntryVO> cis = csvToBean.parse();
+		
+				Map<String, Long> counts = cis.stream().collect(Collectors.groupingBy(c -> c.getCourseCode(), Collectors.counting()));
+				log.debug("Occurrences: " + counts);
+				
+				for (LADOKEntryVO ci : cis) {
+//					log.debug(ci.getCourseCode() + ", added ci " + ci.getInstanceCode() + " with " + ci.getRegistered() + " registered students; "+ci.getSize());
+
+					CourseInstance lci = ciRepo.findByInstanceCodeAndEconomyDoc(ci.getInstanceCode(), edoc);
+//					log.debug("From instanceCode: " + lci);
+					if (lci == null) {
+						if ( counts.get(ci.getCourseCode()) > 1 ) {
+							ci.setStatus(UpdateStatus.MULTIPLEQUERY);
+						} else {
+							List<CourseInstance> lcis = ciRepo.findByCourseCodeAndEconomyDoc(ci.getCourseCode(), edoc);
+//							log.debug("From courseCode " + lcis.size());
+							if (lcis.size() == 0) {
+								ci.setStatus(UpdateStatus.NOMATCH);
+							} else if (lcis.size() > 1) {
+								ci.setStatus(UpdateStatus.MULTIPLEMATCHES);
+							} else {
+								lci = lcis.get(0);
+							}
+						}
+					}
+					if (lci != null) {
+						if (formValues.isIgnoreExistingValues() || lci.getRegisteredStudents() == null || lci.getRegisteredStudents() == 0) {
+							ci.setPreviousValue(lci.getRegisteredStudents());
+							lci.setRegisteredStudents(ci.getRegistered());
+							lci.setRegistrationValid(true);
+							ciRepo.save(lci);
+							ci.setStatus(UpdateStatus.UPDATED);
+						} else {
+							ci.setStatus(UpdateStatus.EXISTINGVALUE);
+							ci.setPreviousValue(lci.getRegisteredStudents());
+						}
+					}
+					log.debug(ci.getCourseCode() + ", " + ci.getInstanceCode() + ", " + ci.getRegistered() + ", " + ci.getStatus());
+				}
+
+				model.addAttribute("serverTime", new Date());
+				model.addAttribute("year", formValues.getYear());
+				model.addAttribute("cis", cis);
+
+			} catch (Exception ex) {
+				model.addAttribute("message", "An error occurred while processing the CSV file.");
+				model.addAttribute("status", false);
+			}
+		}
+
+        return "CIBulkUpdateOverview";
     }
- */
 
 
 	/* Examiners */
@@ -326,6 +447,7 @@ public class CourseController {
     }
 
 
+/* 
 	@RequestMapping(value="/test", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> test() {
@@ -342,6 +464,7 @@ public class CourseController {
         }
 
     }
+ */
 
 
 

@@ -21,4 +21,8 @@ public interface FundingModelRepo extends JpaRepository<FundingModel, Long>, Jpa
 
 	@Query("SELECT distinct ci.fundingModel FROM CourseInstance AS ci WHERE ci.economyDoc = ?1")
 	public Set<FundingModel> findDistinctByEconDoc(EconomyDocument edoc);     
+
+	@Query("SELECT distinct ci.fundingModel FROM CourseInstance AS ci WHERE ci.economyDoc in ?1")
+	public Set<FundingModel> findDistinctByEDocs(Set<EconomyDocument> edocs);     
+
 }

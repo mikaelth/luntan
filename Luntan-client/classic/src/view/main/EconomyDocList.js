@@ -57,6 +57,13 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 					var rec = grid.getStore().getAt(rowIndex);
 					window.open(Luntan.data.Constants.BASE_URL.concat('excel/economydoc?year=').concat(rec.get('year')));
 				}
+			}, {
+				iconCls: 'x-fa fa-clone',
+				tooltip: 'Importera antal registrerade studenter',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('rest/bulk/cibycsv?year=').concat(rec.get('year')));
+				}
 			}
 /* 			,{
 				iconCls: 'x-fa fa-user',
@@ -73,7 +80,9 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 		{ xtype: 'checkcolumn', text: 'Klona', dataIndex: 'cloneCourses', editor: 'checkboxfield', editable: true, align: 'center', width: 70, filter: 'boolean'},
  */
 		{ xtype: 'checkcolumn', text: 'Låst', dataIndex: 'locked', editor: 'checkboxfield', editable: true, align: 'center', width: 70, filter: 'boolean'},
+/* 
 		{ xtype: 'checkcolumn', text: 'Regs OK', dataIndex: 'registrationsValid', editor: 'checkboxfield', editable: true, align: 'center', width: 80, filter: 'boolean'},
+ */
 		{ text: 'År', dataIndex: 'year', editor: 'textfield', filter: 'number', align: 'left', width: 100},
 		{ text: 'Antal kurser', dataIndex: 'numberOfCIs', filter: 'number', align: 'left', width: 100},
 		{ text: 'Basnivå', dataIndex: 'baseValue', editor: 'textfield', filter: 'number', align: 'left', width: 100},
