@@ -12,9 +12,8 @@ Ext.define('Luntan.view.courses.CourseModel', {
 			fcid : null
 		},
 		cloning: {
-        	cloneDestED: null,
-//        	seletcedCIsToClone : []
-		},
+        	cloneDestED: null
+		}
     },
     
     stores: {
@@ -65,12 +64,12 @@ Ext.define('Luntan.view.courses.CourseModel', {
 			type: 'chained',
 			source: 'TeacherStore',
 			filters:[{property:'examinerEligible', value: true, exactMatch: true}],
-			sorters: [{property:'name', direction: 'ASC'}],
+			sorters: [{property:'name', direction: 'ASC'}]
 		},
 		seniorStaff : {
 			type: 'chained',
 			source: 'TeacherStore',
-			sorters: [{property:'name', direction: 'ASC'}],
+			sorters: [{property:'name', direction: 'ASC'}]
 		},
 		examiners : {
 			type: 'chained',

@@ -26,7 +26,7 @@ Ext.define('Luntan.model.Teacher', {
 		{name: 'department', type: 'string'},
 		{name: 'phone', type: 'string'},
 		{name: 'mail', type: 'string'},
-		{name: 'examinerEligible', type: 'boolean'},
+		{name: 'examinerEligible', type: 'boolean'}
     ],
 
     validators: {

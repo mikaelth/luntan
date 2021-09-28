@@ -84,12 +84,7 @@ Ext.define('Luntan.view.main.BasicListGrid', {
 						context.store.remove(context.record);
 					}
                 }
-            },
-/* 
-            beforeEdit: function(rowEditing, context) {
-            	console.log(context);
             }
- */
         }
     },
     'gridfilters'	

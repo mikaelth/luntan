@@ -36,16 +36,7 @@ Ext.define('Luntan.view.main.EDGrantList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'displayname',
-			    valueField: 'id',
-/* 
-			    listeners: {
-					// delete the previous query in the beforequery event or set
-					// combo.lastQuery = null (this will reload the store the next time it expands)
-					beforequery: function(qe){
-						delete qe.combo.lastQuery;
-					}							    
-			    }				
- */
+			    valueField: 'id'
 			}
 		},
 		{ text: 'Totalt', dataIndex: 'totalGrant', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 100},

@@ -53,7 +53,7 @@ Ext.define('Luntan.view.main.CourseList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'displayname',
-			    valueField: 'id',
+			    valueField: 'id'
 			}
 		},
 
@@ -75,7 +75,7 @@ Ext.define('Luntan.view.main.CourseList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'displayname',
-			    valueField: 'id',
+			    valueField: 'id'
 			}
 		},
 //		{ text: 'Kursperiod', dataIndex: 'period', editor: 'textfield', align: 'left', width: 80 },

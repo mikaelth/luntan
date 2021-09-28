@@ -68,16 +68,7 @@ Ext.define('Luntan.view.main.CourseInstanceList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'displayname',
-			    valueField: 'id',
-/* 
-			    listeners: {
-					// delete the previous query in the beforequery event or set
-					// combo.lastQuery = null (this will reload the store the next time it expands)
-					beforequery: function(qe){
-						delete qe.combo.lastQuery;
-					}							    
-			    }				
- */
+			    valueField: 'id'
 			}
 		},
 		{ text: 'Tillfälleskod', dataIndex: 'instanceCode', editor: 'textfield', filter: 'string', align: 'left', width: 80 },

@@ -79,12 +79,7 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 					}
 
 			]
-	}],
+	}]
 	
-/* 
-	constructor: function() {
-		console.log('Initing BasicListGrid' + this);
-	}
- */
 });
 

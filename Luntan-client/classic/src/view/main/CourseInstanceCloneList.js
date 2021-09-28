@@ -111,15 +111,7 @@ Ext.define('Luntan.view.main.CourseInstanceCloneList', {
 
     columns: [
 		{ text: 'Kursgrupp', dataIndex: 'courseGroup', align: 'left', filter: 'string', width: 150 },
-		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', filter: 'string', flex: 2,         	
-// 			renderer: function(value,record) {
-// 				if (Ext.getStore('CIDesignationStore').getById(record.record.get('extraDesignation')) != undefined) {
-// 					return value.concat(Ext.getStore('CIDesignationStore').getById(record.record.get('extraDesignation')).get('displayname'));
-// 				} else {
-// 					return value;
-// 				}
-//         	},
-		},
+		{ text: 'Kurs', dataIndex: 'courseDesignation', align: 'left', filter: 'string', flex: 2},
 		{ text: 'Extra benämning', dataIndex: 'extraDesignation', filter: 'string', align: 'left', flex: 1, 
          	renderer: function(value) {
 				if (Ext.getStore('CIDesignationStore').getById(value) != undefined) {
@@ -140,7 +132,7 @@ Ext.define('Luntan.view.main.CourseInstanceCloneList', {
 				} else {
 					return value;
 				}
-        	},
+        	}
 		},
 		{ text: 'Kommentarer', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 

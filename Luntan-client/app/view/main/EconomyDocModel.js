@@ -18,9 +18,7 @@ Ext.define('Luntan.view.fundingmodels.EconomyDocModel', {
 		edocgrants: {			
 			type: 'chained',
 			source: 'EDGStore',
-			filters: [{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}],
-//			sorters: [{property:'courseName', direction: 'ASC'}],
-//			groupField: 'courseGroup'
+			filters: [{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}]
 		}
 	},
 	formulas: {
@@ -33,7 +31,7 @@ Ext.define('Luntan.view.fundingmodels.EconomyDocModel', {
 			get: function(edoc) {
 				this.set('current.edoc', edoc);
 				return edoc;
-			},
+			}
 		}
 	}
 

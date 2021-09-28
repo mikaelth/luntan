@@ -52,13 +52,13 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
 			type: 'chained',
 			source: 'TeacherStore',
 			filters:[{property:'examinerEligible', value: true, exactMatch: true}],
-			sorters: [{property:'name', direction: 'ASC'}],
+			sorters: [{property:'name', direction: 'ASC'}]
 		},
 
 		seniorStaff : {
 			type: 'chained',
 			source: 'TeacherStore',
-			sorters: [{property:'name', direction: 'ASC'}],
+			sorters: [{property:'name', direction: 'ASC'}]
 		},
 
 		examiners : {

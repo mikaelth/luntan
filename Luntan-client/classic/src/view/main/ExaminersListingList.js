@@ -104,7 +104,7 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'displayname',
-			    valueField: 'id',
+			    valueField: 'id'
 			}
 		},
 /* 
