@@ -27,6 +27,7 @@ import flexjson.JSONSerializer;
 import flexjson.transformer.DateTransformer;
 //import se.uu.ebc.bemanning.util.DateNullTransformer;
 
+import java.lang.Number;
 import java.math.BigInteger;
 import java.util.regex.Pattern;
 import java.util.Date;
@@ -358,18 +359,18 @@ public class EconomyDocController {
 			ExaminersList el = elRepo.findById(examinerListingId).get();
 			if (el instanceof ExaminersDecision) {
 				exMap.put(((ExaminersDecision)el).getBoard(),exRepo.findByDecision(el));
-				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
+				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());
 				model.addAttribute("defaultExaminers", ((ExaminersDecision)el).getDefaultExaminers());
 			} else {
 				for (EduBoard board : EduBoard.values()) {
 					exMap.put(board,exRepo.findAvailableByBoard(board));
 					model.addAttribute("decisionDate", new Date());
 					model.addAttribute("defaultExaminers", new ArrayList<String>());
-				}	
+				}
 			}
 //			EconomyDocument edoc = emRepo.findByYear(year);
 
-			
+
 			model.addAttribute("serverTime", new Date());
 //			model.addAttribute("edoc", edoc);
 //			model.addAttribute("staff", staffService);
@@ -393,20 +394,20 @@ public class EconomyDocController {
 
 //			Map<String,List<Examiner>> deptMap = new HashMap<String,List<Examiner>>();
 			ExaminersList el = elRepo.findById(examinerListingId).get();
-			List<Examiner> examiners = new ArrayList<Examiner>(); 
+			List<Examiner> examiners = new ArrayList<Examiner>();
 			Map<String, Staff> staffMap = staffService.getDesignatedExaminers();
-			
-			
+
+
 			if (el instanceof ExaminersDecision) {
 				examiners = exRepo.findByDecision(el);
-				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
+				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());
 			} else {
 				for (EduBoard board : EduBoard.values()) {
 					examiners.addAll(exRepo.findAvailableByBoard(board));
 					model.addAttribute("decisionDate", new Date());
-				}	
+				}
 			}
-         		
+
          	List<DeptExaminer> deptExaminers = examiners.stream()
 				.map(examiner -> {
 					DeptExaminer dex = new DeptExaminer(); // Convert examiner to DeptExaminer
@@ -417,8 +418,8 @@ public class EconomyDocController {
 				.collect(Collectors.toList());
 
          	deptExaminers.sort(Comparator.comparing(DeptExaminer::getDepartment).thenComparing(DeptExaminer::getName));
-   	
-   			
+
+
 			model.addAttribute("serverTime", new Date());
 //			model.addAttribute("staffMap", staffMap);
 			model.addAttribute("examiners", deptExaminers);
@@ -439,9 +440,9 @@ public class EconomyDocController {
 		ExaminersList el = elRepo.findById(examinerListingId).get();
 		List<Examiner> examiners = exRepo.findByDecision(el);
 		Map<Course,List<Examiner>> exMap = new HashMap<Course,List<Examiner>>();
-		
+
 		if (el instanceof ExaminersDecision) {
-			model.put("decisionDate", ((ExaminersDecision)el).getDecisionDate());	
+			model.put("decisionDate", ((ExaminersDecision)el).getDecisionDate());
 			model.put("defaultExaminers", ((ExaminersDecision)el).getDefaultExaminers());
 			model.put("board",((ExaminersDecision)el).getBoard());
 		} else {
@@ -450,7 +451,7 @@ public class EconomyDocController {
 			model.put("board","någon");
 		}
 
-		/* This is a hack to compare with the previous decision to tag differences */	
+		/* This is a hack to compare with the previous decision to tag differences */
 		if (el instanceof ExaminersDecision) {
 			log.debug( "Board: " +  ((ExaminersDecision)el).getBoard().name() );
 			log.debug( "Date: " + ((ExaminersDecision)el).getDecisionDate() );
@@ -462,17 +463,18 @@ public class EconomyDocController {
 				courseDiffList= exRepo.compareELists(el.getId(), el.getId());
 			} else {
 				courseDiffList= exRepo.compareELists(el.getId(), pel.getId());
-			} 
+			}
 			for (Object[] ob : courseDiffList){
 				String key = (String)ob[0];
-				BigInteger value = (BigInteger)ob[1];
+//				BigInteger value = (BigInteger)ob[1];
+				Number value = (Number)ob[1];
 				switch (value.intValue()) {
 					case 1: matchMap.put(key,DiffKind.CHANGE.toString());break;
 					case 2: matchMap.put(key,DiffKind.NEW.toString());break;
 					case 3: matchMap.put(key,DiffKind.DELETE.toString());break;
 					default: matchMap.put(key,DiffKind.NONE.toString());
 				}
-				
+
 			}
 		} else {
 			ExaminersList pel;
@@ -486,7 +488,8 @@ public class EconomyDocController {
 			}
 			for (Object[] ob : courseDiffList) {
 				String key = (String)ob[0];
-				BigInteger value = (BigInteger)ob[1];
+//				BigInteger value = (BigInteger)ob[1];
+				Number value = (Number)ob[1];
 				log.debug( "The comparison: " +  key + ": " + value);
 				switch (value.intValue()) {
 					case 1: matchMap.put(key,DiffKind.CHANGE.toString());break;
@@ -500,8 +503,8 @@ public class EconomyDocController {
 		for (Examiner ex : examiners) {
 			if (!exMap.containsKey(ex.getCourse())) {
 				exMap.put(ex.getCourse(), new ArrayList<Examiner>());
-			} 
-			exMap.get(ex.getCourse()).add(ex);			
+			}
+			exMap.get(ex.getCourse()).add(ex);
 		}
 
         model.put("exMap", exMap);
@@ -527,7 +530,7 @@ public class EconomyDocController {
 
 
 	/* EconomyDocument views */
-	
+
     @RequestMapping(value = "/view/adjustmentdoc", method = RequestMethod.GET)
     public String viewAdjustmentDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
 			log.debug("viewAdjustmentDoc, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
@@ -568,7 +571,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
 		}
 	}
-	
+
 
     @RequestMapping(value = "/view/economydoc", method = RequestMethod.GET)
     public String viewEconomyDoc(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
@@ -673,7 +676,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
         }
         headers.add("Kommentar");
 
- 
+
         model.put("headers", headers);
 
         response.setContentType( "application/ms-excel" );
@@ -695,7 +698,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 
 //			log.debug("Document " + edoc.getYear() +", " + edoc.sumByCourseGroup());
 			Set<FundingModel> fms = new HashSet<FundingModel>();
-			
+
 			List<CourseInstance> expandedList = new ArrayList<CourseInstance>();
 			Set<CourseInstance> directList = edoc.getBalancedCourseInstances();
 			for (CourseInstance ci : directList) {
@@ -703,7 +706,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 				expandedList = ciHistory(expandedList);
 			}
 			Collections.reverse(expandedList);
-					
+
 //			for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			for (CourseInstance ci : expandedList) {
 				if (!ciMap.containsKey(ci.getCourse().getCourseGroup())) {
@@ -745,9 +748,9 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			return ciHistory(history);
 		}
 	}
-	
-	
-	
+
+
+
 	/* Courses by programme listing */
 
 	@RequestMapping("/view/programcourses")
@@ -889,7 +892,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 	private class DeptExaminer {
 		private Staff staff;
 		private Examiner examiner;
-	
+
 		public String getDepartment() {
 			return staff.getFullDepartment();
 		}
