@@ -25,7 +25,10 @@ public class LADOKEntryVO {
 	@CsvBindByPosition(position = 5)
 	private String instanceCode;
 
-	@CsvBindByPosition(position = 12)
+	@CsvBindByPosition(position = 10)
+	private Date startDate;
+
+	@CsvBindByPosition(position = 13)
 	private Integer registered;
 
 	private Integer previousValue;
@@ -45,8 +48,9 @@ public class LADOKEntryVO {
    7: Finansieringsform
    8: Undervisningsform
    9: Studieort
-  10: Kvinnor
-  11: Män
-  12: Total
+  10: Startdatum
+  11: Kvinnor
+  12: Män
+  13: Total
 
  */
