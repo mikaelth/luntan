@@ -55,17 +55,21 @@ import com.opencsv.bean.CsvToBeanBuilder;
 //import org.apache.log4j.Logger;
 
 import se.uu.ebc.luntan.service.CourseService;
+import se.uu.ebc.luntan.service.ProgrammeService;
 import se.uu.ebc.luntan.service.ExaminersService;
 
 import se.uu.ebc.luntan.entity.Course;
+import se.uu.ebc.luntan.entity.Programme;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.repo.CourseRepo;
+import se.uu.ebc.luntan.repo.ProgrammeRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.util.DateNullTransformer;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
 import se.uu.ebc.luntan.vo.CourseVO;
+import se.uu.ebc.luntan.vo.ProgrammeVO;
 import se.uu.ebc.luntan.vo.ExaminerVO;
 import se.uu.ebc.luntan.vo.ExListVO;
 import se.uu.ebc.luntan.vo.CourseInstancesCSVUploadFB;
@@ -85,13 +89,14 @@ import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class CourseController {
 
-//    private Logger log = Logger.getLogger(CourseController.class.getName());
-
 
 	private final String INACTIVE_STATEMENT = "Kursen är avvecklad";
 	
 	@Autowired
 	CourseService courseService;
+
+	@Autowired
+	ProgrammeService progService;
 
 	@Autowired
 	ExaminersService examinerService;
@@ -100,7 +105,11 @@ public class CourseController {
 	CourseRepo courseRepo;
 
 	@Autowired
+	ProgrammeRepo progRepo;
+
+	@Autowired
 	CourseInstanceRepo ciRepo;
+
 	@Autowired
 	EconomyDocumentRepo edRepo;
 
@@ -109,6 +118,77 @@ public class CourseController {
 
 	@Autowired
 	EconomyDocumentRepo edocRepo;
+
+
+	/* Programmes */
+
+    @RequestMapping(value="/programmes", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allProgrammes() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("programmes").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(progRepo.findAll()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/programmes/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateProgramme(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			ProgrammeVO cnew = new JSONDeserializer<ProgrammeVO>().use(null, ProgrammeVO.class).deserialize(json);
+			cnew.setId(id);
+			cnew = progService.saveProgramme(cnew);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("programmes").deepSerialize(cnew);
+			restResponse = new StringBuilder(restResponse).insert(1, "'success': true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/programmes", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createProgramme(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			ProgrammeVO cVO = new JSONDeserializer<ProgrammeVO>().use(null, ProgrammeVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			cVO = progService.saveProgramme(cVO);
+            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+cVO.getId().toString()).build().toUriString());
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("programmes").deepSerialize(cVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_SUBJECTCOORDINATOR")})
+	@RequestMapping(value = "/programmes/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	public ResponseEntity<String> deleteProgramme(@PathVariable("id") Long id) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			progService.deleteProgramme(id);
+            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 
 	/* Courses */
@@ -267,6 +347,7 @@ public class CourseController {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 	@Secured({("ROLE_REGISTRATIONUPDATER")})

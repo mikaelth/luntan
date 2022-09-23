@@ -22,11 +22,29 @@ Ext.define('Luntan.view.courses.CourseController', {
    	onUpdateInactive: function () {
    	},
 
+   	onProgramCourses: function () {
+		window.open(Luntan.data.Constants.BASE_URL.concat('view/programcourses'));
+   	},
+
+
    	init: function (view) {
 
-						
-/* 
 		var tb = view.down('toolbar');
+						
+		tb.insert(2,
+			{
+				xtype: 'button',
+				showText: true,
+				tooltip:'Slå upp kurser i studieplaner',
+				text: 'Kurser per program',
+				reference: 'btnProgramCourses',
+				disabled: false,
+				listeners: {
+				  click: 'onProgramCourses'
+				}
+			});			
+
+/* 
 		
 		tb.insert(1,
 			{

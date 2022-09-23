@@ -76,13 +76,12 @@ Ext.define('Luntan.view.courses.CourseModel', {
 			source: 'ExaminerStore',
 			filters: [{property: 'courseId', value: '{current.fcid}', exactMatch: true}, {property: 'decided', value: false, exactMatch: true}]
 			
-		}
-/*
-		courses: {
+		},
+		programmes: {
 			type: 'chained',
-			source: 'CourseStore'
+			source: 'ProgrammeStore'
 		}
- */
+
 		    	
 	},
 	

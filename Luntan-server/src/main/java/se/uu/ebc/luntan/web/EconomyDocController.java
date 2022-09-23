@@ -59,6 +59,7 @@ import org.apache.log4j.Logger;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
 import se.uu.ebc.luntan.repo.CourseRepo;
+import se.uu.ebc.luntan.repo.ProgrammeRepo;
 import se.uu.ebc.luntan.repo.ExaminersListRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
 
@@ -68,13 +69,14 @@ import se.uu.ebc.luntan.service.StaffService;
 import se.uu.ebc.luntan.service.ExaminersService;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
-import se.uu.ebc.luntan.entity.EconomyDocument ;
-import se.uu.ebc.luntan.entity.FundingModel ;
-import se.uu.ebc.luntan.entity.Course ;
-import se.uu.ebc.luntan.entity.ExaminersList ;
-import se.uu.ebc.luntan.entity.ExaminersDecision ;
-import se.uu.ebc.luntan.entity.Examiner ;
-import se.uu.ebc.ldap.Staff ;
+import se.uu.ebc.luntan.entity.EconomyDocument;
+import se.uu.ebc.luntan.entity.FundingModel;
+import se.uu.ebc.luntan.entity.Course;
+import se.uu.ebc.luntan.entity.Programme;
+import se.uu.ebc.luntan.entity.ExaminersList;
+import se.uu.ebc.luntan.entity.ExaminersDecision;
+import se.uu.ebc.luntan.entity.Examiner;
+import se.uu.ebc.ldap.Staff;
 
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.Department;
@@ -115,6 +117,9 @@ public class EconomyDocController {
 
  	@Autowired
 	CourseRepo courseRepo;
+
+ 	@Autowired
+	ProgrammeRepo progRepo;
 
  	@Autowired
 	ExaminersListRepo elRepo;
@@ -759,21 +764,26 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 /*
 		TBM1K&pInr=BIOL	Kandidatprogram i biologi/molekylärbiologi
 		TBM1K&pInr=BIKG	Kandidatprogram i biologi/molekylärbiologi, ingång för samhällsvetare
-		TMV1K			Kandidatprogram i miljövetenskap
 
 		TTB2M			Masterprogram i tillämpad bioteknik
 		TBK2M&pInr=BIOL	Masterprogram i bioinformatik, biologiingång
 		TBK2M&pInr=DATA	Masterprogram i bioinformatik, dataingång
 		TBI2M			Masterprogram i biologi
-		TMB2M			Masterprogram i molekylär bioteknik
+		TBF2M			Masterprogram i biofysik
 
 		TMB2Y			Civilingenjörsprogrammet i molekylär bioteknik
 		TMV2Y			Civilingenjörsprogrammet i miljö- och vattenteknik
+
+		Currently not active
+		TMV1K			Kandidatprogram i miljövetenskap
+		TMB2M			Masterprogram i molekylär bioteknik
 		UGY2Y			Ämneslärarprogrammet med inriktning mot arbete i gymnasieskolan
 */
 
 		Map<String,ProgCourse> courseMap = new HashMap<String,ProgCourse>();
-        List<String> programmes = Arrays.asList("TTB2M", "TMB2Y", "TMV2Y", "TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBK2M&pInr=BIOL", "TBK2M&pInr=DATA", "TBI2M", "TMB2M", "UGY2Y");
+//        List<String> programmes = Arrays.asList("TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBI2M", "TBK2M&pInr=BIOL", "TBK2M&pInr=DATA", "TBF2M", "TTB2M", "TMB2Y", "TMV2Y", );
+
+		List<String> programmes = progRepo.findActive().stream().map(Programme::getSELMAPath).collect(Collectors.toList());
 
 		for (String pKod : programmes) {
 			log.debug("pKod: "+ pKod);

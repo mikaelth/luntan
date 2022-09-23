@@ -139,6 +139,14 @@ Ext.define('Luntan.view.main.Main', {
 			height: 400
         }]
      }, {
+        title: 'Program',
+        iconCls: 'fa-clipboard',
+		viewModel: {type:'coursemodel'},
+        items: [{
+            xtype: 'programmelist', 
+			height: 900
+        }]
+     }, {
         title: 'Examinatorer',
         iconCls: 'fa-users',
        	viewModel: 'examinermodel',
