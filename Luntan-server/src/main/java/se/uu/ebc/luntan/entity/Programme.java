@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PROGRAMME", uniqueConstraints= @UniqueConstraint(columnNames={"CODE"}))
+@Table(name = "PROGRAMME", uniqueConstraints= @UniqueConstraint(name = "UniqueProgramAndDirection",columnNames={"CODE","DIRECTION"}))
 public class Programme extends Auditable {
 
     @Id
