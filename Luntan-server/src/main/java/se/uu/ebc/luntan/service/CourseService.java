@@ -89,6 +89,7 @@ public class CourseService {
 			c.setSeName(cvo.getSeName()) ;
 //			c.setEnName(cvo.getEnName()) ;
 			c.setCourseGroup(cvo.getCourseGroup()) ;
+			c.setExaminerDepartment(cvo.getExaminerDepartment()) ;
 			c.setBoard(cvo.getBoard()) ;
 //			c.setPeriod(cvo.getPeriod()) ;
 			c.setNote(cvo.getNote()) ;

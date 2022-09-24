@@ -57,8 +57,27 @@ Ext.define('Luntan.view.main.CourseList', {
 			}
 		},
 
-		{ xtype: 'checkcolumn', text: '- Ex', dataIndex: 'noExaminer', editable: false, filter: 'boolean', align: 'center', width: 50, filter: 'boolean'},
+//		{ xtype: 'checkcolumn', text: '- Ex', dataIndex: 'noExaminer', editable: false, filter: 'boolean', align: 'center', width: 50, filter: 'boolean'},
 
+		{ text: 'Examinatoruppdatering', dataIndex: 'examinerDepartment', filter: 'list', align: 'left', flex: 1,
+         	renderer: function(value) {
+				if (Ext.getStore('DepartmentStore').getById(value) != undefined) {
+					return Ext.getStore('DepartmentStore').getById(value).get('label');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{depts}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'label',
+			    valueField: 'label'
+			}
+		},
 		{ text: 'Examinatorsbeslut', dataIndex: 'board', filter: 'list', align: 'left', flex: 1,
          	renderer: function(value) {
 				if (Ext.getStore('EduBoardStore').getById(value) != undefined) {

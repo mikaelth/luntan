@@ -27,7 +27,8 @@ Ext.define('Luntan.model.Course', {
 		{name: 'credits', type: 'float'},
 		{name: 'formName', type: 'string', calculate: function (data) {return data.code.concat(data.code == '' ? '':' ').concat(data.seName)}},
 		{name: 'note', type: 'string'},
-		{name: 'noExaminer', type: 'boolean'}
+		{name: 'noExaminer', type: 'boolean'},
+		{name: 'examinerDepartment', type: 'string'}
 
     ]
 

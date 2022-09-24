@@ -4,6 +4,7 @@ package se.uu.ebc.luntan.vo;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.EduBoard;
+import se.uu.ebc.luntan.enums.Department;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -14,8 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CourseVO {
 
-    
-//    private static Logger logger = Logger.getLogger(CourseVO.class.getName());
 	 
     private Long id;
 
@@ -24,82 +23,12 @@ public class CourseVO {
     private CourseGroup courseGroup;
     private String note;
     private Float credits;
+	private Department examinerDepartment;
 	private EduBoard board;
     private boolean inactive;
 		
  	/* Setters and getters */
  	   
-
-/* 
-	public Long getId()
-	{
-		return this.id;
-	}
-
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-
-
-
-    public String getCode()
-    {
-    	return this.code;
-    }
-
-    public void setCode(String code)
-    {
-    	this.code = code;
-    }
-
-
-    public String getSeName()
-    {
-    	return this.seName;
-    }
-
-    public void setSeName(String seName)
-    {
-    	this.seName = seName;
-    }
-
-
-    public CourseGroup getCourseGroup()
-    {
-    	return this.courseGroup;
-    }
-
-    public void setCourseGroup(CourseGroup courseGroup)
-    {
-    	this.courseGroup = courseGroup;
-    }
-
-
-    public String getNote()
-    {
-    	return this.note;
-    }
-
-    public void setNote(String note)
-    {
-    	this.note = note;
-    }
-
-
-    public Float getCredits()
-    {
-    	return this.credits;
-    }
-
-    public void setCredits(Float credits)
-    {
-    	this.credits = credits;
-    }
-
- */
-
     
     /* Public methods */
 
@@ -115,12 +44,12 @@ public class CourseVO {
 		this.code = xe.getCode();
 		this.seName = xe.getSeName();
 		this.courseGroup = xe.getCourseGroup();
+		this.examinerDepartment = xe.getExaminerDepartment();
 		this.board = xe.getBoard();
 		this.note = xe.getNote();
 		this.credits = xe.getCredits();
 		this.inactive = xe.isInactive();
 	}
 	
-//	public CourseVO() {}
 
 }

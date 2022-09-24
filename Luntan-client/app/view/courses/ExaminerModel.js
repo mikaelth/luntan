@@ -13,6 +13,8 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
     },
     
     stores: {
+		depts: 'DepartmentStore',
+
 		coursegroups: 'CourseGroupStore',    	
 
 		courses: 'CourseStore',    	
