@@ -45,5 +45,8 @@ public interface ExaminerRepo extends JpaRepository<Examiner, Long>, JpaSpecific
 		
  	@Query(value="select distinct c.code, group_concat(e.ldap_entry) != group_concat(se.ldap_entry) as different  from examiner as e join examiner as se on (e.`course_fk`=se.course_fk AND e.rank=se.rank) join course as c on e.course_fk=c.id where e.list_fk=?1 and se.list_fk=?2 and c.board=?3 group by e.course_fk, se.course_fk UNION select distinct c.code,2 as different from examiner as e join course as c on e.course_fk=c.id where list_fk=?1 and c.board=?3 and course_fk not in (select distinct course_fk from examiner as se where list_fk=?2)", 
 		nativeQuery=true)	public List<Object[]> compareELists(Long newId, Long prevId, String boardAbbreviation);
+
+	@Query("SELECT e FROM Examiner AS e WHERE e.examinerList = ?1 AND e.rank=1")
+	public List<Examiner> findPrimariesByDecision(ExaminersList decision);
 		
 }

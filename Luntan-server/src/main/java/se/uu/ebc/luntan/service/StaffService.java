@@ -2,9 +2,12 @@ package se.uu.ebc.luntan.service;
 
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -23,9 +26,16 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 import lombok.extern.slf4j.Slf4j;
 
+import se.uu.ebc.luntan.enums.EduBoard;
+import se.uu.ebc.luntan.entity.Examiner;
+import se.uu.ebc.luntan.entity.Course;
+import se.uu.ebc.luntan.entity.ExaminersDecision;
+import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.entity.ExternalTeacher;
 import se.uu.ebc.luntan.repo.ExternalTeacherRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
+import se.uu.ebc.luntan.repo.CourseInstanceRepo;
+import se.uu.ebc.luntan.repo.ExaminersListRepo;
 
 import se.uu.ebc.ldap.Staff;
 
@@ -41,6 +51,12 @@ public class StaffService {
 
     @Autowired
 	ExaminerRepo examinerRepo;
+
+    @Autowired
+	ExaminersListRepo elRepo;
+
+    @Autowired
+	CourseInstanceRepo ciRepo;
 
 	private final String BASE_DN = "cn=People,dc=uu,dc=se";
 
@@ -78,6 +94,34 @@ public class StaffService {
 		Map<String, Staff> staffMap = new HashMap<String, Staff>();
 		Set<String> designatedStaff = examinerRepo.findDesignatedLDAPEntries();
 		for (String employeeNumber : designatedStaff) {
+			staffMap.put(employeeNumber,findbyEmployeeNumber(employeeNumber));
+		}
+		return staffMap;
+	}
+
+	@Cacheable("ciexaminermap")
+	public Map<Course, Staff> getCIExaminers(EconomyDocument eDoc) {
+		List<Examiner> examiners = new ArrayList<Examiner>();
+		Map<Course, Staff> staffMap = new HashMap<Course,Staff>();
+		
+		for (EduBoard edb : ciRepo.findExamEDUBoards(eDoc)) {
+			log.debug("EduBoard " + edb.toString()+", "+ edb.name());
+			ExaminersDecision ed = elRepo.findPreceeding(edb.name(), new Date());
+			log.debug("Examiner decision " + ed);
+			examiners.addAll(examinerRepo.findPrimariesByDecision(ed));			
+		}
+		log.debug("Examiners " + examiners);
+		for (Examiner ex : examiners) {
+			staffMap.put(ex.getCourse(), findbyEmployeeNumber(ex.getExaminer()));
+		}
+		return staffMap;
+	}
+
+	@Cacheable("courseleadermap")
+	public Map<String, Staff> getCourseLeaders(EconomyDocument eDoc) {
+		Map<String, Staff> staffMap = new HashMap<String, Staff>();
+		Set<String> courseLeaders = ciRepo.findCourseLeaders(eDoc);
+		for (String employeeNumber : courseLeaders) {
 			staffMap.put(employeeNumber,findbyEmployeeNumber(employeeNumber));
 		}
 		return staffMap;

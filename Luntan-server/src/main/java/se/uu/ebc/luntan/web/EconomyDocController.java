@@ -90,6 +90,7 @@ import se.uu.ebc.luntan.util.DateNullTransformer;
 
 import se.uu.ebc.luntan.web.view.EconomyDocExcel;
 import se.uu.ebc.luntan.web.view.ExaminersExcel;
+import se.uu.ebc.luntan.web.view.CourseInstancesExcel;
 
 @Slf4j
 @Controller
@@ -753,6 +754,37 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			return ciHistory(history);
 		}
 	}
+
+
+    @RequestMapping("/excel/courseinstances")
+    public ModelAndView viewCIsExcelDoc(@RequestParam(value = "year", required = true) Integer year, Principal principal, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        //Sheet Name
+		EconomyDocument edoc = emRepo.findByYear(year);
+
+        model.put("edoc", edoc);
+        model.put("sheetname", "Kurstillfällen kalenderår " + edoc.getYear());
+		model.put("courseLeaderMap", staffService.getCourseLeaders(edoc));
+		model.put("examinerMap", staffService.getCIExaminers(edoc));
+		
+        //Headers List
+        List<String> headers = new ArrayList<String>();
+ 		headers.add("Kursgrupp");
+ 		headers.add("Kurstillfälleskod");
+        headers.add("Kurs");
+		headers.add("hp");
+        headers.add("Ny");
+        headers.add("Kursledare");
+        headers.add("Examinator");
+        headers.add("Kommentar");
+
+
+        model.put("headers", headers);
+
+        response.setContentType( "application/ms-excel" );
+        response.setHeader( "Content-disposition", "attachment; filename=" + "Kurstillfällen kalenderår " + edoc.getYear() + ".xls" );
+        return new ModelAndView(new CourseInstancesExcel(), model);
+    }
 
 
 

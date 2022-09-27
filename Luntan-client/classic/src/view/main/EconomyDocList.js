@@ -42,7 +42,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 
     columns: [
 		{xtype:'actioncolumn',
-            width:80, align: 'center',
+            width:100, align: 'center',
             items: [{
 				iconCls: 'x-fa fa-list-alt',
 				tooltip: 'Visa Luntan',
@@ -70,6 +70,13 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 				handler: function(grid, rowIndex, colIndex){
 					var rec = grid.getStore().getAt(rowIndex);
 					window.open(Luntan.data.Constants.BASE_URL.concat('rest/bulk/cibycsv?year=').concat(rec.get('year')));
+				}
+			}, {
+				iconCls: 'x-fa fa-pencil',
+				tooltip: 'Exportera kurstillfällen till Excel',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('excel/courseinstances?year=').concat(rec.get('year')));
 				}
 			}
 /* 			,{

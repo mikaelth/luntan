@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument;
+import se.uu.ebc.luntan.enums.EduBoard;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = false)
@@ -35,5 +37,11 @@ public interface CourseInstanceRepo extends JpaRepository<CourseInstance, Long>,
 
 	@Query("SELECT ci FROM CourseInstance AS ci WHERE (ci.course.code = ?1 AND ci.economyDoc = ?2)")
 	public List<CourseInstance> findByCourseCodeAndEconomyDoc(String courseCode, EconomyDocument edoc);
+
+	@Query("SELECT distinct ci.courseLeader FROM CourseInstance AS ci WHERE (ci.economyDoc = ?1)")
+	public Set<String> findCourseLeaders(EconomyDocument edoc);
+
+	@Query("SELECT distinct ci.course.board FROM CourseInstance AS ci WHERE (ci.economyDoc = ?1)")
+	public Set<EduBoard> findExamEDUBoards(EconomyDocument edoc);
 
 }

@@ -61,6 +61,18 @@ public final class Staff {
 		return staffJoiner.toString();
 	} 
 	
+	public String getNameAndContact() {
+		StringJoiner staffJoiner = new StringJoiner(", ");
+ 
+		staffJoiner.add(name);
+		staffJoiner.add(mail);		
+		staffJoiner.add(phone);
+		
+		return staffJoiner.toString();
+	
+		
+	}
+	
 /* 
 	public boolean isExaminerEligible() {
 	
