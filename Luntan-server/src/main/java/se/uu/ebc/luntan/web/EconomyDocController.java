@@ -59,6 +59,7 @@ import org.apache.log4j.Logger;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
 import se.uu.ebc.luntan.repo.CourseRepo;
+import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.repo.ProgrammeRepo;
 import se.uu.ebc.luntan.repo.ExaminersListRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
@@ -102,6 +103,9 @@ public class EconomyDocController {
 
 	@Autowired
 	EconomyDocumentRepo emRepo;
+
+	@Autowired
+	CourseInstanceRepo ciRepo;
 
 	@Autowired
 	FundingModelRepo fmRepo;
@@ -766,7 +770,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
         model.put("sheetname", "Kurstillfällen kalenderår " + edoc.getYear());
 		model.put("courseLeaderMap", staffService.getCourseLeaders(edoc));
 		model.put("examinerMap", staffService.getCIExaminers(edoc));
-		
+
         //Headers List
         List<String> headers = new ArrayList<String>();
  		headers.add("Kursgrupp");
@@ -786,6 +790,28 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
         return new ModelAndView(new CourseInstancesExcel(), model);
     }
 
+
+	/* Access for Bemanningsplaneraren to get grant distribution */
+
+	@RequestMapping(value="bemanning/cgd", method = RequestMethod.GET)
+	@ResponseBody
+   public ResponseEntity<String> getCIGrantData(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			EconomyDocument ed = emRepo.findByYear(year);
+ 			return new ResponseEntity<String>(new JSONSerializer()
+ 				.prettyPrint(true)
+ 				.exclude("*.class")
+ 				.rootName("courseinstances")
+ 				.transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate")
+ 				.serialize(ciRepo.findByEconomyDoc( ed ).stream().collect(Collectors.toMap(CourseInstance::getShortDesignation, CourseInstance::computeGrants)))
+ 			, headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 
 	/* Courses by programme listing */

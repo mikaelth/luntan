@@ -119,6 +119,7 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 			http
 				.authorizeRequests().antMatchers("/**").permitAll();
 		} else {
+/*
 			http.authorizeRequests()
 				.antMatchers("/index.*").authenticated()
 				.antMatchers("/loginredirect.html").authenticated()
@@ -131,6 +132,19 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/view/**").authenticated()
 				.antMatchers("/**").authenticated();
 
+ */
+			http.authorizeRequests()
+				.antMatchers("/bemanning/**").hasIpAddress("::1")
+				.antMatchers("/index.*").authenticated()
+				.antMatchers("/loginredirect.html").authenticated()
+				.antMatchers("/InREST.html").authenticated()
+				.antMatchers("/Luntan/index.html").authenticated()
+				.antMatchers("/Luntan/**").permitAll()
+				.antMatchers("/login/**").permitAll()
+				.antMatchers("/rest/bulk/**").hasRole("REGISTRATIONUPDATER")
+				.antMatchers("/rest/**").authenticated()
+				.antMatchers("/view/**").authenticated()
+				.anyRequest().authenticated();
 		}
 
 

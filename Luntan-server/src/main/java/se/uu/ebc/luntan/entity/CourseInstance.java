@@ -58,15 +58,15 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
-    
-    
+
+
     @ManyToOne
     @NotNull
     @JoinColumn(name = "COURSE_FK")
 	private Course course;
 
     @Column(name = "EXTRA_DESIGNATION", length = 255)
-	@Enumerated(EnumType.STRING)    
+	@Enumerated(EnumType.STRING)
 	private CIDesignation extraDesignation;
 
     @Column(name = "INSTANCE_CODE")
@@ -94,7 +94,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @Setter(AccessLevel.NONE)
     private boolean lockedStudentNumberUpdated = false;
 
-/* 
+/*
     @Column(name = "UNLOCKEDSTUDENTNUMBER")
 	private Integer uRegStud;
  */
@@ -107,10 +107,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @NotNull
     @JoinColumn(name = "ECONOMY_DOC_FK")
 	private EconomyDocument economyDoc;
-        
+
     @Column(name = "NOTE", length = 255)
     private String note;
- 
+
     @Column(name = "BALANCE")
     private boolean balanceRequest = false;
 
@@ -120,10 +120,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @ManyToOne
     @JoinColumn(name = "BALANCED_ECON_DOC_FK")
 	private EconomyDocument balancedEconomyDoc;
- 	 
-     
+
+
 	@ElementCollection
-	@MapKeyEnumerated(EnumType.STRING)    
+	@MapKeyEnumerated(EnumType.STRING)
     private Map<Department,Float> grantDistribution;
 
     @ManyToOne
@@ -131,9 +131,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @JoinColumn(name = "MODEL_FK")
 	private FundingModel fundingModel;
 
-/* 
+/*
 	@ElementCollection
-//	@MapKeyEnumerated(EnumType.STRING)    
+//	@MapKeyEnumerated(EnumType.STRING)
 //    private Set<Name> examiners = new HashSet<Name>();;
 //	  private Map<String,Integer> examiners = new LinkedHashMap<String, Integer>();
 //    private List<String> examiners = new ArrayList<String>();
@@ -144,38 +144,38 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 
 	@Transient
 	private StudentModelNumberCase modelCase = StudentModelNumberCase.DEFAULT;
-	
-	
+
+
 	/* Setters and getters */
-	
+
 	public void setBalanceRequest(boolean balanceRequest) {
 
 		if ( !((this.balancedEconomyDoc == null || this.balancedEconomyDoc.isLocked()) && !balanceRequest) ) {
 			this.balanceRequest = balanceRequest;
-			this.balancedEconomyDoc = null;				
+			this.balancedEconomyDoc = null;
 		}
-		
-/* 
+
+/*
 		if ( this.balancedEconomyDoc.isLocked() ){
 			if (balanceRequest) {
 				this.balanceRequest = balanceRequest;
-				this.balancedEconomyDoc = null;		
+				this.balancedEconomyDoc = null;
 			} else {
-						
+
 			}
 		} else {
 			this.balanceRequest = balanceRequest;
-			this.balancedEconomyDoc = null;		
+			this.balancedEconomyDoc = null;
 		}
  */
 	}
- 
+
 	/* Constructors */
-	
-	
+
+
 	/* Business methods */
-	
-	
+
+
 	public boolean needBalancedDocument () {
 		return ( this.balanceRequest && this.balancedEconomyDoc == null && this.registeredStudents != null && this.registrationValid);
 	}
@@ -183,71 +183,75 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	public boolean isSupplementary() {
 		return this.economyDoc.isLocked() ? this.creationDate.after(this.economyDoc.getLockDate()) : false;
 	}
-	
+
 	public String getDesignation() {
 		return course.getDesignation()+this.extraDesignation;
 	}
-	
-	private Map<Department,Float> computeGrantDist(Float grant) { 
+
+	public String getShortDesignation() {
+		return course.getCode()+this.extraDesignation;
+	}
+
+	private Map<Department,Float> computeGrantDist(Float grant) {
 		Map<Department,Float> grants = new HashMap<Department,Float>();
 		Float implicitGrant = 0.0f;
 		Department implicitDept = null;
 
 		log.debug("Grant for " +getDesignation() +", "+ grant);
- 
+
 		for (Department dept : economyDoc.getAccountedDepts()) {
 			if (dept.isImplicit()) {
 				implicitDept = dept;
-				implicitGrant += 1.0f;		
+				implicitGrant += 1.0f;
 			} else if (grantDistribution.containsKey(dept)) {
 				grants.put(dept, grant * grantDistribution.get(dept));
 				implicitGrant -= grantDistribution.get(dept);
 			} else {
-				grants.put(dept, 0.0f);			
-			}			
+				grants.put(dept, 0.0f);
+			}
 		}
 
 		if (implicitDept != null) {
 			grants.put(implicitDept, grant * implicitGrant);
 		}
-	
+
 		return grants;
-	
+
 	}
 
-	private Map<Department,Float> computeHSTDist(Float hst) { 
+	private Map<Department,Float> computeHSTDist(Float hst) {
 		Map<Department,Float> hsts = new HashMap<Department,Float>();
 		Float implicitHST = 0.0f;
 		Department implicitDept = null;
 
 		log.debug("HST for " +getDesignation() +", "+ hst);
- 
+
 		for (Department dept : economyDoc.getAccountedDepts()) {
 			if (dept.isImplicit()) {
 				implicitDept = dept;
-				implicitHST += 1.0f;		
+				implicitHST += 1.0f;
 			} else if (grantDistribution.containsKey(dept)) {
 				hsts.put(dept, hst * grantDistribution.get(dept));
 				implicitHST -= grantDistribution.get(dept);
 			} else {
-				hsts.put(dept, 0.0f);			
-			}			
+				hsts.put(dept, 0.0f);
+			}
 		}
 
 		if (implicitDept != null) {
 			hsts.put(implicitDept, hst * implicitHST);
 		}
-	
+
 		return hsts;
-	
+
 	}
-	
-	public Map<Department,Float> computeGrants() {		
+
+	public Map<Department,Float> computeGrants() {
 		log.debug("computeGrants()");
 		return computeGrantDist(computeCIGrant());
 	}
 
-	public Map<Department,Float> computeHST() {		
+	public Map<Department,Float> computeHST() {
 		return computeHSTDist(this.getCourse().getCredits()/60 * this.getModelStudentNumber());
 	}
 
@@ -260,10 +264,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	public Map<Department,Float> computeAdjustedGrants() {
 		log.debug("computeAdjustedGrants()");
 		return computeGrantDist(computeAdjustedCIGrant());
-	}	
+	}
 
 	/**
-	 * <p>Calculates the difference between modeled (budget) grants 
+	 * <p>Calculates the difference between modeled (budget) grants
 	 * and grants based on actual registrations for the course instance
 	 * </p>
 	 * @return a map with amounts by department
@@ -272,7 +276,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	public Map<Department,Float> computeGrantAdjustment() {
 		return GrantMaps.diff(computeAdjustedGrants(),computeGrants());
 	}
-	 
+
  	public Float computeCIGrant() {
  		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
@@ -281,13 +285,13 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 //		return this.registeredStudents == null ? computeCIGrant() : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
 		return this.registrationValid ? fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance) : computeCIGrant();
  	}
- 	
-	
-	
+
+
+
 	private Integer currentStudents() {
 		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +this.preceedingCI);
 		Integer currentStudents = 1000;
-		
+
 		if (this.registeredStudents == null || this.registeredStudents == 0) {
 			if (this.startRegStudents == null || this.startRegStudents == 0) {
 				if (this.preceedingCI == null || this.preceedingCI == this) {
@@ -300,7 +304,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 								currentStudents = this.preceedingCI.getModelStudentNumber();
 							} else {
 								this.modelCase=StudentModelNumberCase.PREVIOUSREG;
-								currentStudents = this.preceedingCI.getRegisteredStudents();							
+								currentStudents = this.preceedingCI.getRegisteredStudents();
 							}
 					} else {
 							this.modelCase=StudentModelNumberCase.REG2YEARS;
@@ -309,17 +313,17 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 				}
 			} else {
 				this.modelCase=StudentModelNumberCase.EXPLICTISTART;
-				currentStudents = this.startRegStudents; 
+				currentStudents = this.startRegStudents;
 			}
 		} else {
 			this.modelCase=StudentModelNumberCase.REGISTERED;
 			currentStudents = this.registeredStudents;
 		};
 
-		log.debug(this.modelCase.toString());		
+		log.debug(this.modelCase.toString());
 		return currentStudents;
 	}
-				
+
 	public Integer getModelStudentNumber() {
 		log.debug("getModelStudentNumber(): " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +", " +this.preceedingCI);
 		if (economyDoc.isLocked()) {
@@ -333,38 +337,38 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		} else {
 			this.lockedStudentNumberUpdated = false;
 	 		return currentStudents();
-		} 		
+		}
    }
-   
-   
+
+
 	public void updateLock() {
 		log.debug("updateLock(): " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", " +this.startRegStudents+", " +this.lRegStud+", " +", " +this.preceedingCI);
 		getModelStudentNumber();
 	}
-	
-	public Map<Department,Float> explicitGrantDist() { 
+
+	public Map<Department,Float> explicitGrantDist() {
 		Map<Department,Float> grants = new HashMap<Department,Float>();
 		Float implicitGrant = 0.0f;
 		Department implicitDept = null;
- 
+
 		for (Department dept : economyDoc.getAccountedDepts()) {
 			if (dept.isImplicit()) {
 				implicitDept = dept;
-				implicitGrant += 1.0f;		
+				implicitGrant += 1.0f;
 			} else if (grantDistribution.containsKey(dept)) {
 				grants.put(dept, grantDistribution.get(dept));
 				implicitGrant -= grantDistribution.get(dept);
 			} else {
-				grants.put(dept, 0.0f);			
-			}			
+				grants.put(dept, 0.0f);
+			}
 		}
 
 		if (implicitDept != null) {
 			grants.put(implicitDept, implicitGrant);
 		}
-	
+
 		return grants;
-	
+
 	}
 
 
@@ -372,9 +376,9 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		Map<Integer,Map<Department,Float>> historyMap = new HashMap<Integer,Map<Department,Float>>();
 		return this.mapAccumulatedGrantAdjustment(historyMap);
 	}
-	
+
 	public Map<Integer,Map<Department,Float>> mapAccumulatedGrantAdjustment(Map<Integer,Map<Department,Float>> historyMap) {
-		try {		
+		try {
 			historyMap.put(this.economyDoc.getYear(), this.computeGrantAdjustment());
 			if(this.preceedingCI != null && this.preceedingCI != this && !this.preceedingCI.isBalanceRequest()) {
 				historyMap.putAll(this.preceedingCI.mapAccumulatedGrantAdjustment(historyMap));
@@ -382,15 +386,15 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 		} catch (Exception e) {
 			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
 		} finally {
-			log.debug("Mapped accumulated adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ historyMap);		
+			log.debug("Mapped accumulated adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ historyMap);
 			return historyMap;
 		}
 
 	}
 
-	
+
 	/**
-	 * <p>Calculates the accumulated adjustment (computeGrantAdjustment()) of grants, 
+	 * <p>Calculates the accumulated adjustment (computeGrantAdjustment()) of grants,
 	 * back to the latest instance which has been adjusted
 	 * </p>
 	 * @return a map with amounts by department
@@ -398,16 +402,16 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	 */
 	public Map<Department,Float> computeAccumulatedGrantAdjustment() {
 		Map<Department,Float> adjustment = new HashMap<Department,Float>();
-		try {		
+		try {
 			if(this.preceedingCI == null || this.preceedingCI == this) {
 				adjustment = this.computeGrantAdjustment();
 			} else {
-				adjustment = this.preceedingCI.isBalanceRequest() ? this.computeGrantAdjustment() : GrantMaps.sum(this.computeGrantAdjustment(), this.preceedingCI.computeAccumulatedGrantAdjustment());			
+				adjustment = this.preceedingCI.isBalanceRequest() ? this.computeGrantAdjustment() : GrantMaps.sum(this.computeGrantAdjustment(), this.preceedingCI.computeAccumulatedGrantAdjustment());
 			}
 		} catch (Exception e) {
 			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
 		} finally {
-			log.debug("Accumulated adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ adjustment);		
+			log.debug("Accumulated adjustment for " + this.getDesignation() + ", " + this.economyDoc.getYear() + ", "+ adjustment);
 			return adjustment;
 		}
 
@@ -423,10 +427,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
         }
         return cmp;
     }
-    
-    
-    
- 
- 
+
+
+
+
+
 }
 
