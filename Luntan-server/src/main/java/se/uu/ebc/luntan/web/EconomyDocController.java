@@ -86,6 +86,7 @@ import se.uu.ebc.luntan.enums.DiffKind;
 
 import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
+import se.uu.ebc.luntan.vo.CourseInstanceCGDVO;
 
 import se.uu.ebc.luntan.util.DateNullTransformer;
 
@@ -800,12 +801,17 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
  			EconomyDocument ed = emRepo.findByYear(year);
+ 			List<CourseInstance> cis= ciRepo.findByEconomyDoc( ed );
+ 			List<CourseInstanceCGDVO> ciVO = new ArrayList<CourseInstanceCGDVO>();
+ 			for (CourseInstance ci : cis) {ciVO.add(new CourseInstanceCGDVO(ci));}
+
  			return new ResponseEntity<String>(new JSONSerializer()
  				.prettyPrint(true)
  				.exclude("*.class")
- 				.rootName("courseinstances")
+ //				.rootName("courseinstances")
  				.transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate")
- 				.serialize(ciRepo.findByEconomyDoc( ed ).stream().collect(Collectors.toMap(CourseInstance::getShortDesignation, CourseInstance::computeGrants)))
+// 				.serialize(ciRepo.findByEconomyDoc( ed ).stream().collect(Collectors.toMap(CourseInstance::getShortDesignation, CourseInstance::computeGrants)))
+ 				.deepSerialize(ciVO)
  			, headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
