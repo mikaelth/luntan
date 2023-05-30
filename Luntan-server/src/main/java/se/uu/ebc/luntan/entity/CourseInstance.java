@@ -1,12 +1,15 @@
 package  se.uu.ebc.luntan.entity;
 
 import java.util.Set;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.lang.Math;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -249,6 +252,11 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	public Map<Department,Float> computeGrants() {
 		log.debug("computeGrants()");
 		return computeGrantDist(computeCIGrant());
+	}
+
+	public Map<Department,Integer> computeRoundedGrants() {
+		log.debug("computeRoundedGrants()");
+		return computeGrants().entrySet().stream().map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), Math.round(e.getValue()))).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public Map<Department,Float> computeHST() {

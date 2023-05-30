@@ -27,7 +27,7 @@ public class LADOKEntryVO {
 	private String instanceCode;
 
 	@CsvBindByPosition(position = 10)
-	private Date startDate;
+	private String startDate;
 
 	@CsvBindByPosition(position = 13)
 	private Integer registered;

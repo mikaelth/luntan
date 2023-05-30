@@ -35,6 +35,9 @@ public interface CourseInstanceRepo extends JpaRepository<CourseInstance, Long>,
 //	@Query("SELECT ci FROM CourseInstance AS ci WHERE ci.economyDoc = ?1")
 	public CourseInstance findByInstanceCodeAndEconomyDoc(String instanceCode, EconomyDocument edoc);
 
+	@Query("SELECT ci FROM CourseInstance AS ci WHERE ci.instanceCode = ?1 AND ci.course.code = ?2 AND ci.economyDoc = ?3")
+	public CourseInstance findByInstanceCodeAndCourseCodeAndEconomyDoc(String instanceCode, String courseCode, EconomyDocument edoc);
+
 	@Query("SELECT ci FROM CourseInstance AS ci WHERE (ci.course.code = ?1 AND ci.economyDoc = ?2)")
 	public List<CourseInstance> findByCourseCodeAndEconomyDoc(String courseCode, EconomyDocument edoc);
 

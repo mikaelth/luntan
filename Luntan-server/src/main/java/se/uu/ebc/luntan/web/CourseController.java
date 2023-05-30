@@ -398,7 +398,7 @@ public class CourseController {
                         .withType(LADOKEntryVO.class)
                         .withSeparator(';')
                         .withIgnoreLeadingWhiteSpace(true)
-                        .withSkipLines(9)
+                        .withSkipLines(10)
                         .build();
 
                 // convert `CsvToBean` object to list of specimens
@@ -408,16 +408,17 @@ public class CourseController {
 				log.debug("Occurrences: " + counts);
 				
 				for (LADOKEntryVO ci : cis) {
-//					log.debug(ci.getCourseCode() + ", added ci " + ci.getInstanceCode() + " with " + ci.getRegistered() + " registered students; "+ci.getSize());
+					log.debug(ci.getCourseCode() + ", added ci " + ci.getInstanceCode() + " with " + ci.getRegistered() + " registered students; "+ci.getSize());
 
-					CourseInstance lci = ciRepo.findByInstanceCodeAndEconomyDoc(ci.getInstanceCode(), edoc);
-//					log.debug("From instanceCode: " + lci);
+//					CourseInstance lci = ciRepo.findByInstanceCodeAndEconomyDoc(ci.getInstanceCode(), edoc);
+					CourseInstance lci = ciRepo.findByInstanceCodeAndCourseCodeAndEconomyDoc(ci.getInstanceCode(), ci.getCourseCode(), edoc);
+					log.debug("From instanceCode: " + ReflectionToStringBuilder.toString(lci, ToStringStyle.MULTI_LINE_STYLE));
 					if (lci == null) {
 						if ( counts.get(ci.getCourseCode()) > 1 ) {
 							ci.setStatus(UpdateStatus.MULTIPLEQUERY);
 						} else {
 							List<CourseInstance> lcis = ciRepo.findByCourseCodeAndEconomyDoc(ci.getCourseCode(), edoc);
-//							log.debug("From courseCode " + lcis.size());
+							log.debug("From courseCode " + lcis.size());
 							if (lcis.size() == 0) {
 								ci.setStatus(UpdateStatus.NOMATCH);
 							} else if (lcis.size() > 1) {
@@ -447,6 +448,7 @@ public class CourseController {
 				model.addAttribute("cis", cis);
 
 			} catch (Exception ex) {
+				log.error("requestUpdateRegsFromCSV caught a pesky exception: "+ ex);
 				model.addAttribute("message", "An error occurred while processing the CSV file.");
 				model.addAttribute("status", false);
 			}

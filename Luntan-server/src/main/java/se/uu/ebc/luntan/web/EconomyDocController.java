@@ -805,7 +805,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
  				.exclude("*.class")
  				.rootName("courseinstances")
  				.transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate")
- 				.serialize(ciRepo.findByEconomyDoc( ed ).stream().collect(Collectors.toMap(CourseInstance::getShortDesignation, CourseInstance::computeGrants)))
+ 				.serialize(ciRepo.findByEconomyDoc( ed ).stream().collect(Collectors.toMap(CourseInstance::getShortDesignation, CourseInstance::computeRoundedGrants)))
  			, headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
