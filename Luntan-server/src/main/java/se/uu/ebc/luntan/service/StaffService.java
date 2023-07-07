@@ -72,9 +72,9 @@ public class StaffService {
 		} catch (Exception e) {
 			s.setEmployeeNumber(employeeNumber);
 			s.setFamilyName(employeeNumber);
-			s.setGivenName(employeeNumber);			
-			s.setName(employeeNumber);			
-		} finally {      	
+			s.setGivenName(employeeNumber);
+			s.setName(employeeNumber);
+		} finally {
 			return s;
 		}
    }
@@ -85,10 +85,10 @@ public class StaffService {
 		theStaff.addAll(getIBGStaff());
 		theStaff.addAll(getOtherDeptsTeachers());
 		theStaff.addAll(getOtherDeptsOtherStaff());
-		
+
 		return theStaff;
 	}
-	
+
 	@Cacheable("examinermap")
 	public Map<String, Staff> getDesignatedExaminers() {
 		Map<String, Staff> staffMap = new HashMap<String, Staff>();
@@ -103,12 +103,12 @@ public class StaffService {
 	public Map<Course, Staff> getCIExaminers(EconomyDocument eDoc) {
 		List<Examiner> examiners = new ArrayList<Examiner>();
 		Map<Course, Staff> staffMap = new HashMap<Course,Staff>();
-		
+
 		for (EduBoard edb : ciRepo.findExamEDUBoards(eDoc)) {
 			log.debug("EduBoard " + edb.toString()+", "+ edb.name());
 			ExaminersDecision ed = elRepo.findPreceeding(edb.name(), new Date());
 			log.debug("Examiner decision " + ed);
-			examiners.addAll(examinerRepo.findPrimariesByDecision(ed));			
+			examiners.addAll(examinerRepo.findPrimariesByDecision(ed));
 		}
 		log.debug("Examiners " + examiners);
 		for (Examiner ex : examiners) {
@@ -139,6 +139,7 @@ public class StaffService {
                 	.or("title").like("biträdande universitetslektor*")
                 	.or("title").like("forskarassistent*")
                 	.or("title").like("adjunkt*")
+                	.or("title").like("universitetsadjunkt*")
                 	.or("title").like("stipendiat*")
                 )
                 .and(query()
@@ -174,7 +175,7 @@ public class StaffService {
 
         return ldapTemplate.search(query, new StaffAttributesMapper(false));
     }
-    
+
 	private List<Staff> getIBGStaff () {
 
         LdapQuery query = query()
@@ -195,7 +196,7 @@ public class StaffService {
 
         return ldapTemplate.search(query, new StaffAttributesMapper(false));
     }
-     
+
 	private List<Staff> getOtherDeptsTeachers () {
 
  		List<ExternalTeacher> teachers = externalsRepo.findAll();
@@ -207,7 +208,7 @@ public class StaffService {
 				criteria = criteria.or(query().where("cn").is(teacher.getName()).and(query().where("ou").is(teacher.getDepartment())));
 			}
 		}
-		
+
         LdapQuery query = query()
         		.base(BASE_DN)
                 .where("objectclass").is("person")
@@ -220,8 +221,8 @@ public class StaffService {
                 	.or("title").like("adjunkt*")
                 )
                 .and(criteria);
-		
- 
+
+
         return ldapTemplate.search(query, new StaffAttributesMapper(true));
     }
 
@@ -236,39 +237,39 @@ public class StaffService {
 				criteria = criteria.or(query().where("cn").is(teacher.getName()).and(query().where("ou").is(teacher.getDepartment())));
 			}
 		}
-		
+
         LdapQuery query = query()
         		.base(BASE_DN)
                 .where("objectclass").is("person")
                 .and(query()
                 	.where("title").like("museiintendent*")
                 	.or("title").like("1:e museiintendent*")
-					.or("title").like("forskare*") 
+					.or("title").like("forskare*")
                 )
                 .and(criteria);
-		
- 
+
+
         return ldapTemplate.search(query, new StaffAttributesMapper(false));
     }
- 
+
  	public List<Staff> findByName(String name){
-		
+
         LdapQuery query = query()
         		.base(BASE_DN)
                 .where("objectclass").is("person")
                 .and(query().where("cn").is( "*" + name + "*" ));
-		
- 
+
+
         return ldapTemplate.search(query, new StaffAttributesMapper());
- 	
+
  	}
- 
+
     /**
      * Custom staff attributes mapper, maps the attributes to the staff POJO
      */
     private class StaffAttributesMapper implements AttributesMapper<Staff> {
         private boolean eligible;
-        
+
         public Staff mapFromAttributes(Attributes attrs) throws NamingException {
             Staff person = new Staff();
  			try {
@@ -278,13 +279,13 @@ public class StaffService {
 				person.setFamilyName((String)attrs.get("sn").get());
 				person.setUsername((String)attrs.get("uid").get());
 				person.setEmployeeNumber((String)attrs.get("employeeNumber").get());
-			
+
 				Attribute ou = attrs.get("ou");
 				Attribute title = attrs.get("title");
 				Attribute phone = attrs.get("telephonenumber");
 				Attribute mail = attrs.get("mail");
 				Attribute department = attrs.get("department");
-			
+
 				if (ou != null){
 					person.setDepartment((String)ou.get());
 				}
@@ -302,21 +303,21 @@ public class StaffService {
 				}
 
 				person.setExaminerEligible(eligible);
-				
+
             } catch (Exception e) {
 				log.error("Got a pesky exception: "  + e);
             } finally {
-				log.debug("Find: " + person.toString());				
+				log.debug("Find: " + person.toString());
             	return person;
             }
-            
+
         }
-        
+
         public StaffAttributesMapper (boolean eligible) {
         	this.eligible = eligible;
         }
          public StaffAttributesMapper () {}
    }
- 
- 
+
+
 }
