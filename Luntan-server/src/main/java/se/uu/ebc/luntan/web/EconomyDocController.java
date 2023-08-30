@@ -435,7 +435,7 @@ public class EconomyDocController {
 			model.addAttribute("examiners", deptExaminers);
 // 			model.addAttribute("boards", exMap.keySet());
 
-    		return "DepartmentExaminers";
+    		return "DepartmentExaminersAlternateView";
         } catch (Exception e) {
 			log.error("viewDepartmentExaminers, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";
