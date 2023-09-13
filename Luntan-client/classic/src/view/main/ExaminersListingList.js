@@ -63,7 +63,7 @@ Ext.define('Luntan.view.main.ExaminersListingList', {
 
     columns: [
 		{xtype:'actioncolumn',
-            width:60,
+            width:80,
             items: [{
 				iconCls: 'x-fa fa-user',
 				tooltip: 'Visa examinatorslista per organistaionsenhet och examinator',

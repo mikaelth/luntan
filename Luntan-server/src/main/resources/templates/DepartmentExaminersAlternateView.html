@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Examinatorer</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+</head>
+<body>
+
+	<h1 th:text="'Examinatorer biologi ' +  ${#dates.format(serverTime,'yyyy-MM-dd')}" />
+		<div>
+			<th:block th:each="ex, itemStat: ${examiners}" >
+				<th:block th:with="newDept = ${itemStat.first} or ${ex.staff.fullDepartment} != ${examiners[__${itemStat.index}-1__].staff.fullDepartment}">
+					<th:block th:with="newExaminer = ${itemStat.first} or ${ex.examiner.examiner} != ${examiners[__${itemStat.index}-1__].examiner.examiner}">
+						<span th:if="${newDept}">
+							</ul>
+						</span>
+						<h2 th:text="${newDept} ? ${ex.staff.fullDepartment} : ''" />
+						<span th:if="!${newDept}">
+							<span th:if="${newExaminer}">
+								</ul>
+							</span>
+						</span>
+						<h3 th:text="${newExaminer} ? ${ex.staff.name} + ' (' + ${ex.staff.mail} + ')' : ''" />
+						<span th:if="${newExaminer}">
+							<ul>
+						</span>
+						<li th:text="${ex.examiner.course.designation} + ' [' + ${ex.examiner.rank} + ']'" />
+					</th:block>
+				</th:block>
+			</th:block>
+
+	<p>
+		Current time is <span th:text="${serverTime}" />
+	</p>
+</body>
+</html>
+
