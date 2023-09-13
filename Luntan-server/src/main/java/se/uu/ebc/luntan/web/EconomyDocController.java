@@ -839,13 +839,13 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 */
 
 		Map<String,ProgCourse> courseMap = new HashMap<String,ProgCourse>();
-//        List<String> programmes = Arrays.asList("TBM1K&pInr=BIOL", "TBM1K&pInr=BIKG", "TMV1K", "TBI2M", "TBK2M&pInr=BIOL", "TBK2M&pInr=DATA", "TBF2M", "TTB2M", "TMB2Y", "TMV2Y", );
 
-		List<String> programmes = progRepo.findActive().stream().map(Programme::getSELMAPath).collect(Collectors.toList());
+		List<Programme> programmes = progRepo.findActive();
 
-		for (String pKod : programmes) {
+		for (Programme prog : programmes) {
+			String pKod= prog.getSELMAPath();
 			log.debug("pKod: "+ pKod);
-			for (String kKod : findCoursesInSP(pKod)) {
+			for (String kKod : findCoursesInSP(prog)) {
 				log.debug("kKod: "+ kKod);
 				if (!courseMap.containsKey(kKod)) {
 					ProgCourse pc = new ProgCourse();
@@ -863,7 +863,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 		Collections.sort(courseList);
 
         model.addAttribute("serverTime", new Date());
-        model.addAttribute("programmes", programmes);
+        model.addAttribute("programmes", programmes.stream().map(Programme::getSELMAPath).collect(Collectors.toList()));
         model.addAttribute("courses", courseMap);
         model.addAttribute("courseList", courseList);
         return "ProgramCourseSummary";
@@ -871,23 +871,24 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 
 
 
-	private List<String> findCoursesInSP(String pKod) {
-		String kKodPattern = ".*kKod=(\\d\\w{2}\\d{3}).*";
-//		String luntanCode = "(1BG|1MB|1DL|1KB|8BL|1GV|1BL|3MK)\\d{3}";
+//	private List<String> findCoursesInSP(String pKod) {
+	private List<String> findCoursesInSP(Programme prog) {
+		String kKodPattern = ".*query=(\\d\\w{2}\\d{3}).*";
 		String luntanCode = "(1BG|1MB|8BL|1BL)\\d{3}";
 		Pattern p = Pattern.compile(luntanCode);
 		List<String> courses = new ArrayList<String>();
 		try {
-			Document doc = Jsoup.connect("https://www.uu.se/utbildning/utbildningar/selma/studieplan/?pKod="+pKod).get();
+			Document doc = Jsoup.connect("https://www.uu.se/utbildning/studieplan/?query="+prog.getLinkId()).get();
 			log.debug("Program: "+ doc.title());
-			Elements links = doc.select("a[href*=kKod]");
+			Elements links = doc.select("a[href*=utbildning/kurs]");
 			for (Element el : links) {
-				String kKod = el.toString().replaceAll(kKodPattern, "$1");
-//				courses.add(kKod);
+				String kKod = el.attr("href").toString().replaceAll(kKodPattern, "$1");
+				log.debug("kKod = "+kKod);
 				if (p.matcher(kKod).matches()) {
+					log.debug("Match!");
 					courses.add(kKod);
 				}
-				log.debug("Found: "+ kKod + "\t" + pKod);
+				log.debug("Found: "+ kKod + "\t" + prog.getCode());
 			}
 		} catch (Exception e) {
 			log.error("Got a pesky exception, "+e);

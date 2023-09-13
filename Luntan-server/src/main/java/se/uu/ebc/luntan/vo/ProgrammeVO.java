@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProgrammeVO {
 
-    	 
+
     private Long id;
 
     private String code;
@@ -22,22 +22,22 @@ public class ProgrammeVO {
     private String note;
     private boolean inactive;
     private String programDirector;
+	private String linkId;
 
-		
  	/* Setters and getters */
- 	   
-    
+
+
     /* Public methods */
 
-	
+
  	/* Constructors */
 
 	public ProgrammeVO (Programme xe) {
 
 		log.debug("In ProgrammeVO constructor, " + xe);
-		
+
 		this.id = xe.getId();
-		
+
 		this.code = xe.getCode();
 		this.seName = xe.getSeName();
 		this.direction = xe.getDirection();
@@ -45,8 +45,9 @@ public class ProgrammeVO {
 		this.note = xe.getNote();
 		this.inactive = xe.isInactive();
 		this.selmaPath = xe.getSELMAPath();
+		this.linkId = xe.getLinkId();
 	}
-	
+
 //	public CourseVO() {}
 
 }

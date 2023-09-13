@@ -3,6 +3,7 @@ Ext.define("Luntan.data.Constants", {
 
 	SELMA_URL : "http://www.uu.se/utbildning/utbildningar/selma/kursplan/?type=1&kKod=",
 	SELMA_P_URL : "http://www.uu.se/utbildning/utbildningar/selma/studieplan/?pKod=",
+	SELMA_NEW_P_URL : "http://www.uu.se/utbildning/utbildningar/selma/studieplan/?query=",
 	BASE_URL: Luntan.data.config.Baseurl.URL_BASE
 
  });

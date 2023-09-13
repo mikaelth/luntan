@@ -30,25 +30,25 @@ public class ProgrammeService {
 
 	public List<ProgrammeVO> getAllProgrammes() throws Exception {
 		List<ProgrammeVO> cVO = new ArrayList<ProgrammeVO>();
-		try {	
+		try {
 			for (Programme c : progRepo.findAll()) {
  				cVO.add(new ProgrammeVO(c));
  			}
-         	return cVO;        	        
+         	return cVO;
         } catch (Exception e) {
 			log.error("getAllProgrammes got a pesky exception: "+ e + e.getCause());
 
 			return null;
-			
+
         }
     }
-    
-	
+
+
     public ProgrammeVO saveProgramme(ProgrammeVO cVO) throws Exception {
     	Programme c = cVO.getId() == null ? toProgramme(cVO) : toProgramme(progRepo.findById(cVO.getId()).get(), cVO);
     	progRepo.save(c);
 		return new ProgrammeVO(c);
-    
+
     }
 
 
@@ -68,6 +68,7 @@ public class ProgrammeService {
 		try {
 			c.setId(cvo.getId()) ;
 			c.setCode(cvo.getCode()) ;
+			c.setLinkId(cvo.getLinkId()) ;
 			c.setSeName(cvo.getSeName()) ;
 			c.setDirection(cvo.getDirection()) ;
 			c.setNote(cvo.getNote()) ;
@@ -80,6 +81,6 @@ public class ProgrammeService {
 			return c;
 		}
 	}
- 
+
 
 }

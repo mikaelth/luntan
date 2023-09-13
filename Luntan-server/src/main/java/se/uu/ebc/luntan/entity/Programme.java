@@ -58,6 +58,10 @@ public class Programme extends Auditable {
     @NotNull
     private String code;
 
+    @Column(name = "LINKID")
+    @NotNull
+    private String linkId;
+
     @Column(name = "DIRECTION")
     private String direction;
 
@@ -90,8 +94,8 @@ public class Programme extends Auditable {
     }
 
 	public String getSELMAPath () {
-	
+
 		return (this.direction == null || this.direction.equals("")) ? this.code : this.code + "&pInr=" + direction;
-		
+
 	}
 }

@@ -14,11 +14,12 @@ Ext.define('Luntan.model.Programme', {
 			dateFormat: 'Y-m-d'
          }
 
-     }, 
+     },
 	idProperty: 'id',
     fields: [
 		{name: 'id', type: 'int'},
 		{name: 'code', type: 'string'},
+		{name: 'linkId', type: 'string'},
 		{name: 'seName', type: 'string'},
 		{name: 'direction', type: 'string'},
 		{name: 'selmaPath', type: 'string'},
@@ -28,7 +29,7 @@ Ext.define('Luntan.model.Programme', {
 
     ]
 
-/* 
+/*
     validators: {
     	code: 'presence',
     	seName: 'presence'
