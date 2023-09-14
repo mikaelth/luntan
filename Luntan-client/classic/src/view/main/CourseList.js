@@ -26,9 +26,8 @@ Ext.define('Luntan.view.main.CourseList', {
             items: [{
 				iconCls: 'x-fa fa-list-alt',
 				tooltip: 'Kursplan',
-				handler: function(grid, rowIndex, colIndex){
-					var rec = grid.getStore().getAt(rowIndex);
-					window.open(Luntan.data.Constants.SELMA_URL.concat(rec.get('code')));				
+				handler: function(grid, rowIndex, colIndex, item, e, record, row){
+					window.open(Luntan.data.Constants.SELMA_URL.concat(record.get('code')));
 				}
 			}]
         },
