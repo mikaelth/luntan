@@ -4,7 +4,6 @@ public enum CourseGroup {
 
 	BASE("Baskurser"),
 	BASEYEAR("Basåret"),
-	DEFREEPROJ("Examensarbeten"),
 	EXTERNAL("Externa kurser"),
 	RESEARCH("Forskarskola"),
 	GOTLANDNET("Gotland, distanskurser"),
@@ -21,6 +20,7 @@ public enum CourseGroup {
 	ADVANCED("Påbyggnadskurser"),
 	PROGRAM("Programansvar"),
 	SUMMER("Sommarkurser"),
+	DEFREEPROJ("Individuella kurser"),
 	COMMISIONED("Uppdragsutbildning"),
 	LLL("Livslångt lärande"),
 	MISC("Övrigt");
