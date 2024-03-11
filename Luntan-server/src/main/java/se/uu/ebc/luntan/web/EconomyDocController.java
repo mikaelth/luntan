@@ -670,6 +670,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 
         //Headers List
         List<String> headers = new ArrayList<String>();
+        headers.add("Kursgrupp");
         headers.add("Kurs");
         headers.add("hp");
         headers.add("Stud.");

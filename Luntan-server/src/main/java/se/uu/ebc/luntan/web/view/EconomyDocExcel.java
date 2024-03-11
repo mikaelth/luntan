@@ -49,7 +49,7 @@ public class EconomyDocExcel extends AbstractXlsView
         sheet.setDefaultColumnWidth((short) 12);
         int currentRow = 0;
         short currentColumn = 0;
- 
+
 		//SET GENERAL INFORMATION
 
 		HSSFRow row; // = sheet.createRow(currentRow);
@@ -60,7 +60,7 @@ public class EconomyDocExcel extends AbstractXlsView
         HSSFCellStyle headerStyle = (HSSFCellStyle)workbook.createCellStyle();
         HSSFFont headerFont = (HSSFFont)workbook.createFont();
 		headerFont.setBold(true);
-		headerStyle.setFont(headerFont); 
+		headerStyle.setFont(headerFont);
 
 		CreationHelper ch = workbook.getCreationHelper();
     	HSSFCellStyle styleCurrencyFormat = (HSSFCellStyle)workbook.createCellStyle();
@@ -78,9 +78,9 @@ public class EconomyDocExcel extends AbstractXlsView
         HSSFRow headerRow = sheet.createRow(currentRow);
         for(String header:headers){
             text = new HSSFRichTextString(header);
-            cell = headerRow.createCell(currentColumn); 
+            cell = headerRow.createCell(currentColumn);
             cell.setCellStyle(headerStyle);
-            cell.setCellValue(text);            
+            cell.setCellValue(text);
             currentColumn++;
         }
 
@@ -91,8 +91,12 @@ public class EconomyDocExcel extends AbstractXlsView
         	currentColumn = 0;
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getDesignation());                
-			cell.setCellValue(text);                    
+			text = new HSSFRichTextString(ci.getCourse().getCourseGroup().displayName());
+			cell.setCellValue(text);
+
+            cell = row.createCell(currentColumn++);
+			text = new HSSFRichTextString(ci.getDesignation());
+			cell.setCellValue(text);
 
             cell = row.createCell(currentColumn++);
             cell.setCellType(CellType.NUMERIC);
@@ -116,8 +120,8 @@ public class EconomyDocExcel extends AbstractXlsView
             cell.setCellValue(ci.getFundingModel().getId());
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isFirstInstance() ? "X" : "");                
-			cell.setCellValue(text);                    
+			text = new HSSFRichTextString(ci.isFirstInstance() ? "X" : "");
+			cell.setCellValue(text);
 
             cell = row.createCell(currentColumn++);
             cell.setCellType(CellType.NUMERIC);
@@ -125,23 +129,23 @@ public class EconomyDocExcel extends AbstractXlsView
             cell.setCellValue(ci.computeCIGrant());
 
 			for (Department dep : edoc.getAccountedDeptsSorted())
-			{            
+			{
 				cell = row.createCell(currentColumn++);
 				cell.setCellType(CellType.NUMERIC);
 				cell.setCellStyle(stylePercentFormat);
 				cell.setCellValue(ci.explicitGrantDist().get(dep));
-			}            
+			}
 			for (Department dep : edoc.getAccountedDeptsSorted())
-			{            
+			{
 				cell = row.createCell(currentColumn++);
 				cell.setCellType(CellType.NUMERIC);
 				cell.setCellStyle(styleCurrencyFormat);
             	cell.setCellValue(ci.computeGrants().get(dep));
-			}            
+			}
 
 			cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isSupplementary() ? "Tillagd som supplement " + ci.getCreationDate() : "");                
-			cell.setCellValue(text);                    
+			text = new HSSFRichTextString(ci.isSupplementary() ? "Tillagd som supplement " + ci.getCreationDate() : "");
+			cell.setCellValue(text);
 
             currentRow++;
         }
