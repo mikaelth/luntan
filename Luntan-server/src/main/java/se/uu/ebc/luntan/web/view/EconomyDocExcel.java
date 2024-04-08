@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument;
+import se.uu.ebc.luntan.entity.EconomyDocGrant;
 import se.uu.ebc.luntan.enums.Department;
 
 public class EconomyDocExcel extends AbstractXlsView
@@ -149,6 +150,44 @@ public class EconomyDocExcel extends AbstractXlsView
 
             currentRow++;
         }
+
+		for (EconomyDocGrant edg : edoc.getEconomyDocGrants()) {
+			row = sheet.createRow(currentRow);
+			currentColumn = 1;
+
+            cell = row.createCell(currentColumn);
+			text = new HSSFRichTextString(edg.getItemDesignation());
+			cell.setCellValue(text);
+
+			currentColumn = 13;
+			for (Department dep : edoc.getAccountedDeptsSorted())
+			{
+				cell = row.createCell(currentColumn++);
+				cell.setCellType(CellType.NUMERIC);
+				cell.setCellStyle(styleCurrencyFormat);
+				if (edg.getDistributedGrant().get(dep) != null) {
+					cell.setCellValue(edg.getDistributedGrant().get(dep));
+				}
+			}
+
+			currentRow++;
+		}
+
+		row = sheet.createRow(currentRow);
+		currentColumn = 1;
+        cell = row.createCell(currentColumn);
+		text = new HSSFRichTextString("Justering för tidigare kurstillfällen i Ekonomidokumentet");
+		cell.setCellValue(text);
+		currentColumn = 13;
+		for (Department dep : edoc.getAccountedDeptsSorted())
+			{
+				cell = row.createCell(currentColumn++);
+				cell.setCellType(CellType.NUMERIC);
+				cell.setCellStyle(styleCurrencyFormat);
+				if (edoc.totalAdjustmentSum().get(dep) != null) {
+					cell.setCellValue(edoc.totalAdjustmentSum().get(dep));
+				}
+			}
 
     }
 }
