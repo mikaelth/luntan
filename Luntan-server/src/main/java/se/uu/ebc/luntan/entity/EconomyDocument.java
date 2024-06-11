@@ -210,6 +210,23 @@ public class EconomyDocument  extends Auditable {
 	public  Map<CourseGroup,Map<Department,Float>> hstByCourseGroup() {
 		return hstByCourseGroup(false);
 	}
+	
+	public Float calculateTotalSupervisorsFund() {
+
+		Float theTotal = 0.0f;
+
+		for (CourseInstance ci : this.courseInstances) {
+			if ( ci.getCourse().getCourseGroup().isSplitGrant() ) {
+				if (ci instanceof IndividualYearlyCourse) {
+					theTotal += ((IndividualYearlyCourse)ci).computeSupervisorsGrant();
+				}
+			}
+		}
+
+		return theTotal;
+	}
+	
+	
 	private Map<CourseGroup,Map<Department,Float>> hstByCourseGroup(boolean supplementaryCIs) {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
 		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.isSupplementary() == supplementaryCIs).collect(Collectors.toSet())) {

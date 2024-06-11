@@ -27,6 +27,10 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +54,9 @@ import javax.naming.Name;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorColumn(name="course_type", 
+	discriminatorType = DiscriminatorType.INTEGER)
+@DiscriminatorValue("1")
 @Entity
 @Table(name = "COURSEINSTANCE", uniqueConstraints= @UniqueConstraint(columnNames={"COURSE_FK", "EXTRA_DESIGNATION","ECONOMY_DOC_FK"}))
 public class CourseInstance  extends Auditable implements Comparable<CourseInstance> {
@@ -66,7 +73,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @ManyToOne
     @NotNull
     @JoinColumn(name = "COURSE_FK")
-	private Course course;
+	protected Course course;
 
     @Column(name = "EXTRA_DESIGNATION", length = 255)
 	@Enumerated(EnumType.STRING)
@@ -79,13 +86,13 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	private String courseLeader = "";
 
     @Column(name = "FIRSTINSTANCE")
-	private boolean firstInstance;
+	protected boolean firstInstance;
 
     @Column(name = "REGSVALID", length = 255)
-	private boolean registrationValid;
+	protected boolean registrationValid;
 
     @Column(name = "REGSTUDENTS", length = 255)
-	private Integer registeredStudents;
+	protected Integer registeredStudents;
 
     @Column(name = "ASSUMEDSTUDENTS")
 	private Integer startRegStudents;
@@ -95,7 +102,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 
     @Column(name = "LCKUPDATED")
     @Setter(AccessLevel.NONE)
-    private boolean lockedStudentNumberUpdated = false;
+    protected boolean lockedStudentNumberUpdated = false;
 
 /*
     @Column(name = "UNLOCKEDSTUDENTNUMBER")
@@ -104,25 +111,25 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 
     @OneToOne
     @JoinColumn(name = "PREDECESSOR_FK")
-	private CourseInstance preceedingCI;
+	protected CourseInstance preceedingCI;
 
     @ManyToOne
     @NotNull
     @JoinColumn(name = "ECONOMY_DOC_FK")
-	private EconomyDocument economyDoc;
+	protected EconomyDocument economyDoc;
 
     @Column(name = "NOTE", length = 255)
     private String note;
 
     @Column(name = "BALANCE")
-    private boolean balanceRequest = false;
+    protected boolean balanceRequest = false;
 
     @Column(name = "BOOKEND")
     private boolean bookendOnly = false;
 
     @ManyToOne
     @JoinColumn(name = "BALANCED_ECON_DOC_FK")
-	private EconomyDocument balancedEconomyDoc;
+	protected EconomyDocument balancedEconomyDoc;
 
 
 	@ElementCollection
@@ -132,7 +139,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     @ManyToOne
     @NotNull
     @JoinColumn(name = "MODEL_FK")
-	private FundingModel fundingModel;
+	protected FundingModel fundingModel;
 
 /*
 	@ElementCollection
@@ -146,7 +153,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 
 
 	@Transient
-	private StudentModelNumberCase modelCase = StudentModelNumberCase.DEFAULT;
+	protected StudentModelNumberCase modelCase = StudentModelNumberCase.DEFAULT;
 
 
 	/* Setters and getters */
@@ -289,8 +296,6 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
  	public Float computeAdjustedCIGrant() {
-// 		return this.registeredStudents == null ? 0.0f : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
-//		return this.registeredStudents == null ? computeCIGrant() : fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
 		return this.registrationValid ? fundingModel.computeFunding(registeredStudents,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance) : computeCIGrant();
  	}
 
@@ -437,6 +442,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
     }
 
 
+ 	public Float computeSupervisorsGrant() {
+		log.debug("computeSupervisorsGrant()");
+ 		return 0.0f;
+ 	}
 
 
 

@@ -173,6 +173,14 @@ public class FundingModel  extends Auditable {
 //	public abstract Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel);   
 	
 	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel, boolean firstInstance) {
+		return computeFunding(registerdStudents,ects,baseLevel,firstInstance, false);
+	}
+
+	public Float computeSupervisorFunding(Integer registerdStudents, Float ects, Integer baseLevel, boolean firstInstance) {
+		return computeFunding(registerdStudents,ects,baseLevel,firstInstance, true);
+	}
+
+	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel, boolean firstInstance, boolean supervisorFunds) {
 		log.debug("computeFunding(), number of students " + registerdStudents);
 
 		// Create an expression object for our calculation
@@ -185,6 +193,8 @@ public class FundingModel  extends Auditable {
 		context.set("ects", ects);
 		context.set("baseLevel", baseLevel);
 		context.set("firstInstance", firstInstance ? 1 : 0);
+		context.set("supervisorFunds", supervisorFunds);
+		context.set("refBaseLevel", REFERENCE_BASE_LEVEL);
 
 		// check for look-up values
 		if (tabledValues != null) {

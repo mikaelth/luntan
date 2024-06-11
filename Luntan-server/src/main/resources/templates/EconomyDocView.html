@@ -12,45 +12,96 @@
 	<div th:unless="${courseInstances.size() == 0}">
 
 		<div th:each="cgrp: ${usedGroups}">
-			<h2 th:text="${cgrp}" />
-			<table id = "course_instances">
-				<tr>
-					<th>Kurs</th>
-					<th>hp</th>
-					<th>Stud.</th>
-					<th>Reg.</th>
-					<th>åp</th>
-					<th>Modell</th>
-					<th>Ny</th>
-					<th>Anslag</th>
-					<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-						<th th:text="${dept}" />
-					</th:block>
-					<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
-						<th th:text="${dept}" />
-					</th:block>
-				</tr>
-				<tr th:each="ci: ${courseInstances.get(cgrp)}">
-					<td th:text="${ci.designation}" />
-					<td class='alnright' th:text="${ci.course.credits}" />
-					<td class='alnright' th:text="${ci.modelStudentNumber}" />
-					<td class='alnright' th:text="${ci.registeredStudents}" />
-					<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
-					<td class='alnright' th:text="${ci.fundingModel.id}" />
-					<td class='alnright' th:text="${ci.firstInstance} ? 'X' : ''" />
-					<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
-					<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
-						<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-							<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)*100,1)}+ ' %'" />
+			<th:block th:unless="${cgrp.splitGrant}">
+				<h2 th:text="${cgrp}" />
+				<table id = "course_instances">
+					<tr>
+						<th>Kurs</th>
+						<th>hp</th>
+						<th>Stud.</th>
+						<th>Reg.</th>
+						<th>hstk</th>
+						<th>Modell</th>
+						<th>Ny</th>
+						<th>Anslag</th>
+						<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+							<th th:text="${dept}" />
 						</th:block>
-						<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-							<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
+						<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+							<th th:text="${dept}" />
 						</th:block>
-					</th:block>
-				</tr>
-			</table>
+					</tr>
+					<tr th:each="ci: ${courseInstances.get(cgrp)}">
+						<td th:text="${ci.designation}" />
+						<td class='alnright' th:text="${ci.course.credits}" />
+						<td class='alnright' th:text="${ci.modelStudentNumber}" />
+						<td class='alnright' th:text="${ci.registeredStudents}" />
+						<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
+						<td class='alnright' th:text="${ci.fundingModel.id}" />
+						<td class='alnright' th:text="${ci.firstInstance} ? 'X' : ''" />
+						<td th:text="${#numbers.formatInteger(ci.computeCIGrant()/1000,1)}+ ' kkr'" />
+						<th:block th:with="gd=${ci.computeGrants()},gp=${ci.explicitGrantDist()}">
+							<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+								<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept)*100,1)}+ ' %'" />
+							</th:block>
+							<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+								<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
+							</th:block>
+						</th:block>
+					</tr>
+				</table>
+			</th:block>
+			<th:block th:if="${cgrp.splitGrant}">
+				<h2 th:text="${cgrp}" />
+				<table id = "course_instances">
+					<tr>
+						<th colspan="7" />
+						<th th:colspan="${edoc.accountedDeptsSorted.size()}">Studenter, prognos</th>
+						<th th:colspan="${edoc.accountedDeptsSorted.size()}">Studenter, registrerat</th>
+						<th th:colspan="${edoc.accountedDeptsSorted.size()}">Koordinatorsersättning</th>
+					</tr>
+					<tr>
+						<th>Kurs</th>
+						<th>hp</th>
+						<th>Stud.</th>
+						<th>Reg.</th>
+						<th>hstk</th>
+						<th>Modell</th>
+						<th>Avsättning</th>
+						<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+							<th th:text="${dept}" />
+						</th:block>
+						<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+							<th th:text="${dept}" />
+						</th:block>
+						<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+							<th th:text="${dept}" />
+						</th:block>
+					</tr>
+					<tr th:each="ci: ${courseInstances.get(cgrp)}">
+						<td th:text="${ci.designation}" />
+						<td class='alnright' th:text="${ci.course.credits}" />
+						<td class='alnright' th:text="${ci.modelStudentNumber}" />
+						<td class='alnright' th:text="${ci.registeredStudents}" />
+						<td class='alnright' th:text="${#numbers.formatDecimal(ci.course.credits*ci.modelStudentNumber/60,1,1)}" />
+						<td class='alnright' th:text="${ci.fundingModel.id}" />
+						<td th:text="${#numbers.formatInteger(ci.computeSupervisorsGrant()/1000,1)}+ ' kkr'" />
+						<th:block th:with="gd=${ci.computeGrants()},gp=${ci.modelStudentNumberDist},gr=${ci.regStudDist()}">
+							<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+								<td class='alnright' th:text="${#numbers.formatInteger(gp.get(dept),1)}" />
+							</th:block>
+							<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+								<td class='alnright' th:text="${#numbers.formatInteger(gr.get(dept),1)}" />
+							</th:block>
+							<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+								<td class='alnright' th:text="${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr'" />
+							</th:block>
+						</th:block>
+					</tr>
+				</table>
+			</th:block>
 		</div>
-		<h2 th:text="'Helårsstudenter över kursgrupper'" />
+		<h2 th:text="'Kalenderhelårsstudenter över kursgrupper'" />
 		<table  id = "course_instance_summary" th:with="bigSum=${edoc.hstByCourseGroup()}">
 			<tr>
 				<th />
@@ -119,6 +170,8 @@
 			</tr>
 		</table>
 
+
+
 		<div th:unless="${edoc.balancedCourseInstances.size() == 0}">
 			<h2 th:text="'Justeringar för tidigare kurser'" />
 			<table id = "economy_doc_summary">
@@ -141,6 +194,31 @@
 			</table>
 		</div>
 
+
+		<h2 th:text="'Avsättningar'" />
+		<table id = "economy_doc_grants">
+			<tr>
+				<th>Post</th>
+				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
+					<th th:text="${dept}" />
+				</th:block>
+				<th>Kommentar</th>
+			</tr>
+			<tr>
+				<td th:text="'Handledarersättningar'" />
+					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+						<th:block th:if="${dept.implicit}">
+							<td class='alnright' th:text="${#numbers.formatInteger(edoc.calculateTotalSupervisorsFund()/1000,1,'WHITESPACE')}+ ' kkr'" />
+						</th:block>
+						<th:block th:unless="${dept.implicit}">
+							<td class='alnright' th:text="' '" />
+						</th:block>
+					</th:block>
+				<td>Avsätts på IBG</td>
+			</tr>
+		</table>
+
+
 		<h2 th:text="'Totalsumma'" />
 		<table id = "economy_doc_summary">
 			<tr>
@@ -152,9 +230,9 @@
 			<tr>
 				<th:block th:with="gd=${edoc.grandTotalSum()}">
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
-						<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1)}+ ' kkr' : ''" />
+						<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1,'WHITESPACE')}+ ' kkr' : ''" />
 					</th:block>
-					<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(gd)/1000,1)}+ ' kkr'" />
+					<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(gd)/1000,1,'WHITESPACE')}+ ' kkr'" />
 				</th:block>
 			</tr>
 		</table>
