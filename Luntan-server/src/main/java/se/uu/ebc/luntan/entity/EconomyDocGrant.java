@@ -43,6 +43,9 @@ public class EconomyDocGrant  extends Auditable {
     @Column(name = "DESIGNATION", length = 255)
 	private String itemDesignation;
 
+    @Column(name="USEDFORKEY")
+    private boolean usedForKey;
+
     @Column(name = "GRANTKIND", length = 255)
 	@Enumerated(EnumType.STRING)    
     @NotNull

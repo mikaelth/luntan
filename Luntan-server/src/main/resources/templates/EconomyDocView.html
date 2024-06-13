@@ -16,6 +16,11 @@
 				<h2 th:text="${cgrp}" />
 				<table id = "course_instances">
 					<tr>
+					<tr>
+						<th colspan="8" />
+						<th th:colspan="${edoc.accountedDeptsSorted.size()}">Fördelning av uppdrag</th>
+						<th th:colspan="${edoc.accountedDeptsSorted.size()}">Fördelning av anslag</th>
+					</tr>
 						<th>Kurs</th>
 						<th>hp</th>
 						<th>Stud.</th>
@@ -219,15 +224,26 @@
 		</table>
 
 
-		<h2 th:text="'Totalsumma'" />
+		<h2 th:text="'Totalsummor'" />
 		<table id = "economy_doc_summary">
 			<tr>
+				<th>Post</th>
 				<th:block th:each="dept: ${edoc.accountedDeptsSorted}">
 					<th th:text="${dept}" />
 				</th:block>
 				<th th:text="Totalt" />
 			</tr>
 			<tr>
+				<td>Underlag för fördelningsnyckel</td>
+				<th:block th:with="gd=${edoc.keyTotalSum()}">
+					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
+						<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1,'WHITESPACE')}+ ' kkr' : ''" />
+					</th:block>
+					<td class='alnright' th:text="${#numbers.formatInteger(sums.totalSum(gd)/1000,1,'WHITESPACE')}+ ' kkr'" />
+				</th:block>
+			</tr>
+			<tr>
+				<td>Totalt till institutionerna</td>
 				<th:block th:with="gd=${edoc.grandTotalSum()}">
 					<th:block th:each= "dept: ${edoc.accountedDeptsSorted}">
 						<td class='alnright' th:text="${gd.get(dept) != null} ? ${#numbers.formatInteger(gd.get(dept)/1000,1,'WHITESPACE')}+ ' kkr' : ''" />

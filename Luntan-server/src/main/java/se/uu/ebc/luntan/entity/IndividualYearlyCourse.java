@@ -247,7 +247,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
  		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance,false);
  	}
 
-
+	@Override
  	public Float computeSupervisorsGrant() {
 		log.debug("computeSupervisorsGrant()");
  		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance,true);

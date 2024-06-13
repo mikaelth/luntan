@@ -88,7 +88,9 @@ public class EconomyDocument  extends Auditable {
 	@Enumerated(EnumType.STRING)    
     private Set<Department> accountedDepts = new HashSet<Department>();
  	
-     
+
+    private static final Department supervisorFundsAccumulator = Department.IBG;
+    
 	/* Constructors */
 	
 
@@ -136,14 +138,50 @@ public class EconomyDocument  extends Auditable {
 	}
 	public Map<Department,Float> grandTotalSum() {
 		Map<Department,Float> bigSum = totalSum();
+	
+		/* Add edoc grants */
 		for (EconomyDocGrant edg : this.economyDocGrants) {
 			bigSum = GrantMaps.sum(bigSum, edg.getDistributedGrant());
 		}
+
+		/* Add adjustments */
 		log.debug("grandTotalSum(): " + bigSum);
 		bigSum = GrantMaps.sum(bigSum, totalAdjustmentSum());
 		log.debug("grandTotalSum(), with adjustments: " + bigSum);
+
+		/* Add funds to be used for supervisors */
+		Float supervisorFunds = 0.0f;
+		Map<Department,Float> fundSum = new HashMap<Department,Float>();
+		
+		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.getCourse().getCourseGroup().isSplitGrant()).collect(Collectors.toSet())) {
+			supervisorFunds += ci.computeSupervisorsGrant();
+		}
+		fundSum.put(supervisorFundsAccumulator,supervisorFunds);	
+		bigSum = GrantMaps.sum(bigSum, fundSum);
+
 		return bigSum;
 	}
+	
+	public Map<Department,Float> keyTotalSum() {
+		Map<Department,Float> bigSum = totalSum();
+		Map<Department,Float> fundSum = new HashMap<Department,Float>();
+
+		/* Add relevant edoc grants */
+		for (EconomyDocGrant edg : this.economyDocGrants) {
+			if (edg.isUsedForKey()) {
+				bigSum = GrantMaps.sum(bigSum, edg.getDistributedGrant());
+			}
+		}
+
+		/* Add adjustments */
+		log.debug("keyTotalSum(): " + bigSum);
+		bigSum = GrantMaps.sum(bigSum, totalAdjustmentSum());
+		log.debug("keyTotalSum(), with adjustments: " + bigSum);
+
+		return bigSum;
+	}
+	
+	
 	
 	public 	Map<Department,Float> totalSumSupplement() {
 		return	totalSum(true);
@@ -172,7 +210,8 @@ public class EconomyDocument  extends Auditable {
 	}	
 	public  Map<CourseGroup,Map<Department,Float>> sumByCourseGroup() {
 		return sumByCourseGroup (false);
-	}	
+	}
+		
 	private Map<CourseGroup,Map<Department,Float>> sumByCourseGroup(boolean supplementaryCIs) {
 		Map<CourseGroup,Map<Department,Float>> bigSum = new HashMap<CourseGroup,Map<Department,Float>>();
 		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.isSupplementary() == supplementaryCIs).collect(Collectors.toSet())) {

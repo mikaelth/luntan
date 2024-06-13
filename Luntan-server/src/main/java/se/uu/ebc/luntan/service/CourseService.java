@@ -200,7 +200,7 @@ public class CourseService {
     		ci.setFirstInstance(cVO.isFirstInstance());
     		ci.setBookendOnly(cVO.isBookendOnly());
     		ci.setNote(cVO.getNote());
-    					
+			
     		ci.setGrantDistribution(cVO.getGrantDistribution());
 
 			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()).get());

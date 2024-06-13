@@ -163,6 +163,7 @@ public class EconomyDocumentService {
 			edg.setItemDesignation(edgVO.getItemDesignation());
 			edg.setGrantKind(edgVO.getGrantKind());		
 			edg.setTotalGrant(edgVO.getTotalGrant());
+    		edg.setUsedForKey(edgVO.isUsedForKey());
 
 			edg.setGrantDistribution(edgVO.getGrantDistribution());
 

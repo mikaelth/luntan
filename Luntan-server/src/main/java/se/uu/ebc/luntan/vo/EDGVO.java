@@ -21,6 +21,7 @@ public class EDGVO {
 	private Long economyDocId;
 	
 	private String itemDesignation;
+    private boolean usedForKey;
     private EDGKind grantKind;
     private Float totalGrant;
     private Map<Department,Float> grantDistribution;
@@ -31,12 +32,17 @@ public class EDGVO {
 
  	/* Constructors */
 
+	public boolean isUsedForKey() {
+		return this.usedForKey;
+	}
+	
 	public EDGVO (EconomyDocGrant xe) {
 
 		this.id = xe.getId();
 		this.economyDocId = xe.getEconomyDoc().getId();
 		
 		this.itemDesignation =  xe.getItemDesignation();
+		this.usedForKey = xe.isUsedForKey();
 		this.grantKind =  xe.getGrantKind();		
 		this.totalGrant = xe.getTotalGrant();
 		this.grantDistribution = xe.getGrantDistribution();

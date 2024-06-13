@@ -679,6 +679,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
         headers.add("Modell");
         headers.add("Ny");
         headers.add("Anslag");
+        headers.add("Avsättning");
         for (Department dept : edoc.getAccountedDeptsSorted()) {
         	headers.add(dept.toString());
         }
