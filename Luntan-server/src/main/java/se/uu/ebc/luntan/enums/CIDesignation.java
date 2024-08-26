@@ -3,7 +3,7 @@ package se.uu.ebc.luntan.enums;
 
 public enum CIDesignation
 {
-	NONE(" "),
+	NONE(""),
 	VT("-vt"),
 	HT("-ht"),
 	ST("-sommar"),

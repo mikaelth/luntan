@@ -153,9 +153,13 @@ public class EconomyDocument  extends Auditable {
 		Float supervisorFunds = 0.0f;
 		Map<Department,Float> fundSum = new HashMap<Department,Float>();
 		
+/* 
 		for (CourseInstance ci : courseInstances.stream().filter(ci -> ci.getCourse().getCourseGroup().isSplitGrant()).collect(Collectors.toSet())) {
 			supervisorFunds += ci.computeSupervisorsGrant();
 		}
+ */
+		supervisorFunds = calculateTotalSupervisorsFund();
+		
 		fundSum.put(supervisorFundsAccumulator,supervisorFunds);	
 		bigSum = GrantMaps.sum(bigSum, fundSum);
 
@@ -256,9 +260,9 @@ public class EconomyDocument  extends Auditable {
 
 		for (CourseInstance ci : this.courseInstances) {
 			if ( ci.getCourse().getCourseGroup().isSplitGrant() ) {
-				if (ci instanceof IndividualYearlyCourse) {
-					theTotal += ((IndividualYearlyCourse)ci).computeSupervisorsGrant();
-				}
+//				if (ci instanceof IndividualYearlyCourse) {
+				theTotal += ci.computeSupervisorsGrant();
+//				}
 			}
 		}
 

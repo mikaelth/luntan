@@ -20,6 +20,7 @@ Ext.define('Luntan.model.EconomyDocGrant', {
 		{name: 'id', type: 'int'},
 		{name: 'economyDocId', type: 'int'},
 		{name: 'itemDesignation', type: 'string'},
+		{name: 'usedForKey', type: 'boolean'},
 		{name: 'note', type: 'string'},
 		{name: 'grantKind', type: 'string'},
 		{name: 'totalGrant', type: 'float'},

@@ -129,6 +129,11 @@ public class EconomyDocExcel extends AbstractXlsView
 			cell.setCellStyle(styleCurrencyFormat);
             cell.setCellValue(ci.computeCIGrant());
 
+            cell = row.createCell(currentColumn++);
+            cell.setCellType(CellType.NUMERIC);
+			cell.setCellStyle(styleCurrencyFormat);
+            cell.setCellValue(ci.computeSupervisorsGrant());
+
 			for (Department dep : edoc.getAccountedDeptsSorted())
 			{
 				cell = row.createCell(currentColumn++);
@@ -151,6 +156,8 @@ public class EconomyDocExcel extends AbstractXlsView
             currentRow++;
         }
 
+		currentRow++;
+
 		for (EconomyDocGrant edg : edoc.getEconomyDocGrants()) {
 			row = sheet.createRow(currentRow);
 			currentColumn = 1;
@@ -159,7 +166,7 @@ public class EconomyDocExcel extends AbstractXlsView
 			text = new HSSFRichTextString(edg.getItemDesignation());
 			cell.setCellValue(text);
 
-			currentColumn = 13;
+			currentColumn = 14;
 			for (Department dep : edoc.getAccountedDeptsSorted())
 			{
 				cell = row.createCell(currentColumn++);
@@ -173,12 +180,14 @@ public class EconomyDocExcel extends AbstractXlsView
 			currentRow++;
 		}
 
+		currentRow++;
+
 		row = sheet.createRow(currentRow);
 		currentColumn = 1;
         cell = row.createCell(currentColumn);
 		text = new HSSFRichTextString("Justering för tidigare kurstillfällen i Ekonomidokumentet");
 		cell.setCellValue(text);
-		currentColumn = 13;
+		currentColumn = 14;
 		for (Department dep : edoc.getAccountedDeptsSorted())
 			{
 				cell = row.createCell(currentColumn++);

@@ -20,6 +20,7 @@ Ext.define('Luntan.view.main.EDGrantList', {
 
     columns: [
 		{ text: 'Post', dataIndex: 'itemDesignation', editor: 'textfield', filter: 'number', align: 'left', flex: 1},
+		{ xtype: 'checkcolumn', text: 'Nyckel', dataIndex: 'usedForKey', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 100},
 		{ text: 'Typ av anslag', dataIndex: 'grantKind', align: 'left', width: 100,
          	renderer: function(value) {
 				if (Ext.getStore('EDGKindStore').getById(value) != undefined) {
@@ -40,7 +41,7 @@ Ext.define('Luntan.view.main.EDGrantList', {
 			}
 		},
 		{ text: 'Totalt', dataIndex: 'totalGrant', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 100},
-//		{ text: 'IBG', dataIndex: 'IBG', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80},
+		{ text: 'IBG', dataIndex: 'IBG', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80},
 		{ text: 'ICM', dataIndex: 'ICM', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80 },
 		{ text: 'IEG', dataIndex: 'IEG', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80 },
 		{ text: 'IOB', dataIndex: 'IOB', xtype: 'numbercolumn', format: '0.00', editor: 'textfield', filter: 'number', align: 'left', width: 80},

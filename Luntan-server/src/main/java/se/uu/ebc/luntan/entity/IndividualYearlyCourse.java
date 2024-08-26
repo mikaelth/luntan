@@ -59,11 +59,13 @@ public class IndividualYearlyCourse  extends CourseInstance {
 
 	@ElementCollection
 	@MapKeyEnumerated(EnumType.STRING)
-    private Map<Department,Integer> predictedStudentDistribution = new HashMap<Department,Integer>();
+//    private Map<Department,Integer> predictedStudentDistribution = new HashMap<Department,Integer>();
+    private Map<Department,Integer> predictedStudentDistribution;
 
 	@ElementCollection
 	@MapKeyEnumerated(EnumType.STRING)
-    private Map<Department,Integer> lockedStudentDistribution = new HashMap<Department,Integer>();
+//    private Map<Department,Integer> lockedStudentDistribution = new HashMap<Department,Integer>();
+    private Map<Department,Integer> lockedStudentDistribution;
 
 	@ElementCollection
 	@MapKeyEnumerated(EnumType.STRING)
@@ -181,7 +183,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	log.debug("getModelStudentNumber(): " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredStudents+", "  +this.preceedingCI);
 	if (economyDoc.isLocked()) {
 		if (!this.lockedStudentNumberUpdated) {
-			this.lockedStudentDistribution = currentStudentsDist();
+			this.lockedStudentDistribution = new HashMap<Department,Integer>(currentStudentsDist()); //  Trying to fix an error
 			this.lockedStudentNumberUpdated = true;
 		} else {
 			this.modelCase=StudentModelNumberCase.LOCKED;
@@ -204,7 +206,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	}
 	
 	public boolean isRegCongruent() {
-		return registeredDistStudents() == this.registeredStudents;
+		return registeredDistStudents().equals(this.registeredStudents);
 	}
 	
 	public Map<Department, Integer> studentRegCountDist() {

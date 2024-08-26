@@ -12,7 +12,7 @@ import se.uu.ebc.luntan.entity.Course;
 
 @Repository
 @Transactional(readOnly = true)
-public interface CourseRepo extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course>{
+public interface CourseRepo extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
 
 //    public Course findById(Long id);
 
