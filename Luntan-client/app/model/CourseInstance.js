@@ -38,6 +38,7 @@ Ext.define('Luntan.model.CourseInstance', {
 		{name: 'startRegStudents', type: 'int'},
 		{name: 'modelStudentNumber', type: 'int'},
 		{name: 'modelCase', type: 'string'},
+		{name: 'individualYearlyCourse', type: 'boolean'},
 		{name: 'onRegs', type: 'boolean',  calculate: function (data) {
          		return data.modelCase.valueOf() == 'REG2YEARS';
      		}

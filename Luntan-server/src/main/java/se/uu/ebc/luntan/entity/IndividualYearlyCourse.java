@@ -131,8 +131,9 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	}
 
 	private Integer registeredDistStudents() {
+		log.debug("registeredDistStudents()");
 		return registeredStudentDistribution == null ? 
-			registrationEvents.stream().mapToInt(IndividualCourseRegistration::getStudents).sum() :
+			registrationEvents == null ? 0 : registrationEvents.stream().mapToInt(IndividualCourseRegistration::getStudents).sum() :
 			registeredStudentDistribution.values().stream().reduce(0, Integer::sum);
 	}
 	private Integer predictedDistStudents() {
@@ -144,8 +145,10 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	}
 	
 	private Map<Department, Integer> currentStudentsDist() {
-		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredDistStudents()+", " +this.predictedDistStudents()+", " +this.preceedingCI);
-		Map<Department, Integer> currentStudents;
+//		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredDistStudents()+", " +this.predictedDistStudents()+", " +this.preceedingCI);
+		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear());
+		Map<Department, Integer> currentStudents = new HashMap<Department, Integer>();
+try {
 
 		if (registeredDistStudents() == 0) {
 			if (this.predictedStudentDistribution == null || this.predictedDistStudents() == 0) {
@@ -174,9 +177,14 @@ public class IndividualYearlyCourse  extends CourseInstance {
 			this.modelCase=StudentModelNumberCase.REGISTERED;
 			currentStudents = this.regStudDist();
 		};
+	} catch (Exception e) {
+			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
+	
+	} finally {
 
 		log.debug(this.modelCase.toString());
 		return currentStudents;
+	}
 	}
 
 	public Map<Department,Integer> getModelStudentNumberDist() {
@@ -190,7 +198,9 @@ public class IndividualYearlyCourse  extends CourseInstance {
 		}
 		return lockedStudentDistribution;
 	} else {
+		log.debug("getModelStudentNumberDist(), pre: " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.lockedStudentNumberUpdated);
 		this.lockedStudentNumberUpdated = false;
+		log.debug("getModelStudentNumberDist(), post: " + this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.lockedStudentNumberUpdated);
 		return currentStudentsDist();
 	}
    }

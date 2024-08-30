@@ -301,6 +301,8 @@ public class CourseController {
 			} else {
 				ciVO = courseService.saveCourseInstance(ciVO);
 			}
+
+			log.debug("updateCourseInstance, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
@@ -321,7 +323,10 @@ public class CourseController {
         headers.add("Content-Type", "application/json");
         try {
 			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("createCourseInstance, before save, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			ciVO = courseService.saveCourseInstance(ciVO);
+			log.debug("createCourseInstance, after save, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
+
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
 
@@ -330,6 +335,7 @@ public class CourseController {
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
         } catch (Exception e) {
+			log.error("createCourseInstance got a pesky exception: "+ e + e.getCause());
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

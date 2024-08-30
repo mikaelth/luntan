@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Calendar;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
+import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.entity.EconomyDocument;
@@ -182,7 +183,13 @@ public class CourseService {
 	}
 
 	private CourseInstance toCourseInstance (CourseInstanceVO cVO) throws Exception {
- 		return toCourseInstance (new CourseInstance(), cVO);
+		CourseInstance ci;
+		if (cVO.isIndividualYearlyCourse()) {
+			ci = new IndividualYearlyCourse();
+		} else {
+			ci = new CourseInstance();
+		}
+ 		return toCourseInstance (ci, cVO);
    	}
 
 	private CourseInstance toCourseInstance (CourseInstance ci, CourseInstanceVO cVO) throws Exception {
@@ -207,7 +214,7 @@ public class CourseService {
 			ci.setCourse(courseRepo.findById(cVO.getCourseId()).get());
 			ci.setFundingModel(fmRepo.findById(cVO.getFundingModelId()).get());
 
-			log.debug("preceedingCIId: "+ cVO.getPreceedingCIId() + ", economyDocId: " + cVO.getBalancedEconomyDocId());
+			log.debug("preceedingCIId: "+ cVO.getPreceedingCIId() + ", balancedEconomyDocId: " + cVO.getBalancedEconomyDocId());
 
 			if (cVO.getPreceedingCIId()!= null /* && cVO.getBalancedEconomyDocId()!= 0 */){
 				ci.setPreceedingCI(ciRepo.findById(cVO.getPreceedingCIId()).get());

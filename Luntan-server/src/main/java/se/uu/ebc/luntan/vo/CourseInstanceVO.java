@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
+import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
 import se.uu.ebc.luntan.entity.Examiner;
 import se.uu.ebc.luntan.enums.CIDesignation;
 import se.uu.ebc.luntan.enums.Department;
@@ -59,7 +60,8 @@ public class CourseInstanceVO {
 
     private Map<Department,Float> grantDistribution;
 	
-
+	private boolean individualYearlyCourse;
+	
  	/* Setters and getters */
 
 	public boolean isLocked() {
@@ -88,6 +90,8 @@ public class CourseInstanceVO {
  	/* Constructors */
 
 	public CourseInstanceVO (CourseInstance xe) {
+
+		log.debug("CourseInstance constructor: "+ xe);
 
 		this.id = xe.getId();
 		
@@ -121,6 +125,11 @@ public class CourseInstanceVO {
 		this.note = xe.getNote();	
 
 		this.ciDesignation = xe.getEconomyDoc().getYear() + "-" + xe.getCourse().getCode()  + "-" + xe.getExtraDesignation();
+		
+		this.individualYearlyCourse = xe instanceof IndividualYearlyCourse;
+
+		log.debug("CourseInstance end of constructor");
+
 	}
 	
 //	public CourseInstanceVO() {}
