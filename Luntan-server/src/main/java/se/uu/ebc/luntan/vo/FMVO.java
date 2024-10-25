@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FMVO {
 
-    
+
 //    private static Logger logger = Logger.getLogger(FMVO.class.getName());
-	 
+
 	private Long id;
-	   
+
     private String designation;
     private String expression;
     private String note;
 	private Integer numCI;
-	
+
     private Map<Integer,Float> valueTable;
 
  	/* Setters and getters */
-/* 
- 	   
+/*
+
 
 	public Long getId()
 	{
@@ -72,7 +72,7 @@ public class FMVO {
     	this.note = note;
     }
 
- 
+
 	public Integer getNumCI()
 	{
 		return this.numCI;
@@ -91,10 +91,10 @@ public class FMVO {
  	}
 
  */
-    
+
     /* Public methods */
 
-  
+
  	/* Constructors */
 
 	public FMVO (FundingModel xe) {
@@ -103,11 +103,11 @@ public class FMVO {
 		this.designation = xe.getDesignation();
 		this.expression = xe.getExpression();
 		this.note = xe.getNote();
-
-		this.numCI = xe.getNumCourseInstances();	
+log.debug("Getting number of CIs, " + xe.getNumCourseInstances());
+		this.numCI = xe.getNumCourseInstances();
 
 		this.valueTable = xe.getValueTable();
 	}
-	
+
 
 }

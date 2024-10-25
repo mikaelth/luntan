@@ -48,15 +48,18 @@ public class IndividualCourseRegistration extends Auditable {
     @NotNull
     @JoinColumn(name = "COURSE_BAG_FK")
 	private IndividualYearlyCourse courseBag;
-	
+
 
 	@NotNull
 	@Column(name = "STUDENTS")
-	private Integer students;
+	private Integer students=1;
 
 	@NotNull
 	@Column(name = "DATE")
 	private Date date;
+
+	@Column(name = "STARTDATE")
+	private Date startDate;
 
 	@NotNull
 	@Column(name = "DEPARTMENT")
@@ -65,6 +68,18 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "NOTE")
 	private String note;
 
+	@Column(name = "STUDENT")
+	private String studentName;
+
+	@Column(name = "COORDINATOR")
+	private String coordinator;
+
+	@Column(name = "SUPERVISOR")
+	private String supervisor;
+
+	@Column(name = "SUBJECT_READER")
+	private String subjectReader;
+
 	// Business methods
-	
+
 }

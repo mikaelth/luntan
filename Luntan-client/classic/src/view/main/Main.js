@@ -81,14 +81,14 @@ Ext.define('Luntan.view.main.Main', {
 
 		viewModel: {
 			data: {
- 
+
 				current : {
 					edoc : null
 				}
- 
+
 			}
 		},
- 
+
         items: [{
         	xtype: 'edoclist',
         	height: '600'
@@ -100,31 +100,31 @@ Ext.define('Luntan.view.main.Main', {
         title: 'Uppdrag',
         iconCls: 'fa-balance-scale',
         items: [{
-            xtype: 'citasklist', 
+            xtype: 'citasklist',
 			height: 900
         }]
     }, {
         title: 'Modeller',
         iconCls: 'fa-dollar',
         items: [{
-            xtype: 'fmlist', 
+            xtype: 'fmlist',
 			height: 600
         },{
-            xtype: 'fmtabledlist', 
+            xtype: 'fmtabledlist',
 			height: 400
         }]
     }, {
         title: 'Kurstillfällen',
         iconCls: 'fa-pencil',
         items: [{
-            xtype: 'cilist', 
+            xtype: 'cilist',
 			height: 800
         }]
     }, {
         title: 'Klona kurstillfällen',
         iconCls: 'fa-pencil',
         items: [{
-            xtype: 'ciclonelist', 
+            xtype: 'ciclonelist',
 			height: 900
         }]
     }, {
@@ -132,10 +132,10 @@ Ext.define('Luntan.view.main.Main', {
         iconCls: 'fa-book',
        	viewModel: 'examinermodel',
         items: [{
-            xtype: 'courselist', 
+            xtype: 'courselist',
 			height: 800
         }, {
-            xtype: 'examinerlist', 
+            xtype: 'examinerlist',
 			height: 400
         }]
      }, {
@@ -143,7 +143,7 @@ Ext.define('Luntan.view.main.Main', {
         iconCls: 'fa-clipboard',
 		viewModel: {type:'coursemodel'},
         items: [{
-            xtype: 'programmelist', 
+            xtype: 'programmelist',
 			height: 900
         }]
      }, {
@@ -151,17 +151,28 @@ Ext.define('Luntan.view.main.Main', {
         iconCls: 'fa-users',
        	viewModel: 'examinermodel',
         items: [{
-            xtype: 'examinerslisting', 
+            xtype: 'examinerslisting',
 			height: 300
         }, {
-            xtype: 'listedexaminerlist', 
+            xtype: 'listedexaminerlist',
+			height: 800
+        }]
+     }, {
+        title: 'Individuella kurser',
+        iconCls: 'fa-user-secret',
+       	viewModel: 'examinermodel',
+        items: [{
+            xtype: 'examinerslisting',
+			height: 300
+        }, {
+            xtype: 'listedexaminerlist',
 			height: 800
         }]
      }, {
         title: 'Användare',
         iconCls: 'fa-user',
         items: [{
-            xtype: 'userlist', 
+            xtype: 'userlist',
 			height: 900
         }]
 	}, {
@@ -173,7 +184,7 @@ Ext.define('Luntan.view.main.Main', {
         reference: 'logOutTab',
         iconCls: 'fa-cog'
     }],
-    
+
     listeners: {
  		beforeTabChange: 'onTabChange'
  	}
