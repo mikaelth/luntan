@@ -1,2 +1,2 @@
 // @tag full-page
-// @require /Volumes/Ficulina/mikael/Programming/Luntan/Luntan-client/app.js
+// @require /Users/mikael/Documents/Programmering/GitHubbed/Luntan/Luntan-client/app.js

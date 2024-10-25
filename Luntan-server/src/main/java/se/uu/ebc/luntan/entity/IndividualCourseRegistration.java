@@ -68,17 +68,29 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "NOTE")
 	private String note;
 
+	@NotNull
 	@Column(name = "STUDENT")
 	private String studentName;
 
-	@Column(name = "COORDINATOR")
+	@NotNull
+	@Column(name = "COORDINATOR_LDAP")
 	private String coordinator;
 
-	@Column(name = "SUPERVISOR")
+	@Column(name = "SUPERVISOR_LDAP")
 	private String supervisor;
 
-	@Column(name = "SUBJECT_READER")
+	@Column(name = "SUBJECT_READER_LDAP")
 	private String subjectReader;
+
+	@Column(name = "DONE")
+	private boolean studentDone;
+
+	@Column(name = "PAYED")
+	private boolean sentForPayment;
+
+	@Column(name = "COURSEVALUATION")
+	private boolean courseEvalSetUp;
+
 
 	// Business methods
 
