@@ -14,6 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import java.util.Set;
+import java.util.HashSet;
+
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -26,7 +32,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import se.uu.ebc.luntan.enums.*;
-
+import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
 
 @Slf4j
 //@Data
@@ -36,6 +42,7 @@ import se.uu.ebc.luntan.enums.*;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Entity
+@Table(name = "INDIVIDUAL_COURSE_REGISTRATION")
 public class IndividualCourseRegistration extends Auditable {
 
     @Id
@@ -44,54 +51,54 @@ public class IndividualCourseRegistration extends Auditable {
     @Column(name = "ID")
     private Long id;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn(name = "COURSE_BAG_FK")
-	private IndividualYearlyCourse courseBag;
-
-
-	@NotNull
-	@Column(name = "STUDENTS")
-	private Integer students=1;
-
-	@NotNull
-	@Column(name = "DATE")
-	private Date date;
-
 	@Column(name = "STARTDATE")
 	private Date startDate;
-
-	@NotNull
-	@Column(name = "DEPARTMENT")
-	private Department department;
-
-	@Column(name = "NOTE")
-	private String note;
 
 	@NotNull
 	@Column(name = "STUDENT")
 	private String studentName;
 
-	@NotNull
-	@Column(name = "COORDINATOR_LDAP")
-	private String coordinator;
-
-	@Column(name = "SUPERVISOR_LDAP")
-	private String supervisor;
-
-	@Column(name = "SUBJECT_READER_LDAP")
-	private String subjectReader;
-
 	@Column(name = "DONE")
 	private boolean studentDone;
-
-	@Column(name = "PAYED")
-	private boolean sentForPayment;
 
 	@Column(name = "COURSEVALUATION")
 	private boolean courseEvalSetUp;
 
+    @ManyToOne
+    @NotNull
+    @JoinColumn(name = "COURSE_BAG_FK")
+	private IndividualYearlyCourse courseBag;
+
+    @ManyToOne
+    @JoinColumn(name = "CREDIT_BASIS_FK")
+	private CreditBasis creditBasisRecord;
+
+	@Column(name = "NOTE")
+	private String note;
+
+	@NotNull
+    @OneToOne
+	@JoinColumn(name = "COORDINATOR_FK")
+	private IndividualCourseTeacher coordinator;
+
+	@OneToMany(mappedBy = "assignment")
+	private Set<IndividualCourseTeacher> teachers = new HashSet<IndividualCourseTeacher>();
 
 	// Business methods
 
+	public Department getDepartment() {
+		return coordinator.getDepartment() == null ? Department.IBG : coordinator.getDepartment();
+	}
+	
+	public boolean isAssignedCreditRecord() {
+		return creditBasisRecord == null ? false : true;
+	}
+	
+	public Date getRegistrationDate() {
+		return this.creationDate;
+	}
+	
+	public Integer getStudents() {
+		return 1;
+	}
 }

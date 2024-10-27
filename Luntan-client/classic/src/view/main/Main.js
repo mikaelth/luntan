@@ -160,13 +160,24 @@ Ext.define('Luntan.view.main.Main', {
      }, {
         title: 'Individuella kurser',
         iconCls: 'fa-user-secret',
-       	viewModel: 'examinermodel',
+		viewModel: 'registrationmodel',
         items: [{
-            xtype: 'examinerslisting',
-			height: 300
+            xtype: 'coursereglist',
+			height: 800
         }, {
             xtype: 'listedexaminerlist',
+			height: 400
+        }]
+     }, {
+        title: 'Underlag för betalning',
+        iconCls: 'fa-money',
+       	viewModel: 'registrationmodel',
+        items: [{
+            xtype: 'coursereglist',
 			height: 800
+        }, {
+            xtype: 'listedexaminerlist',
+			height: 400
         }]
      }, {
         title: 'Användare',

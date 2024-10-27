@@ -1,0 +1,24 @@
+package se.uu.ebc.luntan.repo;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
+
+import java.util.List;
+
+
+@Repository
+@Transactional(readOnly = true)
+public interface IndividualCourseRegRepo extends JpaRepository<IndividualCourseRegistration, Long>, JpaSpecificationExecutor<IndividualCourseRegistration>{
+
+//    public Programme findById(Long id);
+
+// 	@Query("SELECT distinct p FROM Programme AS p WHERE p.inactive=false")
+// 	public List<Programme> findActive();
+
+}
