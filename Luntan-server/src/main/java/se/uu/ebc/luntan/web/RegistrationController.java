@@ -76,6 +76,7 @@ import se.uu.ebc.luntan.vo.ExListVO;
 import se.uu.ebc.luntan.vo.CourseInstancesCSVUploadFB;
 import se.uu.ebc.luntan.vo.LADOKEntryVO;
 import se.uu.ebc.luntan.vo.IndRegVO;
+import se.uu.ebc.luntan.vo.IndCourseTeacherVO;
 import se.uu.ebc.luntan.enums.UpdateStatus;
 
 import se.uu.ebc.luntan.enums.EduBoard;
@@ -191,6 +192,81 @@ public class RegistrationController {
         headers.add("Content-Type", "application/json");
         try {
 			regService.deleteRegistration(id);
+            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+	/* Individual course teachers, i.e., coordinators, supervisors and readers */
+
+    @RequestMapping(value="/icts", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allICTeachers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(regService.getAllICTeachers()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/icts/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateICTeacher(@RequestBody String json, @PathVariable("id") Long id, HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			IndCourseTeacherVO ciVO = new JSONDeserializer<IndCourseTeacherVO>().use(null, IndCourseTeacherVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("updateICTeacher, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
+			log.debug("updateICTeacher, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
+			ciVO.setId(id);
+
+			ciVO = regService.saveICTeacher(ciVO);
+
+			log.debug("updateICTeacher, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
+			
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+ 
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/icts", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createICTeacher(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			IndCourseTeacherVO ciVO = new JSONDeserializer<IndCourseTeacherVO>().use(null, IndCourseTeacherVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			ciVO = regService.saveICTeacher(ciVO);
+            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").deepSerialize(ciVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@RequestMapping(value = "/icts/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	public ResponseEntity<String> deleteICTeacher(@PathVariable("id") Long id) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			regService.deleteICTeacher(id);
             return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);

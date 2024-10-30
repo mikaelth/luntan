@@ -165,10 +165,11 @@ Ext.define('Luntan.view.main.Main', {
             xtype: 'coursereglist',
 			height: 800
         }, {
-            xtype: 'listedexaminerlist',
+            xtype: 'ictlist',
 			height: 400
         }]
-     }, {
+     },/* 
+ {
         title: 'Underlag för betalning',
         iconCls: 'fa-money',
        	viewModel: 'registrationmodel',
@@ -179,7 +180,8 @@ Ext.define('Luntan.view.main.Main', {
             xtype: 'listedexaminerlist',
 			height: 400
         }]
-     }, {
+     },
+ */ {
         title: 'Användare',
         iconCls: 'fa-user',
         items: [{

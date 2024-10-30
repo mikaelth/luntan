@@ -23,9 +23,10 @@ public class IndRegVO {
 
 	private String note;
 	private String studentName;
+	private String regDepartment;
 
  	private Long creditBasisRecId;
-	private Long coordinatorId;
+//	private Long coordinatorId;
 	private Long courseInstanceId;
 	private Long economyDocId;
    
@@ -47,9 +48,10 @@ public class IndRegVO {
 		this.registrationDate = xe.getRegistrationDate();
 		this.note = xe.getNote();
 		this.studentName = xe.getStudentName();
-
+		this.regDepartment = xe.getRegDepartment();
+		
 		this.creditBasisRecId = xe.getCreditBasisRecord() == null ? null : xe.getCreditBasisRecord().getId();
-		this.coordinatorId = xe.getCoordinator() == null ? null : xe.getCoordinator().getId();;
+//		this.coordinatorId = xe.getCoordinator() == null ? null : xe.getCoordinator().getId();;
 		this.courseInstanceId = xe.getCourseBag()== null ? null : xe.getCourseBag().getId(); ;
 		this.economyDocId = xe.getCourseBag()== null ? null : xe.getCourseBag().getEconomyDoc().getId(); ;
 

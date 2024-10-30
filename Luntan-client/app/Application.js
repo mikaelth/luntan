@@ -8,9 +8,9 @@ Ext.define('Luntan.Application', {
 
     name: 'Luntan',
 //	requires:[],
-    stores: ['CIDesignationStore', 'CourseGroupStore', 'CourseRegStore', 'DepartmentStore', 'UserRoleTypeStore',
+    stores: ['CIDesignationStore', 'CourseGroupStore', 'IndCourseRegStore', 'DepartmentStore', 'UserRoleTypeStore',
     	'UserStore', 'FundingModelStore', 'CourseInstanceStore','EconomyDocStore','CourseStore', 'EDGStore', 'EDGKindStore',
-    	'TeacherStore', 'ExaminerStore','ExaminersListStore','EduBoardStore', 'ProgrammeStore'
+    	'TeacherStore', 'ExaminerStore','ExaminersListStore','EduBoardStore', 'ProgrammeStore', 'IndCourseTeacherStore','ICTKindStore'
     ],
 
     launch: function () {
@@ -31,6 +31,7 @@ Ext.define('Luntan.Application', {
     	Ext.getStore('CIDesignationStore').load();
     	Ext.getStore('CourseGroupStore').load();
     	Ext.getStore('DepartmentStore').load();
+    	Ext.getStore('ICTKindStore').load();
     	Ext.getStore('EDGKindStore').load();
     	Ext.getStore('EduBoardStore').load();
     	Ext.getStore('UserRoleTypeStore').load();
@@ -39,8 +40,9 @@ Ext.define('Luntan.Application', {
     	Ext.getStore('FundingModelStore').load();
     	Ext.getStore('CourseStore').load();
     	Ext.getStore('CourseInstanceStore').load();
-    	Ext.getStore('CourseRegStore').load();
-    	Ext.getStore('EDGStore').load();
+    	Ext.getStore('IndCourseRegStore').load();
+     	Ext.getStore('IndCourseTeacherStore').load();
+		Ext.getStore('EDGStore').load();
     	Ext.getStore('EconomyDocStore').load();
     	Ext.getStore('TeacherStore').load();
     	Ext.getStore('ExaminerStore').load();

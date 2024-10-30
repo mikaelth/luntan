@@ -9,7 +9,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
         var grid = this.getView(),
         	thisEDoc = this.getViewModel().get('current.edoc.id');
          grid.plugins[0].cancelEdit();
-
+//this.view.up().up().lookupReference('ictList').controller.onCreate();
         // Create a model instance
         var r = Ext.create('Luntan.model.IndCourseReg');
         r.set('economyDocId',thisEDoc);
@@ -24,11 +24,6 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
    	onUpdateInactive: function () {
    	},
-
-   	onProgramCourses: function () {
-		window.open(Luntan.data.Constants.BASE_URL.concat('view/programcourses'));
-   	},
-
 
    	init: function (view) {
 

@@ -5,7 +5,7 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 
     data: {
 		current : {
-			edocId : '',
+//			edocId : '',
 			edoc: null,
 			reg : null
 		}
@@ -13,7 +13,9 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
     
     stores: {
 		depts: 'DepartmentStore',
-
+		
+		ictKinds: 'ICTKindStore',
+		
  		usedYears: {
  			type:'chained',
  			source:'EconomyDocStore',
@@ -22,51 +24,19 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 
 		registrations : {
 			type: 'chained',
-			source: 'CourseRegStore',
+			source: 'IndCourseRegStore',
 			filters: [
 				{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}
 			],
 			sorters: [{property:'courseDesignation', direction: 'ASC'}]
 		},
-/*  
-  		examinerslistings: {
- 			type:'chained',
- 			source:'ExaminersListStore',
- 			sorters: [
- 				{property:'decided', direction: 'ASC'},
- 				{property:'decisionDate', direction: 'DESC'}
- 			],
-			listeners: {
-				update: function ( store, record, operation, modifiedFieldNames, details, eOpts) {
-					if (operation == 'commit' && modifiedFieldNames.includes('id') ) {
-						// This means a new record is created at the server
-						Ext.getStore('ExaminerStore').reload();
-					}
-				}
-			}
- 
-  		},
-
- 
-
-		listedteachers : {
-			type: 'chained',
-			source: 'TeacherStore'
-		},
-
-		teachers : {
-			type: 'chained',
-			source: 'TeacherStore',
-			filters:[{property:'examinerEligible', value: true, exactMatch: true}],
-			sorters: [{property:'name', direction: 'ASC'}]
-		},
- */
 
 		teachers : {
 			type: 'chained',
 			source: 'TeacherStore',
 			sorters: [{property:'name', direction: 'ASC'}]
 		},
+
 		icis : {
 			type: 'chained',
 			source: 'CourseInstanceStore',
@@ -77,45 +47,14 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			sorters: [{property:'courseDesignation', direction: 'ASC'}]
 		},
 
-/* 
-		examiners : {
+		icts : {
 			type: 'chained',
-			source: 'ExaminerStore',
+			source: 'IndCourseTeacherStore',
 			filters: [
- 				{property: 'courseId', value: '{current.cid}', exactMatch: true}, 
- 				{property: 'decided', value: false, exactMatch: true}
-			],
-//			sorters: {property:'rank', direction: 'ASC'},
-			nextRank : function() { 
-				var rs = this.data.items, v = 0; 
-				for(var i = 0; i < rs.length; i++){ 
-					v = Math.max(v, (1 * rs[i].data['rank']) || 0); 
-				} 
-				return v+1; 
-			} 			
-			
+ 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true}, 
+			],			
 		},
- */
-/*
-		listedexaminers : {
-			type: 'chained',
-			source: 'ExaminerStore',
-			filters: [
-				{property: 'decisionId', value: '{current.did}', exactMatch: true} 
-			],
-			sorters: [{property:'courseId', direction: 'ASC'},{property:'rank', direction: 'ASC'}]
  
-			nextRank : function() { 
-				var rs = this.data.items, v = 0; 
-				for(var i = 0; i < rs.length; i++){ 
-					v = Math.max(v, (1 * rs[i].data['rank']) || 0); 
-				} 
-				return v+1; 
-			} 			
-
-			
-		}
- */		    	
 	}, 
 	
 	formulas: {
@@ -147,45 +86,7 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
  			return get('current.edoc') === null;
  		},
 
-/*
-        currentCourse: {
-            // We need to bind deep to be notified on each model change
-            bind: {
-                bindTo: '{courselist.selection.id}', //--> reference configurated on the grid view (reference: courselist)
-                deep: true
-            },
-            get: function(cid) {
-            	this.set('current.cid', cid);
-                return cid;
-            }
- 
-		},
-        currentFormalCourse: {
-            // We need to bind deep to be notified on each model change
-            bind: {
-                bindTo: '{courselist.selection}', //--> reference configurated on the grid view (reference: courselist)
-                deep: true
-            },
-            get: function(cCourse) {
-            	this.set('current.cCourse', cCourse);
-                return cCourse;
-            }
- 
-		},
-        currentDecision: {
-            // We need to bind deep to be notified on each model change
-            bind: {
-                bindTo: '{examinerslisting.selection.id}', //--> reference configurated on the grid view (reference: examinerslisting)
-                deep: true
-            },
-            get: function(did) {
-            	this.set('current.did', did);
-                return did;
-            }
- 
-		}
 
- */ 	
  	}
 
 });

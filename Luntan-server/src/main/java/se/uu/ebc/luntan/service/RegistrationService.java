@@ -10,7 +10,9 @@ import java.util.Calendar;
 
 import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
+import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
 import se.uu.ebc.luntan.vo.IndRegVO;
+import se.uu.ebc.luntan.vo.IndCourseTeacherVO;
 import se.uu.ebc.luntan.repo.IndividualCourseRegRepo;
 import se.uu.ebc.luntan.repo.IndividualCourseTeacherRepo;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
@@ -30,7 +32,7 @@ public class RegistrationService {
 	IndividualCourseRegRepo regsRepo;
 
 	@Autowired
-	IndividualCourseTeacherRepo teacherRepo;
+	IndividualCourseTeacherRepo ictRepo;
 
 	@Autowired
 	CourseInstanceRepo ciRepo;
@@ -55,7 +57,6 @@ public class RegistrationService {
         }
     }
 
-
     public IndRegVO saveRegistration(IndRegVO cVO) throws Exception {
     	IndividualCourseRegistration c = cVO.getId() == null ? toRegistration(cVO) : toRegistration(regsRepo.findById(cVO.getId()).get(), cVO);
     	regsRepo.save(c);
@@ -63,12 +64,10 @@ public class RegistrationService {
 
     }
 
-
     public synchronized void deleteRegistration(Long cID) throws Exception {
 		IndividualCourseRegistration c = regsRepo.findById(cID).get();
 		regsRepo.delete(c);
     }
-
 
 	private IndividualCourseRegistration toRegistration (IndRegVO cvo) throws Exception {
  		return toRegistration (new IndividualCourseRegistration(), cvo);
@@ -85,11 +84,14 @@ public class RegistrationService {
 
 			c.setStartDate(cvo.getStartDate()) ;
 			c.setStudentName(cvo.getStudentName()) ;
+			c.setRegDepartment(cvo.getRegDepartment()) ;
 			c.setNote(cvo.getNote()) ;
 
+/* 
 			if (cvo.getCoordinatorId()!= null){
 				c.setCoordinator(teacherRepo.findById(cvo.getCoordinatorId()).get());
 			}
+ */
 
 			if (cvo.getCourseInstanceId()!= null){
 				c.setCourseBag((IndividualYearlyCourse)ciRepo.findById(cvo.getCourseInstanceId()).get());
@@ -106,5 +108,62 @@ public class RegistrationService {
 		}
 	}
 
+
+
+	/* Individual Course Teachers */
+
+	public List<IndCourseTeacherVO> getAllICTeachers() throws Exception {
+		List<IndCourseTeacherVO> cVO = new ArrayList<IndCourseTeacherVO>();
+		try {
+			for (IndividualCourseTeacher c : ictRepo.findAll()) {
+ 				cVO.add(new IndCourseTeacherVO(c));
+ 			}
+         	return cVO;
+        } catch (Exception e) {
+			log.error("getAllICTeachers got a pesky exception: "+ e + e.getCause());
+
+			return null;
+
+        }
+    }
+
+    public IndCourseTeacherVO saveICTeacher(IndCourseTeacherVO cVO) throws Exception {
+    	IndividualCourseTeacher c = cVO.getId() == null ? toICTeacher(cVO) : toICTeacher(ictRepo.findById(cVO.getId()).get(), cVO);
+    	ictRepo.save(c);
+		return new IndCourseTeacherVO(c);
+
+    }
+
+    public synchronized void deleteICTeacher(Long cID) throws Exception {
+		IndividualCourseTeacher c = ictRepo.findById(cID).get();
+		ictRepo.delete(c);
+    }
+
+	private IndividualCourseTeacher toICTeacher (IndCourseTeacherVO cvo) throws Exception {
+ 		return toICTeacher (new IndividualCourseTeacher(), cvo);
+   	}
+
+	private IndividualCourseTeacher toICTeacher (IndividualCourseTeacher c, IndCourseTeacherVO cvo) throws Exception {
+
+
+		try {
+			c.setId(cvo.getId()) ;
+
+			c.setLdapEntry(cvo.getLdapEntry());
+			c.setDepartment(cvo.getDepartment()) ;
+			c.setTeacherType(cvo.getTeacherType()) ;
+			c.setNote(cvo.getNote()) ;
+
+			if (cvo.getAssignmentId()!= null){
+				c.setAssignment(regsRepo.findById(cvo.getAssignmentId()).get());
+			}
+
+
+		} catch (Exception e) {
+			log.error("toICTeacher got a pesky exception: "+ e + e.getCause());
+		} finally {
+			return c;
+		}
+	}
 
 }

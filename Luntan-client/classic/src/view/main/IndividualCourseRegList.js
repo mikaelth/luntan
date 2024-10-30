@@ -8,10 +8,7 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
     title: 'Individuella kurser, registreringar',
 
 	controller: 'coursereglist',
-//	viewModel: {type:'registrationmodel'},
 
-
-//	store: 'CourseRegStore',
 
 	bind: {
 		store: '{registrations}',
@@ -123,6 +120,7 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 			}
 		},		
 		{ text: 'Student', dataIndex: 'studentName', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
+		{ text: 'Reg inst.', dataIndex: 'regDepartment', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
 		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 
 	],

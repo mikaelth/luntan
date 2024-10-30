@@ -1,4 +1,4 @@
-Ext.define('Luntan.store.CourseRegStore', {
+Ext.define('Luntan.store.IndCourseRegStore', {
     extend: 'Ext.data.Store',
     requires: ['Ext.data.proxy.Rest', 'Ext.data.reader.Json'],
     alias: 'store.courseregs',

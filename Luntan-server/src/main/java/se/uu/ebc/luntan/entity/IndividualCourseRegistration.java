@@ -16,9 +16,12 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.CascadeType;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
 
 
 import org.hibernate.annotations.GenericGenerator;
@@ -58,6 +61,10 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "STUDENT")
 	private String studentName;
 
+	@NotNull
+	@Column(name = "REGDEPT")
+	private String regDepartment;
+
 	@Column(name = "DONE")
 	private boolean studentDone;
 
@@ -76,19 +83,27 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "NOTE")
 	private String note;
 
+/* 
 	@NotNull
     @OneToOne
 	@JoinColumn(name = "COORDINATOR_FK")
 	private IndividualCourseTeacher coordinator;
+ */
 
-	@OneToMany(mappedBy = "assignment")
+	@OneToMany(mappedBy = "assignment",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<IndividualCourseTeacher> teachers = new HashSet<IndividualCourseTeacher>();
 
 	// Business methods
 
+ 
 	public Department getDepartment() {
-		return coordinator.getDepartment() == null ? Department.IBG : coordinator.getDepartment();
+		Department dept = teachers
+			.stream()
+  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
+			.collect( Collectors.collectingAndThen( Collectors.toList(), list ->list.get(0).getDepartment() ));
+		return dept;
 	}
+ 
 	
 	public boolean isAssignedCreditRecord() {
 		return creditBasisRecord == null ? false : true;

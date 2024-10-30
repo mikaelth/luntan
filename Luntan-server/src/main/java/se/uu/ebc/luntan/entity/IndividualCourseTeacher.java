@@ -53,7 +53,7 @@ public class IndividualCourseTeacher extends Auditable {
 	
 	@NotNull
 	@Column(name = "LDAP_ENTRY")
-	private String teacher;
+	private String ldapEntry;
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
