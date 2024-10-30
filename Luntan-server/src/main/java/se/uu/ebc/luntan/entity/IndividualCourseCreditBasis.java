@@ -48,26 +48,25 @@ import lombok.Singular;
 @AllArgsConstructor
 @Entity
 @Table(name = "CREDITBASIS")
-public class CreditBasis  extends Auditable {
-
+public class IndividualCourseCreditBasis extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
 	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
-    
+
     @OneToMany(mappedBy = "creditBasisRecord")
-    private Set<IndividualCourseRegistration> registrations = new HashSet<IndividualCourseRegistration>();    
-    
+    private Set<IndividualCourseRegistration> registrations = new HashSet<IndividualCourseRegistration>();
+
     @Column(name = "SENT")
     private Date sent;
 
     @Column(name = "NOTE")
     private String note;
-    
+
 	/* Constructors */
-	
+
 
 
 }

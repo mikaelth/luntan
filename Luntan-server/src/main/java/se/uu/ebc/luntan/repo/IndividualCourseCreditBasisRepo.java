@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import se.uu.ebc.luntan.entity.CreditBasis;
+import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
 
 import java.util.List;
 
 
 @Repository
 @Transactional(readOnly = true)
-public interface CreditBasisRepo extends JpaRepository<CreditBasis, Long>, JpaSpecificationExecutor<CreditBasis>{
+public interface IndividualCourseCreditBasisRepo extends JpaRepository<IndividualCourseCreditBasis, Long>, JpaSpecificationExecutor<IndividualCourseCreditBasis>{
 
 //    public Programme findById(Long id);
 

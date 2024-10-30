@@ -78,12 +78,12 @@ public class IndividualCourseRegistration extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "CREDIT_BASIS_FK")
-	private CreditBasis creditBasisRecord;
+	private IndividualCourseCreditBasis creditBasisRecord;
 
 	@Column(name = "NOTE")
 	private String note;
 
-/* 
+/*
 	@NotNull
     @OneToOne
 	@JoinColumn(name = "COORDINATOR_FK")
@@ -95,7 +95,7 @@ public class IndividualCourseRegistration extends Auditable {
 
 	// Business methods
 
- 
+
 	public Department getDepartment() {
 		Department dept = teachers
 			.stream()
@@ -103,16 +103,16 @@ public class IndividualCourseRegistration extends Auditable {
 			.collect( Collectors.collectingAndThen( Collectors.toList(), list ->list.get(0).getDepartment() ));
 		return dept;
 	}
- 
-	
+
+
 	public boolean isAssignedCreditRecord() {
 		return creditBasisRecord == null ? false : true;
 	}
-	
+
 	public Date getRegistrationDate() {
 		return this.creationDate;
 	}
-	
+
 	public Integer getStudents() {
 		return 1;
 	}

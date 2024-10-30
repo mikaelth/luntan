@@ -16,7 +16,7 @@ import se.uu.ebc.luntan.vo.IndCourseTeacherVO;
 import se.uu.ebc.luntan.repo.IndividualCourseRegRepo;
 import se.uu.ebc.luntan.repo.IndividualCourseTeacherRepo;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
-import se.uu.ebc.luntan.repo.CreditBasisRepo;
+import se.uu.ebc.luntan.repo.IndividualCourseCreditBasisRepo;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -38,7 +38,7 @@ public class RegistrationService {
 	CourseInstanceRepo ciRepo;
 
 	@Autowired
-	CreditBasisRepo credRepo;
+	IndividualCourseCreditBasisRepo credRepo;
 
 	/* Individual Course Registrations */
 
@@ -87,7 +87,7 @@ public class RegistrationService {
 			c.setRegDepartment(cvo.getRegDepartment()) ;
 			c.setNote(cvo.getNote()) ;
 
-/* 
+/*
 			if (cvo.getCoordinatorId()!= null){
 				c.setCoordinator(teacherRepo.findById(cvo.getCoordinatorId()).get());
 			}
