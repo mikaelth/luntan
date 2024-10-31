@@ -174,10 +174,10 @@ Ext.define('Luntan.view.main.Main', {
         iconCls: 'fa-money',
        	viewModel: 'registrationmodel',
         items: [{
-            xtype: 'coursereglist',
+            xtype: 'credbaselist',
 			height: 600
         }, {
-            xtype: 'coursereglist',
+            xtype: 'credbasereglist',
 			height: 600
         }]
      },

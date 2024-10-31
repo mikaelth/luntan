@@ -22,12 +22,13 @@ Ext.define('Luntan.model.IndCourseReg', {
 		{name: 'id', type: 'int'},
 		{name: 'courseInstanceId', type: 'int'},
 		{name: 'economyDocId', type:'int'},
-		{name: 'studentName', type: 'string'},
+		{name: 'creditBasisRecId', type: 'int'},
 		{name: 'startDate', type: 'date', format: 'yy-MM-dd'},
 		{name: 'registrationDate', type: 'date', format: 'yy-MM-dd'},
+		{name: 'studentName', type: 'string'},
 		{name: 'regDepartment', type: 'string'},
 		{name: 'note', type: 'string'},
 		{name: 'studentDone', type: 'boolean'},
-		{name: 'courseEvalSetUp', type: 'boolean'}   
+		{name: 'courseEvalSetUp', type: 'boolean'}
 	]
 });

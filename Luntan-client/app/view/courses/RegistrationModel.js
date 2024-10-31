@@ -7,7 +7,8 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 		current : {
 //			edocId : '',
 			edoc: null,
-			reg : null
+			reg : null,
+			cbase: null
 		}
     },
     
@@ -29,6 +30,15 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 				{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}
 			],
 			sorters: [{property:'courseDesignation', direction: 'ASC'}]
+		},
+		
+		regsincreds : {
+			type: 'chained',
+			source: 'IndCourseRegStore',
+			filters: [
+				{property: 'creditBasisRecId', value: '{current.cbase.id}', exactMatch: true}
+			],
+			sorters: [{property:'registrationDate', direction: 'DESC'}]
 		},
 
 		teachers : {
@@ -54,7 +64,15 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
  				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true}, 
 			],			
 		},
- 
+
+ 		credbasis : {
+			type: 'chained',
+			source: 'IndCourseCreditBasisStore',
+			filters: [
+// 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true}, 
+			],			
+		},
+
 	}, 
 	
 	formulas: {
@@ -79,6 +97,18 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
             get: function(reg) {
             	this.set('current.reg', reg);
                 return reg;
+            }
+        },
+
+       currentCBase: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{credbaselist.selection}', //--> reference configurated on the grid view (reference: ciList)
+                deep: true
+            },
+            get: function(cbase) {
+            	this.set('current.cbase', cbase);
+                return cbase;
             }
         },
 

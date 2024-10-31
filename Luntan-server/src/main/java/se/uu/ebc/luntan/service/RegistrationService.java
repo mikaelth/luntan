@@ -11,8 +11,10 @@ import java.util.Calendar;
 import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
 import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
+import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
 import se.uu.ebc.luntan.vo.IndRegVO;
 import se.uu.ebc.luntan.vo.IndCourseTeacherVO;
+import se.uu.ebc.luntan.vo.IndCCBasisVO;
 import se.uu.ebc.luntan.repo.IndividualCourseRegRepo;
 import se.uu.ebc.luntan.repo.IndividualCourseTeacherRepo;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
@@ -161,6 +163,66 @@ public class RegistrationService {
 
 		} catch (Exception e) {
 			log.error("toICTeacher got a pesky exception: "+ e + e.getCause());
+		} finally {
+			return c;
+		}
+	}
+
+
+
+	/* Individual Course Credit Basis */
+
+	public List<IndCCBasisVO> getAllICCBasis() throws Exception {
+		List<IndCCBasisVO> cVO = new ArrayList<IndCCBasisVO>();
+		try {
+			for (IndividualCourseCreditBasis c : credRepo.findAll()) {
+ 				cVO.add(new IndCCBasisVO(c));
+ 			}
+         	return cVO;
+        } catch (Exception e) {
+			log.error("getAllICCBasis got a pesky exception: "+ e + e.getCause());
+
+			return null;
+
+        }
+    }
+
+    public IndCCBasisVO saveICCBasis(IndCCBasisVO cVO) throws Exception {
+    	IndividualCourseCreditBasis c = cVO.getId() == null ? toICCBasis(cVO) : toICCBasis(credRepo.findById(cVO.getId()).get(), cVO);
+    	credRepo.save(c);
+		if (c.getRegistrations().size()==0) {
+			for (IndividualCourseRegistration cr : regsRepo.findUnattached()) {
+				cr.setCreditBasisRecord(c);
+				regsRepo.save(cr);
+				regsRepo.save(cr);
+			}
+		}
+		return new IndCCBasisVO(c);
+
+    }
+
+    public synchronized void deleteICCBasis(Long cID) throws Exception {
+		IndividualCourseCreditBasis c = credRepo.findById(cID).get();
+		for (IndividualCourseRegistration cr : c.getRegistrations()) {
+			cr.setCreditBasisRecord(null);
+		}
+		credRepo.delete(c);
+    }
+
+	private IndividualCourseCreditBasis toICCBasis (IndCCBasisVO cvo) throws Exception {
+ 		return toICCBasis (new IndividualCourseCreditBasis(), cvo);
+   	}
+
+	private IndividualCourseCreditBasis toICCBasis (IndividualCourseCreditBasis c, IndCCBasisVO cvo) throws Exception {
+
+
+		try {
+			c.setId(cvo.getId()) ;
+			c.setSent(cvo.getSent());
+			c.setNote(cvo.getNote()) ;
+
+		} catch (Exception e) {
+			log.error("toICCBasis got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return c;
 		}

@@ -73,6 +73,7 @@ import se.uu.ebc.luntan.vo.CourseVO;
 import se.uu.ebc.luntan.vo.ProgrammeVO;
 import se.uu.ebc.luntan.vo.ExaminerVO;
 import se.uu.ebc.luntan.vo.ExListVO;
+import se.uu.ebc.luntan.vo.IndCCBasisVO;
 import se.uu.ebc.luntan.vo.CourseInstancesCSVUploadFB;
 import se.uu.ebc.luntan.vo.LADOKEntryVO;
 import se.uu.ebc.luntan.vo.IndRegVO;
@@ -273,6 +274,81 @@ public class RegistrationController {
         }
     }
 
+
+	/* Individual course credit bases */
+
+    @RequestMapping(value="/iccbs", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> allICCBasis() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        try {
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(regService.getAllICCBasis()), headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/iccbs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateICCBasis(@RequestBody String json, @PathVariable("id") Long id, HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			IndCCBasisVO ciVO = new JSONDeserializer<IndCCBasisVO>().use(null, IndCCBasisVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			log.debug("updateICCBasis, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
+			log.debug("updateICCBasis, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
+			ciVO.setId(id);
+
+			ciVO = regService.saveICCBasis(ciVO);
+
+			log.debug("updateICCBasis, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
+			
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
+ 
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+    @RequestMapping(value="/iccbs", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createICCBasis(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			IndCCBasisVO ciVO = new JSONDeserializer<IndCCBasisVO>().use(null, IndCCBasisVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			ciVO = regService.saveICCBasis(ciVO);
+            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
+
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").deepSerialize(ciVO);
+			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
+
+            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@RequestMapping(value = "/iccbs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	public ResponseEntity<String> deleteICCBasis(@PathVariable("id") Long id) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        try {
+			regService.deleteICCBasis(id);
+            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 /* 

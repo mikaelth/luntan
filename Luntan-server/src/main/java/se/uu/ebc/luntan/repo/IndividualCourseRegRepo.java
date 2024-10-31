@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
+import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
 
 import java.util.List;
 
@@ -18,7 +19,10 @@ public interface IndividualCourseRegRepo extends JpaRepository<IndividualCourseR
 
 //    public Programme findById(Long id);
 
-// 	@Query("SELECT distinct p FROM Programme AS p WHERE p.inactive=false")
-// 	public List<Programme> findActive();
+ 	@Query("SELECT distinct cr FROM IndividualCourseRegistration AS cr WHERE cr.creditBasisRecord is null")
+ 	public List<IndividualCourseRegistration> findUnattached();
 
+//  	@Query("SELECT count(*) FROM IndividualCourseRegistration AS cr WHERE cr.creditBasisRecord = ?1")
+//  	public Integer numberOfRegs(IndividualCourseCreditBasis iccBasis);
+	
 }
