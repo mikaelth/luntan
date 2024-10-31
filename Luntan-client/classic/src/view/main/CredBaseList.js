@@ -30,6 +30,26 @@ Ext.define('Luntan.view.main.CredBaseList', {
  
 	columns: 
     [
+		{xtype:'actioncolumn',
+            width:100, align: 'center',
+            items: [{
+				iconCls: 'x-fa fa-list-alt',
+				tooltip: 'Visa Luntan',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('view/registrations?billingdoc=').concat(rec.get('id')));
+				}
+            }, {
+				iconCls: 'x-fa fa-file-excel-o',
+				tooltip: 'Exportera till Excel',
+				handler: function(grid, rowIndex, colIndex){
+					var rec = grid.getStore().getAt(rowIndex);
+					window.open(Luntan.data.Constants.BASE_URL.concat('excel/registrations?billingdoc=').concat(rec.get('id')));
+				}
+			}]
+        },
+
+		{ xtype: 'checkcolumn', text: 'Låst', dataIndex: 'locked', editor: 'checkboxfield', editable: true, align: 'center', width: 70, filter: 'boolean'},
 
 		{ text: 'Antal registreringar', dataIndex: 'numberOfRegs', filter: 'number', align: 'left', width: 150 },
 		{ xtype: 'datecolumn',text: 'Skapad', dataIndex: 'createdDate', format:'Y-m-d', filter: 'date', align: 'left', width: 150},
