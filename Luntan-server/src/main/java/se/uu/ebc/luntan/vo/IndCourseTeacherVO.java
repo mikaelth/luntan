@@ -20,30 +20,46 @@ public class IndCourseTeacherVO {
 	private String ldapEntry;
 	private Department department;
 	private IndCourseTeacherKind teacherType;
+
+	private boolean external = false;
+
+	private String name;
+	private String fullDepartment;
+	private String phone;
+	private String email;
+
 	private String note;
 
-   
+
     /* Public methods */
 
-	
+
  	/* Constructors */
 
 	public IndCourseTeacherVO (IndividualCourseTeacher xe) {
 
 		log.debug("In IndCourseTeacherVO constructor, " + xe);
-	
+
 
 		this.id = xe.getId();
-	
+
 		this.ldapEntry = xe.getLdapEntry();
 		this.department = xe.getDepartment();
 		this.teacherType = xe.getTeacherType();
+
+		this.external = xe.isExternal();
+
+		this.name = xe.getName();
+		this.fullDepartment = xe.getFullDepartment();
+		this.phone = xe.getPhone();
+		this.email = xe.getEmail();
+
 		this.note = xe.getNote();
-		
+
 		this.assignmentId = xe.getAssignment().getId();
 
 
 	}
-	
+
 
 }

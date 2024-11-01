@@ -3,7 +3,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
     requires: [
     ],
     xtype: 'ictlist',
-	reference: 'ictList',
+	reference: 'ictlist',
 
     title: '<b>Personer inblandade i kurstillfället</b>',
 
@@ -13,15 +13,15 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
         // custom method
         var grid = this,
             store = grid.getStore();
-            
+
         store.sorters.clear();
         grid.view.refresh();
-        
+
         grid.refreshRank();
-        
+
         grid.clearSortHappened = true;
     },
-/* 
+/*
     viewConfig:{
         plugins:{
             ptype:'gridviewdragdrop'
@@ -30,7 +30,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
             'drop':{
                 fn:function(){
                     this.grid.ownerGrid.refreshRank();
-                    
+
                     if( this.grid.ownerGrid.clearSortHappened ){
                        	this.grid.ownerGrid.setTitle('I\'m dropping record to be last instead');
                     }
@@ -60,7 +60,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 		title: '<b>Personer inblandade i kurstillfället</b>'
 //		parentReg: '{reg}'
 	},
-		
+
 
     columns: [
 		{ text: 'Roll', dataIndex: 'teacherType', filter: 'list', align: 'left', width: 150,
@@ -82,6 +82,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 			    valueField: 'id'
 			}
 		},
+		{ xtype: 'checkcolumn', text: 'Extern', dataIndex: 'external', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
 		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
 		{ text: 'Lärare', dataIndex: 'ldapEntry', align: 'left', flex: 1,
 		    renderer: function(value) {
@@ -102,7 +103,8 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 			    valueField: 'employeeNumber'
 			}
 		},
-		{ text: 'Program', dataIndex: 'ldapEntry', align: 'left', flex: 1,
+		{ text: 'Namn', dataIndex: 'name', editor: 'textfield', align: 'left', flex: 1},
+		{ text: 'Institution och program', dataIndex: 'fullDepartment', editor: 'textfield', align: 'left', flex: 1, reference:'fullDeptField',
 			renderer: function(value) {
 				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
 					return Ext.getStore('TeacherStore').getById(value).get('department');
@@ -111,16 +113,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 				}
         	}
 		},
-		{ text: 'Tjänst', dataIndex: 'ldapEntry', align: 'left', flex: 1,
-			renderer: function(value) {
-				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
-					return Ext.getStore('TeacherStore').getById(value).get('title');
-				} else {
-					return value;
-				}
-        	}
-		},
-		{ text: 'e-post', dataIndex: 'ldapEntry', align: 'left', width: 250,
+		{ text: 'e-post', dataIndex: 'email', editor: 'textfield', align: 'left', width: 250,
 			renderer: function(value) {
 				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
 					return Ext.getStore('TeacherStore').getById(value).get('mail');
@@ -129,7 +122,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 				}
         	}
 		},
-		{ text: 'Telefon', dataIndex: 'ldapEntry', align: 'left', width: 150,
+		{ text: 'Telefon', dataIndex: 'phone', editor: 'textfield', align: 'left', width: 150,
 			renderer: function(value) {
 				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
 					return Ext.getStore('TeacherStore').getById(value).get('phone');
@@ -143,7 +136,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 	],
 
 	config : {
-	
+
 		parentCourse: null
 	}
 

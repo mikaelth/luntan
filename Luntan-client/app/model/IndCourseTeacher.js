@@ -16,14 +16,18 @@ Ext.define('Luntan.model.IndCourseTeacher', {
 			dateFormat: 'Y-m-d'
          }
 
-     }, 
+     },
 	idProperty: 'id',
     fields: [
 		{name: 'id', type: 'int'},
 		{name: 'assignmentId', type: 'int'},
 		{name: 'ldapEntry', type: 'string'},
-		{name: 'department', type: 'string', /* calculate: function (data) {return 'IBG'} */ },
 		{name: 'teacherType', type: 'string'},
+		{name: 'external', type: 'boolean'},
+		{name: 'name', type: 'string'},
+		{name: 'fullDepartment', type: 'string'},
+		{name: 'phone', type: 'string'},
+		{name: 'email', type: 'string'},
 		{name: 'note', type: 'string'}
 	]
 });

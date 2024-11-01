@@ -14,10 +14,10 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 		store: '{registrations}',
 		title: '<b>Individuella kurser, registreringar</b>'
 	},
-	
+
 	features: [{ ftype: 'grouping',startCollapsed: false }],
 
-    columns:  
+    columns:
     [
 
 		{ xtype: 'checkcolumn', text: 'Klar', dataIndex: 'studentDone', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
@@ -42,7 +42,7 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 				displayField: 'courseDesignation',
 			    valueField: 'id'
 			}
-		},		
+		},
 		{ text: 'Student', dataIndex: 'studentName', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
 		{ text: 'Reg inst.', dataIndex: 'regDepartment', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
 		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }

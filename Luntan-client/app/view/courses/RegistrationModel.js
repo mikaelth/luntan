@@ -5,18 +5,18 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 
     data: {
 		current : {
-//			edocId : '',
 			edoc: null,
 			reg : null,
-			cbase: null
+			cbase: null,
+			ict: null
 		}
     },
-    
+
     stores: {
 		depts: 'DepartmentStore',
-		
+
 		ictKinds: 'ICTKindStore',
-		
+
  		usedYears: {
  			type:'chained',
  			source:'EconomyDocStore',
@@ -31,7 +31,7 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			],
 			sorters: [{property:'courseDesignation', direction: 'ASC'}]
 		},
-		
+
 		regsincreds : {
 			type: 'chained',
 			source: 'IndCourseRegStore',
@@ -61,20 +61,20 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			type: 'chained',
 			source: 'IndCourseTeacherStore',
 			filters: [
- 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true}, 
-			],			
+ 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true},
+			],
 		},
 
  		credbasis : {
 			type: 'chained',
 			source: 'IndCourseCreditBasisStore',
 			filters: [
-// 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true}, 
-			],			
+// 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true},
+			],
 		},
 
-	}, 
-	
+	},
+
 	formulas: {
 
         workingEDoc: {
@@ -103,7 +103,7 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
        currentCBase: {
             // We need to bind deep to be notified on each model change
             bind: {
-                bindTo: '{credbaselist.selection}', //--> reference configurated on the grid view (reference: ciList)
+                bindTo: '{credbaselist.selection}', //--> reference configurated on the grid view (reference: credbaselist)
                 deep: true
             },
             get: function(cbase) {
@@ -116,7 +116,17 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
  			return get('current.edoc') === null;
  		},
 
-
+        currentICT: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{ictlist.selection}', //--> reference configurated on the grid view (reference: ictList)
+                deep: true
+            },
+            get: function(ict) {
+            	this.set('current.ict', ict);
+                return ict;
+            }
+        }
  	}
 
 });

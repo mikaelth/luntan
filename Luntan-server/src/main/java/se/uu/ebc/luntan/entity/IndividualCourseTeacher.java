@@ -50,7 +50,7 @@ public class IndividualCourseTeacher extends Auditable {
     @NotNull
     @JoinColumn(name = "INDIVIDUAL_COURSE_REGISTRATION_FK")
 	private IndividualCourseRegistration assignment;
-	
+
 	@NotNull
 	@Column(name = "LDAP_ENTRY")
 	private String ldapEntry;
@@ -65,9 +65,25 @@ public class IndividualCourseTeacher extends Auditable {
 	@Column(name = "TEACHER_TYPE")
 	private IndCourseTeacherKind teacherType;
 
+	@Column(name="EXTERNAL")
+	private boolean external = false;
+
+	@Column(name="NAME")
+	private String name;
+
+	@Column(name="FULL_DEPARTMENT")
+	private String fullDepartment;
+
+	@Column(name="PHONE")
+	private String phone;
+
+	@Column(name="EMAIL")
+	private String email;
+
+
 	@Column(name = "NOTE")
 	private String note;
 
 	// Business methods
-	
+
 }
