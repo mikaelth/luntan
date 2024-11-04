@@ -381,7 +381,10 @@ public class RegistrationController {
         headers.add("Kurs");
         headers.add("Student");
         headers.add("Koordinator");
-        headers.add("Handledare");
+        headers.add("Ersättning till");
+        headers.add("Namn");
+        headers.add("Enhet att betala till");
+        headers.add("Belopp att betala");
         headers.add("Kommentar");
 /* 
         for (Department dept : edoc.getAccountedDeptsSorted()) {
@@ -391,7 +394,6 @@ public class RegistrationController {
         	headers.add(dept.toString());
         }
  */
-        headers.add("Kommentar");
 
 
         model.put("headers", headers);

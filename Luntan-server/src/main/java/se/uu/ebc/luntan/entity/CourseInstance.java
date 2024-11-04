@@ -447,6 +447,10 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
  		return 0.0f;
  	}
 
+ 	public Float computeReadersGrant() {
+		log.debug("computeReadersGrant()");
+ 		return 0.0f;
+ 	}
 
 
 }

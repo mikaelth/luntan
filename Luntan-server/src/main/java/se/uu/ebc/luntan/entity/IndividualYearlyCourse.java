@@ -237,7 +237,7 @@ try {
 	@Override
 	public Map<Department,Float> computeGrants() {
 		log.debug("computeGrants()");
-		return computeGrantDist( this.getModelStudentNumberDist(), fundingModel.computeFunding(1,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance,false), getModelStudentNumber() );
+		return computeGrantDist( this.getModelStudentNumberDist(), fundingModel.computeFunding(1,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance), getModelStudentNumber() );
 	}
 
  	/**
@@ -249,20 +249,37 @@ try {
 	public Map<Department,Float> computeAdjustedGrants() {
 		log.debug("computeAdjustedGrants()");
 		return (this.registeredStudentDistribution != null) ? 
-			computeGrantDist( this.registeredStudentDistribution, fundingModel.computeFunding(1,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance,false), registeredStudents ) :
+			computeGrantDist( this.registeredStudentDistribution, fundingModel.computeFunding(1,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance), registeredStudents ) :
 			computeGrants();
 	}
 
 	@Override
  	public Float computeCIGrant() {
 		log.debug("computeCIGrant()");
- 		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance,false);
+ 		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
 
 	@Override
  	public Float computeSupervisorsGrant() {
 		log.debug("computeSupervisorsGrant()");
- 		return fundingModel.computeFunding(getModelStudentNumber(),course.getCredits(),economyDoc.getBaseValue(),this.firstInstance,true);
+ 		return computeSuperGrant(getModelStudentNumber());
+ 	}
+
+	public Float computeSuperGrant(Integer students) {
+		log.debug("computeSupervisorsGrant()");
+ 		return fundingModel.computeSupervisorFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+ 	}
+
+
+	@Override
+ 	public Float computeReadersGrant() {
+		log.debug("computeReadersGrant()");
+ 		return computeReadGrant(getModelStudentNumber());
+ 	}
+
+ 	public Float computeReadGrant(Integer students) {
+		log.debug("computeReadersGrant()");
+ 		return fundingModel.computeReaderFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
 
 	@Override

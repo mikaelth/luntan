@@ -79,11 +79,14 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'displayname',
-			    valueField: 'id'
+			    valueField: 'id',
+   			    listeners: {change: 'onNewTeacherKind'}
+
 			}
 		},
-		{ xtype: 'checkcolumn', text: 'Extern', dataIndex: 'external', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
-		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
+		{ xtype: 'checkcolumn', text: 'Extern', dataIndex: 'external', editor: 'checkboxfield', editable: true, 
+			listeners: {checkchange: 'onCheckChange'}, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
+//		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
 		{ text: 'Lärare', dataIndex: 'ldapEntry', align: 'left', flex: 1,
 		    renderer: function(value) {
 				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
@@ -100,7 +103,9 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'name',
-			    valueField: 'employeeNumber'
+			    valueField: 'employeeNumber',
+			    listeners: {change: 'onNewTeacher'}
+
 			}
 		},
 		{ text: 'Namn', dataIndex: 'name', editor: 'textfield', align: 'left', flex: 1},

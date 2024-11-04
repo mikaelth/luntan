@@ -52,7 +52,43 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
  */
 	},
 
+	onCheckChange: function (checkbox, rowIndex, checked, record) {
+		console.log("Check changed");
+/* 
+			var form   = checkbox.up('ictlist').findPlugin('rowediting').getEditor().form,
+				fields  = [
+					form.findField('fullDepartment'),
+					form.findField('name'),
+					form.findField('email'),
+					form.findField('phone')
+				],
+			status = checked;
+			if(status){
+				fields.forEach(function(field){
+					field.enable()
+				});
+				form.findField('ldapEntry').disable();
 
+			} else {
+				fields.forEach(function(field){
+					field.disable()
+				});
+				form.findField('ldapEntry').enable();
+
+			}
+			return true;
+ */
+	},
+
+	onNewTeacherKind: function ( theComboBox, newValue, oldValue ) {
+		console.log("Teacher kind changed");
+	
+	},
+
+	onNewTeacher: function ( theComboBox, newValue, oldValue ) {
+		console.log("Teacher changed");
+	
+	},
    	onBeforeRender: function (grid) {
    	},
 
@@ -60,8 +96,15 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 
 		console.log("ICT controller init");
 
+/* 
+ 		view.findPlugin('rowediting').addListener('checkChange', function(checkbox, rowIndex, checked, record) {
+			console.log("ICT controller External check changed");
+ 		};
+ */
+ 		
+ 
  		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
-//			Disabling editing of specific fileds
+			/* Disabling editing of specific fileds */
 			var form   = rowEditing.getEditor().form,
 				fields  = [
 					form.findField('fullDepartment'),
@@ -74,16 +117,18 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 				fields.forEach(function(field){
 					field.enable()
 				});
-
+				form.findField('ldapEntry').disable();
 
 			} else {
 				fields.forEach(function(field){
 					field.disable()
 				});
+				form.findField('ldapEntry').enable();
 
 			}
 			return true;
         });
+ 
 
    	}
 

@@ -156,6 +156,12 @@ public class RegistrationService {
 			c.setTeacherType(cvo.getTeacherType()) ;
 			c.setNote(cvo.getNote()) ;
 
+			c.setExternal(cvo.isExternal());
+			c.setName(cvo.getName());
+			c.setPhone(cvo.getPhone());
+			c.setFullDepartment(cvo.getFullDepartment());
+			c.setEmail(cvo.getEmail());
+
 			if (cvo.getAssignmentId()!= null){
 				c.setAssignment(regsRepo.findById(cvo.getAssignmentId()).get());
 			}

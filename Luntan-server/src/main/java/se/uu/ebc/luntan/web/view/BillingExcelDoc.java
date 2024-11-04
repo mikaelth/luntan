@@ -24,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.entity.EconomyDocGrant;
+import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
+import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
+import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
 import se.uu.ebc.luntan.enums.Department;
 
 public class BillingExcelDoc extends AbstractXlsView
@@ -39,7 +42,7 @@ public class BillingExcelDoc extends AbstractXlsView
         //VARIABLES REQUIRED IN MODEL
         String sheetName = (String)model.get("sheetname");
         List<String> headers = (List<String>)model.get("headers");
-        EconomyDocument edoc = (EconomyDocument)model.get("edoc");
+        IndividualCourseCreditBasis bdoc = (IndividualCourseCreditBasis)model.get("bdoc");
 
         List<String> numericColumns = new ArrayList<String>();
         if (model.containsKey("numericcolumns"))
@@ -65,7 +68,6 @@ public class BillingExcelDoc extends AbstractXlsView
 
 		CreationHelper ch = workbook.getCreationHelper();
     	HSSFCellStyle styleCurrencyFormat = (HSSFCellStyle)workbook.createCellStyle();
-//    	styleCurrencyFormat.setDataFormat(HSSFDataFormat.getBuiltinFormat("# ##0 kr"));
     	styleCurrencyFormat.setDataFormat(ch.createDataFormat().getFormat("# ##0 kr"));
 
     	HSSFCellStyle stylePercentFormat = (HSSFCellStyle)workbook.createCellStyle();
@@ -73,6 +75,9 @@ public class BillingExcelDoc extends AbstractXlsView
 
     	HSSFCellStyle styleDecFormat = (HSSFCellStyle)workbook.createCellStyle();
     	styleDecFormat.setDataFormat(ch.createDataFormat().getFormat("0.0"));
+
+    	HSSFCellStyle styleDateFormat = (HSSFCellStyle)workbook.createCellStyle();
+    	styleDateFormat.setDataFormat(ch.createDataFormat().getFormat("yyyy-mm-dd"));
 
 
         //POPULATE HEADER COLUMNS
@@ -87,75 +92,63 @@ public class BillingExcelDoc extends AbstractXlsView
 
         //POPULATE VALUE ROWS/COLUMNS
         currentRow++;//exclude header
-        for(CourseInstance ci: edoc.getCourseInstances()){
-            row = sheet.createRow(currentRow);
-        	currentColumn = 0;
+        for(IndividualCourseRegistration reg: bdoc.getRegistrations()){
+			for ( IndividualCourseTeacher teacher : reg.getSuperAndReader() ) { 
+				if (teacher.computeCreditFunds() > 0){
 
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getCourse().getCourseGroup().displayName());
-			cell.setCellValue(text);
+					row = sheet.createRow(currentRow);
+					currentColumn = 0;
+		
+					cell = row.createCell(currentColumn++);
+					cell.setCellType(CellType.NUMERIC);
+					cell.setCellStyle(styleDateFormat);
+					cell.setCellValue(reg.getRegistrationDate());
+		
+					cell = row.createCell(currentColumn++);
+					cell.setCellType(CellType.NUMERIC);
+					cell.setCellStyle(styleDateFormat);
+					cell.setCellValue(reg.getStartDate());
+		
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(reg.getCourseBag().getDesignation());
+					cell.setCellValue(text);
+		
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(reg.getStudentName());
+					cell.setCellValue(text);
+		
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(reg.getCoordinator().getName());
+					cell.setCellValue(text);
+	
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(teacher.getTeacherType().toString());
+					cell.setCellValue(text);
+	
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(teacher.getName());
+					cell.setCellValue(text);
+	
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(teacher.getFullDepartment());
+					cell.setCellValue(text);
+	
+					cell = row.createCell(currentColumn++);
+					cell.setCellType(CellType.NUMERIC);
+					cell.setCellStyle(styleCurrencyFormat);
+					cell.setCellValue(teacher.computeCreditFunds());
+	
+					cell = row.createCell(currentColumn++);
+					text = new HSSFRichTextString(teacher.getNote());
+					cell.setCellValue(text);
+	
 
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getDesignation());
-			cell.setCellValue(text);
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getCourse().getCredits());
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getModelStudentNumber());
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getRegisteredStudents() == null ? 0 : ci.getRegisteredStudents());
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleDecFormat);
-            cell.setCellValue(ci.getModelStudentNumber()*ci.getCourse().getCredits()/60);
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getFundingModel().getId());
-
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isFirstInstance() ? "X" : "");
-			cell.setCellValue(text);
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeCIGrant());
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-			cell.setCellStyle(styleCurrencyFormat);
-            cell.setCellValue(ci.computeSupervisorsGrant());
-
-			for (Department dep : edoc.getAccountedDeptsSorted())
-			{
-				cell = row.createCell(currentColumn++);
-				cell.setCellType(CellType.NUMERIC);
-				cell.setCellStyle(stylePercentFormat);
-				cell.setCellValue(ci.explicitGrantDist().get(dep));
+					currentRow++;
+}
 			}
-			for (Department dep : edoc.getAccountedDeptsSorted())
-			{
-				cell = row.createCell(currentColumn++);
-				cell.setCellType(CellType.NUMERIC);
-				cell.setCellStyle(styleCurrencyFormat);
-            	cell.setCellValue(ci.computeGrants().get(dep));
-			}
-
-			cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isSupplementary() ? "Tillagd som supplement " + ci.getCreationDate() : "");
-			cell.setCellValue(text);
-
-            currentRow++;
         }
 
+/* 
 		currentRow++;
 
 		for (EconomyDocGrant edg : edoc.getEconomyDocGrants()) {
@@ -197,6 +190,7 @@ public class BillingExcelDoc extends AbstractXlsView
 					cell.setCellValue(edoc.totalAdjustmentSum().get(dep));
 				}
 			}
+ */
 
     }
 }

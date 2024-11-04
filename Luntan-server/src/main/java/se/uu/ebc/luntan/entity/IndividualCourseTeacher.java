@@ -1,11 +1,11 @@
 package  se.uu.ebc.luntan.entity;
 
 
+import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,6 +17,7 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
@@ -86,4 +87,16 @@ public class IndividualCourseTeacher extends Auditable {
 
 	// Business methods
 
+
+	public Float computeCreditFunds() {
+		Float grant = 0.0f;
+		log.debug("computeCreditFunds()")	;	
+		if (this.teacherType.equals (IndCourseTeacherKind.Supervisor)) {
+			grant = this.assignment.computeSupervisorsGrant();
+		} else if (this.teacherType.equals (IndCourseTeacherKind.Reader)) {
+			grant = this.assignment.computeReadersGrant();		
+		} 
+
+		return grant;	
+	}
 }

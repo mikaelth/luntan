@@ -19,6 +19,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.CascadeType;
 
 import java.util.Set;
+import java.util.List;
+
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.*;
@@ -104,6 +106,37 @@ public class IndividualCourseRegistration extends Auditable {
 		return dept;
 	}
 
+	public IndividualCourseTeacher getCoordinator() {
+		IndividualCourseTeacher coordinator = teachers
+			.stream()
+  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
+			.collect( Collectors.collectingAndThen( Collectors.toList(), list ->list.get(0) ));
+		return coordinator;
+	}
+
+	public List<IndividualCourseTeacher> getSupervisors() {
+		List<IndividualCourseTeacher> supervisors = teachers
+			.stream()
+  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Supervisor) )
+			.collect( Collectors.toList() );
+		return supervisors;
+	}
+
+	public List<IndividualCourseTeacher> getReaders() {
+		List<IndividualCourseTeacher> readers = teachers
+			.stream()
+  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Reader) )
+			.collect( Collectors.toList() );
+		return readers;
+	}
+
+	public List<IndividualCourseTeacher> getSuperAndReader() {
+		List<IndividualCourseTeacher> supervisors = teachers
+			.stream()
+  			.filter( c -> ((c.getTeacherType().equals (IndCourseTeacherKind.Supervisor)) || (c.getTeacherType().equals (IndCourseTeacherKind.Reader))) )
+			.collect( Collectors.toList() );
+		return supervisors;
+	}
 
 	public boolean isAssignedCreditRecord() {
 		return creditBasisRecord == null ? false : true;
@@ -116,4 +149,14 @@ public class IndividualCourseRegistration extends Auditable {
 	public Integer getStudents() {
 		return 1;
 	}
+	
+	public Float computeSupervisorsGrant() {
+		return this.courseBag.computeSuperGrant(1)/(getSupervisors().isEmpty() ? 1 : getSupervisors().size());
+	}
+
+	public Float computeReadersGrant() {
+//		return this.courseBag.computeReadGrant(1)/(getReaders().isEmpty() ? 1 : getReaders().size());
+		return computeSupervisorsGrant() == 0.0f ? (this.courseBag.computeReadGrant(1)/(getReaders().isEmpty() ? 1 : getReaders().size())) : 0.0f;
+	}
+
 }
