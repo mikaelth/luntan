@@ -510,12 +510,16 @@ public class EconomyDocController {
 			}
 		}
 
+
+		log.debug( "Time to build the map: " +  examiners );
+
 		for (Examiner ex : examiners) {
 			if (!exMap.containsKey(ex.getCourse())) {
 				exMap.put(ex.getCourse(), new ArrayList<Examiner>());
 			}
 			exMap.get(ex.getCourse()).add(ex);
 		}
+		log.debug( "Map built: " +  exMap );
 
         model.put("exMap", exMap);
         model.put("matchMap", matchMap);
@@ -532,6 +536,8 @@ public class EconomyDocController {
         headers.add("Kommentar");
 
         model.put("headers", headers);
+
+		log.debug( "Time to call ModelAndView(new ExaminersExcel(): " +  model );
 
         response.setContentType( "application/ms-excel" );
         response.setHeader( "Content-disposition", "attachment; filename=" + "Examinatorslista-" + model.get("board") + ".xls" );

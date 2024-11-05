@@ -33,8 +33,8 @@ Ext.define('Luntan.view.main.CredBaseList', {
 		{xtype:'actioncolumn',
             width:100, align: 'center',
             items: [{
-				iconCls: 'x-fa fa-list-alt',
-				tooltip: 'Visa Luntan',
+				iconCls: 'x-fa fa-user',
+				tooltip: 'Visa lärare per organistaionsenhet och uppdrag',
 				handler: function(grid, rowIndex, colIndex){
 					var rec = grid.getStore().getAt(rowIndex);
 					window.open(Luntan.data.Constants.BASE_URL.concat('view/registrations?billingdoc=').concat(rec.get('id')));

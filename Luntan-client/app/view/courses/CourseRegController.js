@@ -24,25 +24,35 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
    	onUpdateInactive: function () {
    	},
+   	
+   	onIndCourseTeachers: function () {
+   		var year = this.getViewModel().get('current.edoc.year');
+   		window.open(Luntan.data.Constants.BASE_URL.concat('view/ictds?year=').concat(year));
+   	},
 
    	init: function (view) {
 
 		var tb = view.down('toolbar');
-/* 						
+						
 		tb.insert(2,
 			{
 				xtype: 'button',
 				showText: true,
-				tooltip:'Slå upp kurser i studieplaner',
-				text: 'Kurser per program',
-				reference: 'btnProgramCourses',
-				disabled: false,
+				tooltip:'Visa lärare inblandade i individuella kurser för aktuellt år',
+				text: 'Sammanställning lärare',
+				reference: 'btnIndCourseTeachers',
+				disabled: true,
 				listeners: {
-				  click: 'onProgramCourses'
+				  click: 'onIndCourseTeachers'
 				}
 			});			
 
+		view.lookupReference('comboCurrentYear').addListener('select', function(combo,record) {
+			this.lookupReferenceHolder().lookupReference('btnIndCourseTeachers').enable();
+			return true;
+        });
 
+/* 
 		
 		tb.insert(1,
 			{

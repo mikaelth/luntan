@@ -45,11 +45,13 @@ Ext.define('Luntan.view.main.BasicYearListGrid', {
 						labelWidth: 50,
 						displayField: 'year',
 						valueField: 'id',
+/* 
 						listeners: {
 							select: function() {
-//								this.lookupReferenceHolder().lookupReference('btnCreate').enable();
+								this.lookupReferenceHolder().lookupReference('btnCreate').enable();
 							}
 						}
+ */
 					},
 					'->', {
 //						text: 'Remove',

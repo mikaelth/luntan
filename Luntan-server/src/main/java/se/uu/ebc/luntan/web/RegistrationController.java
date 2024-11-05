@@ -363,6 +363,65 @@ public class RegistrationController {
     }
 
 
+	@RequestMapping("view/ictds")
+    public String viewICTsBasis(@RequestParam(value = "year", required = true) String year, Model model, Principal principal, HttpServletRequest request) {
+		try {
+		
+			return "DepartmentIndividualCourseTeachers";
+		} catch (Exception e) {
+			log.error("viewICTsBasis, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
+
+	@RequestMapping("view/registrations")
+    public String viewECreditBasis(@RequestParam(value = "billingdoc", required = true) Long docId, Model model, Principal principal, HttpServletRequest request) {
+		log.debug("viewDeaprtmentYearlyCred, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+
+		try {
+
+
+			IndividualCourseCreditBasis bdoc = bdocRepo.findById(docId).get();
+
+			log.debug("viewDeaprtmentYearlyCred, bdoc "+ReflectionToStringBuilder.toString(bdoc, ToStringStyle.MULTI_LINE_STYLE));
+
+/* 
+			List<Examiner> examiners = new ArrayList<Examiner>();
+			Map<String, Staff> staffMap = staffService.getDesignatedExaminers();
+
+
+			if (el instanceof ExaminersDecision) {
+				examiners = exRepo.findByDecision(el);
+				model.addAttribute("decisionDate", ((ExaminersDecision)el).getDecisionDate());
+			} else {
+				for (EduBoard board : EduBoard.values()) {
+					examiners.addAll(exRepo.findAvailableByBoard(board));
+					model.addAttribute("decisionDate", new Date());
+				}
+			}
+
+         	List<DeptExaminer> deptExaminers = examiners.stream()
+				.map(examiner -> {
+					DeptExaminer dex = new DeptExaminer(); // Convert examiner to DeptExaminer
+					dex.setExaminer(examiner);
+					dex.setStaff(staffMap.get(examiner.getExaminer()));
+					return dex;
+				})
+				.collect(Collectors.toList());
+
+         	deptExaminers.sort(Comparator.comparing(DeptExaminer::getDepartment).thenComparing(DeptExaminer::getName));
+
+ */
+
+			model.addAttribute("serverTime", new Date());
+			model.addAttribute("bdoc", bdoc);
+
+    		return "BillingView";
+        } catch (Exception e) {
+			log.error("viewECreditBasis, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+	}
 
     @RequestMapping("excel/registrations")
     public ModelAndView viewECreditBasisExcel(@RequestParam(value = "billingdoc", required = true) Long docId, Principal principal, HttpServletRequest request, HttpServletResponse response) {

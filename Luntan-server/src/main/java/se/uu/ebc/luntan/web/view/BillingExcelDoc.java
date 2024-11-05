@@ -94,7 +94,7 @@ public class BillingExcelDoc extends AbstractXlsView
         currentRow++;//exclude header
         for(IndividualCourseRegistration reg: bdoc.getRegistrations()){
 			for ( IndividualCourseTeacher teacher : reg.getSuperAndReader() ) { 
-				if (teacher.computeCreditFunds() > 0){
+//				if (teacher.computeCreditFunds() > 0){
 
 					row = sheet.createRow(currentRow);
 					currentColumn = 0;
@@ -144,7 +144,7 @@ public class BillingExcelDoc extends AbstractXlsView
 	
 
 					currentRow++;
-}
+//				}
 			}
         }
 
