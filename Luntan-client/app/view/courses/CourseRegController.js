@@ -3,7 +3,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
     alias: 'controller.coursereglist',
 
-    
+
     onCreate: function()
     {
         var grid = this.getView(),
@@ -16,7 +16,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
 		var rec = grid.getStore().insert(0, r);
         grid.plugins[0].startEdit(rec[0]);
-        
+
     },
 
    	onBeforeRender: function (grid) {
@@ -24,8 +24,9 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
    	onUpdateInactive: function () {
    	},
-   	
+
    	onIndCourseTeachers: function () {
+		console.log("onIndCourseTeachers");
    		var year = this.getViewModel().get('current.edoc.year');
    		window.open(Luntan.data.Constants.BASE_URL.concat('view/ictds?year=').concat(year));
    	},
@@ -33,7 +34,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
    	init: function (view) {
 
 		var tb = view.down('toolbar');
-						
+
 		tb.insert(2,
 			{
 				xtype: 'button',
@@ -45,15 +46,15 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				listeners: {
 				  click: 'onIndCourseTeachers'
 				}
-			});			
+			});
 
 		view.lookupReference('comboCurrentYear').addListener('select', function(combo,record) {
 			this.lookupReferenceHolder().lookupReference('btnIndCourseTeachers').enable();
 			return true;
         });
 
-/* 
-		
+/*
+
 		tb.insert(1,
 			{
 				xtype: 'button',
@@ -65,8 +66,8 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				listeners: {
 				  click: 'onUpdateInactive'
 				}
-			});			
-        
+			});
+
  */
 	}
 

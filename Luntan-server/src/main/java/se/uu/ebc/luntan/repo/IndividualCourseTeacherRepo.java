@@ -21,4 +21,6 @@ public interface IndividualCourseTeacherRepo extends JpaRepository<IndividualCou
 // 	@Query("SELECT distinct p FROM Programme AS p WHERE p.inactive=false")
 // 	public List<Programme> findActive();
 
+	@Query("SELECT distinct t FROM IndividualCourseTeacher as t WHERE t.assignment.courseBag.economyDoc.year=?1 ORDER BY t.fullDepartment, t.teacherType, t.name")
+	public List<IndividualCourseTeacher> findTeachersByYear(Integer year);
 }

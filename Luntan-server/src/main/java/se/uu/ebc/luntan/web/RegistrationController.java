@@ -71,6 +71,7 @@ import se.uu.ebc.luntan.entity.Programme;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
+import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
 import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.repo.ProgrammeRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
@@ -95,6 +96,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
+import se.uu.ebc.luntan.repo.IndividualCourseTeacherRepo;
 import se.uu.ebc.luntan.web.view.BillingExcelDoc;
 
 @Slf4j
@@ -105,14 +107,14 @@ public class RegistrationController {
 
 
 	private final String INACTIVE_STATEMENT = "Kursen är avvecklad";
-	
+
 	@Autowired
 	CourseService courseService;
 
 	@Autowired
 	RegistrationService regService;
 
-/* 
+/*
 	@Autowired
 	ExaminersService examinerService;
 
@@ -130,7 +132,7 @@ public class RegistrationController {
 	IndividualCourseCreditBasisRepo bdocRepo;
 
 	@Autowired
-	ExaminerRepo examinerRepo;
+	IndividualCourseTeacherRepo teacherRepo;
 
 	@Autowired
 	EconomyDocumentRepo edocRepo;
@@ -165,12 +167,12 @@ public class RegistrationController {
 			ciVO = regService.saveRegistration(ciVO);
 
 			log.debug("updateRegistration, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
- 
+
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -240,12 +242,12 @@ public class RegistrationController {
 			ciVO = regService.saveICTeacher(ciVO);
 
 			log.debug("updateICTeacher, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
- 
+
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -316,12 +318,12 @@ public class RegistrationController {
 			ciVO = regService.saveICCBasis(ciVO);
 
 			log.debug("updateICCBasis, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
- 
+
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -364,9 +366,18 @@ public class RegistrationController {
 
 
 	@RequestMapping("view/ictds")
-    public String viewICTsBasis(@RequestParam(value = "year", required = true) String year, Model model, Principal principal, HttpServletRequest request) {
+    public String viewICTsBasis(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
 		try {
-		
+
+			EconomyDocument edoc = edocRepo.findByYear(year);
+			List<IndividualCourseTeacher> teachers = teacherRepo.findTeachersByYear(year);
+
+			log.debug("Teachers: " + teachers);
+
+			model.addAttribute("serverTime", new Date());
+			model.addAttribute("edoc", edoc);
+			model.addAttribute("teachers", teachers);
+
 			return "DepartmentIndividualCourseTeachers";
 		} catch (Exception e) {
 			log.error("viewICTsBasis, caught a pesky exception "+ e);
@@ -385,7 +396,7 @@ public class RegistrationController {
 
 			log.debug("viewDeaprtmentYearlyCred, bdoc "+ReflectionToStringBuilder.toString(bdoc, ToStringStyle.MULTI_LINE_STYLE));
 
-/* 
+/*
 			List<Examiner> examiners = new ArrayList<Examiner>();
 			Map<String, Staff> staffMap = staffService.getDesignatedExaminers();
 
@@ -445,7 +456,7 @@ public class RegistrationController {
         headers.add("Enhet att betala till");
         headers.add("Belopp att betala");
         headers.add("Kommentar");
-/* 
+/*
         for (Department dept : edoc.getAccountedDeptsSorted()) {
         	headers.add(dept.toString());
         }

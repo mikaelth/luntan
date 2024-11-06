@@ -7,10 +7,39 @@
 </head>
 <body>
 
-	<h1 th:text="'Examinatorer biologi ' +  ${#dates.format(serverTime,'yyyy-MM-dd')}" />
+	<h1 th:text="'Lärare inblandade i individuella kurser ' + ${edoc.year} +', '+  ${#dates.format(serverTime,'yyyy-MM-dd')}" />
 		<div>
-<!-- 		<h2 th:text="${dept}" /> -->
-		<table class='ict_table'>
+		<table id = "course_instances">
+			<tr>
+<!--
+				<th>Lärare</th>
+				<th>Avdelning</th>
+				<th>Belopp</th>
+ -->
+				<th>Avdelning</th>
+				<th>Lärare</th>
+				<th>Roll</th>
+				<th>Kurs</th>
+				<th>Student</th>
+				<th>Kursstart</th>
+				<th>Ersättning</th>
+				<th>Kommentar</th>
+			</tr>
+
+			<tr th:each="teach : ${teachers}">
+				<td th:text="${teach.fullDepartment}" />
+				<td th:text="${teach.name}" />
+				<td th:text="${teach.teacherType}" />
+				<td th:text="${teach.assignment.courseBag.designation}" />
+				<td th:text="${teach.assignment.studentName}" />
+				<td th:text="${#dates.format(teach.assignment.startDate,'yyyy-MM-dd')}" />
+				<td th:text="${#numbers.formatInteger(teach.computeCreditFunds(),1)}+ ' kr'" />
+
+				<td th:text="${teach.assignment.note}" />
+			</tr>
+		</table>
+
+<!-- 		<h2 th:text="${dept}" />
 			<tr>
 				<th>Lärare</th>
 				<th>Roll</th>
@@ -26,15 +55,14 @@
 						<td th:text="${ex.examiner.rank}" />
 					</th:block>
 				</th:block>
-<!-- 				<th:block th:with="newCourse = ${itemStat.first} or ${ex.course.code} != ${examiners.get(brd)[__${itemStat.index}-1__].course.code}"> -->
-<!-- 
+				<th:block th:with="newCourse = ${itemStat.first} or ${ex.course.code} != ${examiners.get(brd)[__${itemStat.index}-1__].course.code}">
+-->
+<!--
 					<th:block th:object = "${staffMap.get(ex.examiner)}">
 						<td th:text="|*{name}, *{title}, *{fullDepartment}|" />
 					</th:block>
  -->
 <!-- 				</th:block> -->
-			</tr>
-		</table>
 
 	<p>
 		Current time is <span th:text="${serverTime}" />
