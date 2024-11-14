@@ -63,9 +63,15 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "STUDENT")
 	private String studentName;
 
+/*
 	@NotNull
 	@Column(name = "REGDEPT")
 	private String regDepartment;
+ */
+
+	@NotNull
+	@Column(name = "IBGREG")
+	private boolean ibgReg;
 
 	@Column(name = "DONE")
 	private boolean studentDone;
@@ -149,7 +155,7 @@ public class IndividualCourseRegistration extends Auditable {
 	public Integer getStudents() {
 		return 1;
 	}
-	
+
 	public Float computeSupervisorsGrant() {
 		return this.courseBag.computeSuperGrant(1)/(getSupervisors().isEmpty() ? 1 : getSupervisors().size());
 	}

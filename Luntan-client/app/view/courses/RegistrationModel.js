@@ -9,7 +9,8 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			reg : null,
 			cbase: null,
 			ict: null
-		}
+		},
+		regDeptsValues: [{dept: "IBG", value: true}, {dept: "Annan institution", value: false}]
     },
 
     stores: {
@@ -72,6 +73,20 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 // 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true},
 			],
 		},
+		regDept : {
+			autolaod: true,
+			proxy: {
+				type: 'memory',
+				reader: {
+					type: 'json',
+					rootProperty: 'regDeptsValues'
+				 },
+			 },
+			fields: [
+			   {name: 'dept', type: 'string'},
+			   {name: 'value', type: 'boolean'}
+			]
+		}
 
 	},
 

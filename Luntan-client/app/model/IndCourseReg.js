@@ -16,7 +16,7 @@ Ext.define('Luntan.model.IndCourseReg', {
 			dateFormat: 'Y-m-d'
          }
 
-     }, 
+     },
 	idProperty: 'id',
     fields: [
 		{name: 'id', type: 'int'},
@@ -28,6 +28,7 @@ Ext.define('Luntan.model.IndCourseReg', {
 		{name: 'studentName', type: 'string'},
 		{name: 'regDepartment', type: 'string'},
 		{name: 'note', type: 'string'},
+		{name: 'ibgReg', type: 'boolean'},
 		{name: 'studentDone', type: 'boolean'},
 		{name: 'courseEvalSetUp', type: 'boolean'}
 	]

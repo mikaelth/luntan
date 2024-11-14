@@ -44,7 +44,37 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 			}
 		},
 		{ text: 'Student', dataIndex: 'studentName', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
-		{ text: 'Reg inst.', dataIndex: 'regDepartment', editor: 'textfield', filter: 'string', align: 'left', flex: 2},
+		{ text: 'Reg inst.', dataIndex: 'ibgReg', /* editor: 'textfield',  */filter: 'list', align: 'left', flex: 2,
+
+         	renderer: function(value) {
+				if (value) {
+					return 'IBG'
+				} else {
+					return 'Annan institution'
+				}
+/*
+				if (Ext.getStore('regDept').getById(value) != undefined) {
+					return Ext.getStore('CourseInstanceStore').getById(value).get('courseDesignation');
+				} else {
+					return value;
+				}
+ */
+        	},
+
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				store: new Ext.data.ArrayStore({
+					fields: ['id', 'value'],
+					data: [['IBG', true], ['Annan institution', false]]
+				}),
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'id',
+			    valueField: 'value'
+			}
+		},
 		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }
 
 	],

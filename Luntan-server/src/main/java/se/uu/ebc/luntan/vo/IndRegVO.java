@@ -23,33 +23,35 @@ public class IndRegVO {
 
 	private String note;
 	private String studentName;
-	private String regDepartment;
+//	private String regDepartment;
+	private boolean ibgReg;
 
  	private Long creditBasisRecId;
 //	private Long coordinatorId;
 	private Long courseInstanceId;
 	private Long economyDocId;
-   
+
     /* Public methods */
 
-	
+
  	/* Constructors */
 
 	public IndRegVO (IndividualCourseRegistration xe) {
 
 		log.debug("In ExaminerVO constructor, " + xe);
-	
+
 
 		this.id = xe.getId();
-	
+
 		this.courseEvalSetUp = xe.isCourseEvalSetUp();
 		this.studentDone = xe.isStudentDone();
 		this.startDate = xe.getStartDate();
 		this.registrationDate = xe.getRegistrationDate();
 		this.note = xe.getNote();
 		this.studentName = xe.getStudentName();
-		this.regDepartment = xe.getRegDepartment();
-		
+//		this.regDepartment = xe.getRegDepartment();
+		this.ibgReg = xe.isIbgReg();
+
 		this.creditBasisRecId = xe.getCreditBasisRecord() == null ? null : xe.getCreditBasisRecord().getId();
 //		this.coordinatorId = xe.getCoordinator() == null ? null : xe.getCoordinator().getId();;
 		this.courseInstanceId = xe.getCourseBag()== null ? null : xe.getCourseBag().getId(); ;
@@ -57,6 +59,6 @@ public class IndRegVO {
 
 
 	}
-	
+
 
 }

@@ -86,7 +86,8 @@ public class RegistrationService {
 
 			c.setStartDate(cvo.getStartDate()) ;
 			c.setStudentName(cvo.getStudentName()) ;
-			c.setRegDepartment(cvo.getRegDepartment()) ;
+//			c.setRegDepartment(cvo.getRegDepartment()) ;
+			c.setIbgReg(cvo.isIbgReg());
 			c.setNote(cvo.getNote()) ;
 
 /*

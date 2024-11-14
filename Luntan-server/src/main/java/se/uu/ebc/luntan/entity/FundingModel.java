@@ -40,29 +40,27 @@ public class FundingModel  extends Auditable {
 
 	private	static Map<String, Object> ns = new HashMap<String, Object>();
 	private static final JexlEngine jexl = new JexlBuilder().cache(512).strict(true).silent(false).namespaces(ns).create();
-	
-//    private static Logger log = Logger.getLogger(FundingModel.class.getName());
-	
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
 	@GenericGenerator(name = "native", strategy = "native")
     @Column(name = "ID")
     private Long id;
-    
- 
+
+
     public Long getId() {
         return this.id;
     }
-    
+
     public void setId(Long id) {
         this.id = id;
     }
 
- 
-    
+
+
     @OneToMany(mappedBy = "fundingModel")
     private Set<CourseInstance> courseInstances;
-    
+
     @Column(name = "DESIGNATION", length = 255)
     private String designation;
 
@@ -73,7 +71,7 @@ public class FundingModel  extends Auditable {
 
     @ElementCollection
     private Map<Integer,Float> valueTable;
-    
+
     @ManyToOne
     @JoinColumn(name = "TABLED_VALUES_FK")
 	private TabularModelFunction tabledValues;
@@ -82,12 +80,12 @@ public class FundingModel  extends Auditable {
 
     @Column(name = "EXPRESSION", length = 255)
     private String expression;
-	 
- 
+
+
    /* Setters and getters */
 
 
- 
+
     public String getDesignation()
     {
     	return this.designation;
@@ -120,11 +118,11 @@ public class FundingModel  extends Auditable {
     }
 
 
-/* 
+/*
 	public void setValueTable (Map<Integer, Float> valueTable) {
 		this.valueTable = valueTable;
 	}
-	
+
 	public Map<Integer, Float> getValueTable() {
 		return this.valueTable;
 	}
@@ -141,7 +139,7 @@ public class FundingModel  extends Auditable {
 		this.tabledValues = tabledValues;
 	}
 
- 
+
 
  	public void setValueTable(TreeMap<Integer,Float> valueTable) {
  		this.valueTable = valueTable;
@@ -152,26 +150,26 @@ public class FundingModel  extends Auditable {
 		}
  		return (TreeMap)this.valueTable;
  	}
-	
+
 	/* Constructors */
-	
+
 	public FundingModel() {
 		this.expression = DEFAULT_EXPRESSION;
 
 		ns.put("math", Math.class);
 		ns.put("fsmath", new FSMath());
 	}
-	
+
 	/* Business methods */
 
-	
+
 	public Integer getNumCourseInstances() {
-		return courseInstances == null ? 0 : courseInstances.size();	
+		return courseInstances == null ? 0 : courseInstances.size();
 	}
-	
-	
-//	public abstract Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel);   
-	
+
+
+//	public abstract Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel);
+
 	public Float computeFunding(Integer registerdStudents, Float ects, Integer baseLevel, boolean firstInstance) {
 		return computeFunding(registerdStudents,ects,baseLevel,firstInstance, false, false);
 	}
@@ -190,7 +188,7 @@ public class FundingModel  extends Auditable {
 		// Create an expression object for our calculation
 		JexlExpression e = jexl.createExpression( this.expression );
 
-		
+
 		// populate the context
 		JexlContext context = new MapContext();
 		context.set("studentNumber", registerdStudents);
@@ -204,19 +202,19 @@ public class FundingModel  extends Auditable {
 		// check for look-up values
 		if (tabledValues != null) {
 			log.debug("computeFunding table reads " + tabledValues.getTabledValue(registerdStudents));
-			context.set("tabled", tabledValues.getTabledValue(registerdStudents));			
+			context.set("tabled", tabledValues.getTabledValue(registerdStudents));
 		} else if (valueTable == null || valueTable.size() == 0) {
 			context.set("tabled", 1);
 		} else {
 			log.debug("computeFunding table reads " + valueTable.get(getValueTable().floorKey(registerdStudents)));
 			context.set("tabled", valueTable.get(getValueTable().floorKey(registerdStudents)));
 		}
-		
+
 		// work it out
 		Number result = (Number) e.evaluate(context);
 
 		return result.floatValue()/REFERENCE_BASE_LEVEL;
-	}   
+	}
 
 
 		public static class FSMath {
@@ -224,5 +222,5 @@ public class FundingModel  extends Auditable {
 				return x < lo ? 0 : Math.min(x,hi) - lo;
 			}
 		}
-	 
+
 }
