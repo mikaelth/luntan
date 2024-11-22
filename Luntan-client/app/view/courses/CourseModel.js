@@ -18,6 +18,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
     
     stores: {
 		coursegroups: 'CourseGroupStore',    	
+
 		courses: 'CourseStore',    	
   
 		extradesstore: {

@@ -88,6 +88,7 @@ public class EconomyDocumentService {
 
 			ed.setId(edVO.getId()) ;
 			ed.setBaseValue(edVO.getBaseValue());
+			ed.setReaderBaseValue(edVO.getReaderBaseValue());
 			ed.setYear(edVO.getYear());
 			ed.setNote(edVO.getNote());
 			ed.setAccountedDepts(edVO.getAccountedDepts());

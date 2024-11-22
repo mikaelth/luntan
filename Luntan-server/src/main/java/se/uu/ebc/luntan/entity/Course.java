@@ -21,6 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.EduBoard;
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.CourseType;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -76,6 +77,11 @@ public class Course  extends Auditable {
     @Column(name = "EXM_DEPT", length = 255)
 	@Enumerated(EnumType.STRING)
     private Department examinerDepartment;
+
+    @Column(name = "COURSE_TYPE", length = 255)
+	@Enumerated(EnumType.STRING)
+    @NotNull
+    private CourseType courseType;
 
     @Column(name = "BOARD", length = 255)
 	@Enumerated(EnumType.STRING)

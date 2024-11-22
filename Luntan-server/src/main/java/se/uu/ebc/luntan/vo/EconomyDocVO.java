@@ -18,6 +18,7 @@ public class EconomyDocVO extends AuditableVO {
     private Long id;
     private Integer year;
     private Integer baseValue;
+    private Integer readerBaseValue;
 	private boolean locked = false;
 	private boolean registrationsValid;
     private String note;
@@ -39,6 +40,7 @@ public class EconomyDocVO extends AuditableVO {
 		this.id = xe.getId();
 		this.year = xe.getYear();
 		this.baseValue = xe.getBaseValue();
+		this.readerBaseValue = xe.getReaderBaseValue();
 		this.note = xe.getNote();
 		this.accountedDepts = xe.getAccountedDepts();
 		this.numberOfCIs = xe.getNumberOfCourseInstances();

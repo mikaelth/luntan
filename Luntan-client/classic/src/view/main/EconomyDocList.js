@@ -100,6 +100,7 @@ Ext.define('Luntan.view.main.EconomyDocList', {
 		{ text: 'År', dataIndex: 'year', editor: 'textfield', filter: 'number', align: 'left', width: 100},
 		{ text: 'Antal kurser', dataIndex: 'numberOfCIs', filter: 'number', align: 'left', width: 100},
 		{ text: 'Basnivå', dataIndex: 'baseValue', editor: 'textfield', filter: 'number', align: 'left', width: 100},
+		{ text: 'TekNat Ämnesgranskare', dataIndex: 'readerBaseValue', editor: 'textfield', filter: 'number', align: 'left', width: 100, renderer: Ext.util.Format.numberRenderer('0 kr')},
 		{ text: 'Aktuella institutioner', dataIndex: 'accountedDepts', align: 'left', flex: 1,
 			editor: new Ext.form.field.Tag({
 				typeAhead: true,

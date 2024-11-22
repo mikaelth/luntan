@@ -20,6 +20,7 @@ Ext.define('Luntan.model.EconomyDoc', {
 		{name: 'id', type: 'int'},
 		{name: 'year', type: 'int'},
 		{name: 'baseValue', type: 'int'},
+		{name: 'readerBaseValue', type: 'int'},
 		{name: 'note', type: 'string'},
 		{name: 'numberOfCIs', type: 'int'},
 		{name: 'accountedDepts', type: 'auto'},

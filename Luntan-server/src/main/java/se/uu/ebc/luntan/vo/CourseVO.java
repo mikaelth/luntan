@@ -5,6 +5,7 @@ import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.enums.CourseGroup;
 import se.uu.ebc.luntan.enums.EduBoard;
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.CourseType;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class CourseVO {
     private Float credits;
 	private Department examinerDepartment;
 	private EduBoard board;
+	private CourseType courseType;
     private boolean inactive;
 		
  	/* Setters and getters */
@@ -46,6 +48,7 @@ public class CourseVO {
 		this.courseGroup = xe.getCourseGroup();
 		this.examinerDepartment = xe.getExaminerDepartment();
 		this.board = xe.getBoard();
+		this.courseType = xe.getCourseType();
 		this.note = xe.getNote();
 		this.credits = xe.getCredits();
 		this.inactive = xe.isInactive();

@@ -100,6 +100,18 @@ public class AuxItemsController {
     	return theList;
     }
 
+	@RequestMapping("/coursetypes")
+    public List<Map<String, String>> courseType() {
+    	List theList = new ArrayList<Map<String, String>>();
+    	for (CourseType s : CourseType.values()) {
+			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
+			vMap.put("id", s.name());
+			vMap.put("displayname", s.toString());
+    		theList.add(vMap);
+    	}
+    	return theList;
+    }
+
 	@RequestMapping("/ictkinds")
     public List<Map<String, String>> IndCourseTeacherKind() {
     	List theList = new ArrayList<Map<String, String>>();

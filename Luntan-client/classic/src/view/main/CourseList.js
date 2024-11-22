@@ -55,6 +55,25 @@ Ext.define('Luntan.view.main.CourseList', {
 			    valueField: 'id'
 			}
 		},
+		{ text: 'Kurstyp', dataIndex: 'courseType', filter: 'list', align: 'left', flex: 1,
+         	renderer: function(value) {
+				if (Ext.getStore('CourseTypeStore').getById(value) != undefined) {
+					return Ext.getStore('CourseTypeStore').getById(value).get('displayname');
+				} else {
+					return value;
+				}
+        	},
+			editor: {
+				xtype: 'combobox',
+				typeAhead: true,
+				triggerAction: 'all',
+				bind: {store: '{coursetypes}'},
+				queryMode: 'local',
+				lastQuery: '',
+				displayField: 'displayname',
+			    valueField: 'id'
+			}
+		},
 
 //		{ xtype: 'checkcolumn', text: '- Ex', dataIndex: 'noExaminer', editable: false, filter: 'boolean', align: 'center', width: 50, filter: 'boolean'},
 

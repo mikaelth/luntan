@@ -17,6 +17,8 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
 
 		coursegroups: 'CourseGroupStore',    	
 
+		coursetypes: 'CourseTypeStore',    	
+
 		courses: 'CourseStore',    	
 
   		availBoards: {

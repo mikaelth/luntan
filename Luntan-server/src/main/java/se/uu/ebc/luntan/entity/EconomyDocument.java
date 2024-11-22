@@ -71,6 +71,10 @@ public class EconomyDocument  extends Auditable {
     @NotNull
     private Integer baseValue;
     
+    @Column(name = "TEKNAT_READER", length = 255)
+//    @NotNull
+    private Integer readerBaseValue;
+
     @Column(name = "LOCKED")
     private boolean locked = false;
 
