@@ -9,5 +9,6 @@ public enum UserRoleType
 	CourseAssistant,
 	Administrator,
 	SysAdmin,
+	RegistrationHandler,
 	RegistrationUpdater;
 }

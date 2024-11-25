@@ -153,7 +153,7 @@ public class RegistrationController {
 
     }
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
     @RequestMapping(value="rest/icrs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateRegistration(@RequestBody String json, @PathVariable("id") Long id, HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
@@ -179,7 +179,7 @@ public class RegistrationController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
     @RequestMapping(value="rest/icrs", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createRegistration(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -200,7 +200,7 @@ public class RegistrationController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
 	@RequestMapping(value = "/icrs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteRegistration(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -228,7 +228,7 @@ public class RegistrationController {
 
     }
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
     @RequestMapping(value="rest/icts/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateICTeacher(@RequestBody String json, @PathVariable("id") Long id, HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
@@ -254,7 +254,7 @@ public class RegistrationController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
     @RequestMapping(value="rest/icts", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createICTeacher(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -275,7 +275,7 @@ public class RegistrationController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
 	@RequestMapping(value = "/icts/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteICTeacher(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
@@ -304,7 +304,7 @@ public class RegistrationController {
 
     }
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
     @RequestMapping(value="rest/iccbs/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateICCBasis(@RequestBody String json, @PathVariable("id") Long id, HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
@@ -330,7 +330,7 @@ public class RegistrationController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
     @RequestMapping(value="rest/iccbs", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createICCBasis(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -351,7 +351,7 @@ public class RegistrationController {
     }
 
 
-	@Secured({("ROLE_COURSEDIRECTOR"),("ROLE_SUBJECTCOORDINATOR")})
+	@Secured({("ROLE_REGISTRATIONHANDLER")})
 	@RequestMapping(value = "/iccbs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteICCBasis(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
