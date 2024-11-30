@@ -52,13 +52,6 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 				} else {
 					return 'Annan institution'
 				}
-/*
-				if (Ext.getStore('regDept').getById(value) != undefined) {
-					return Ext.getStore('CourseInstanceStore').getById(value).get('courseDesignation');
-				} else {
-					return value;
-				}
- */
         	},
 
 			editor: {
@@ -67,12 +60,22 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 				triggerAction: 'all',
 				store: new Ext.data.ArrayStore({
 					fields: ['id', 'value'],
-					data: [['IBG', true], ['Annan institution', false]]
+					data: [['IBG', true],['Annan institution', false]]
 				}),
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'id',
-			    valueField: 'value'
+			    valueField: 'value',
+ 
+/* 
+				defaultValue: 'IBG',
+    			listeners: {
+        			afterrender: function() {
+           				this.setValue(this.defaultValue);    
+           			}
+				}
+ 
+ */
 			}
 		},
 		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 3 }

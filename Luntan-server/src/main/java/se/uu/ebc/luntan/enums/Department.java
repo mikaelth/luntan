@@ -3,7 +3,7 @@ package se.uu.ebc.luntan.enums;
 public enum Department
 {
 	IBG(true, "Institutionen för biologisk grundutbildning"),
-	ICM(false, "Institutionen för cell och molekylärbiologi"),
+	ICM(false, "Institutionen för cell- och molekylärbiologi"),
 	IEG(false, "Institutionen för ekologi och genetik"),
 	IEGS(false, "Institutionen för evolution, genetik och systematik"),
 	IOB(false, "Institutionen för organismbiologi");

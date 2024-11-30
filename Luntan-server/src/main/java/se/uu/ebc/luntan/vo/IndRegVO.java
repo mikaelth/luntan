@@ -23,13 +23,14 @@ public class IndRegVO {
 
 	private String note;
 	private String studentName;
-//	private String regDepartment;
 	private boolean ibgReg;
 
  	private Long creditBasisRecId;
-//	private Long coordinatorId;
 	private Long courseInstanceId;
 	private Long economyDocId;
+
+//	private String regDepartment;
+//	private Long coordinatorId;
 
     /* Public methods */
 

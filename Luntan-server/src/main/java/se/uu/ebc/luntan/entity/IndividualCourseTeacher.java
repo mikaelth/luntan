@@ -18,7 +18,6 @@ import javax.persistence.DiscriminatorType;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 
-
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
 import lombok.Data;
@@ -99,4 +98,23 @@ public class IndividualCourseTeacher extends Auditable {
 
 		return grant;	
 	}
+	
+/* 
+	public Department getDepartment() {
+		Department dp = Department.IBG;
+		try {
+		   for(Department dept : Department.values()) {
+			   Pattern pattern = Pattern.compile(dept.deptName());
+			   Matcher matcher = pattern.matcher(fullDepartment);
+			   if (matcher.find()) {
+				   dp = dept;
+			   }
+		   }
+		} catch (Exception e) {
+
+		} finally {
+			return dp;
+		}
+	}
+ */
 }

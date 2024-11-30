@@ -148,7 +148,8 @@ public class IndividualYearlyCourse  extends CourseInstance {
 //		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredDistStudents()+", " +this.predictedDistStudents()+", " +this.preceedingCI);
 		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear());
 		Map<Department, Integer> currentStudents = new HashMap<Department, Integer>();
-try {
+	
+		try {
 
 		if (registeredDistStudents() == 0) {
 			if (this.predictedStudentDistribution == null || this.predictedDistStudents() == 0) {

@@ -20,16 +20,17 @@ Ext.define('Luntan.model.IndCourseReg', {
 	idProperty: 'id',
     fields: [
 		{name: 'id', type: 'int'},
-		{name: 'courseInstanceId', type: 'int'},
-		{name: 'economyDocId', type:'int'},
-		{name: 'creditBasisRecId', type: 'int'},
+		{name: 'courseEvalSetUp', type: 'boolean'},
+		{name: 'studentDone', type: 'boolean'},
 		{name: 'startDate', type: 'date', format: 'yy-MM-dd'},
 		{name: 'registrationDate', type: 'date', format: 'yy-MM-dd'},
-		{name: 'studentName', type: 'string'},
-		{name: 'regDepartment', type: 'string'},
 		{name: 'note', type: 'string'},
-		{name: 'ibgReg', type: 'boolean'},
-		{name: 'studentDone', type: 'boolean'},
-		{name: 'courseEvalSetUp', type: 'boolean'}
+		{name: 'studentName', type: 'string'},
+		{name: 'creditBasisRecId', type: 'int'},
+		{name: 'courseInstanceId', type: 'int'},
+		{name: 'economyDocId', type:'int'},
+		
+		{name: 'regDepartment', type: 'string'},
+		{name: 'ibgReg', type: 'boolean'}
 	]
 });

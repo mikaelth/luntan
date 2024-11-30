@@ -109,33 +109,9 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 			}
 		},
 		{ text: 'Namn', dataIndex: 'name', editor: 'textfield', align: 'left', flex: 1},
-		{ text: 'Institution och program', dataIndex: 'fullDepartment', editor: 'textfield', align: 'left', flex: 1, reference:'fullDeptField',
-			renderer: function(value) {
-				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
-					return Ext.getStore('TeacherStore').getById(value).get('department');
-				} else {
-					return value;
-				}
-        	}
-		},
-		{ text: 'e-post', dataIndex: 'email', editor: 'textfield', align: 'left', width: 250,
-			renderer: function(value) {
-				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
-					return Ext.getStore('TeacherStore').getById(value).get('mail');
-				} else {
-					return value;
-				}
-        	}
-		},
-		{ text: 'Telefon', dataIndex: 'phone', editor: 'textfield', align: 'left', width: 150,
-			renderer: function(value) {
-				if (Ext.getStore('TeacherStore').getById(value) != undefined) {
-					return Ext.getStore('TeacherStore').getById(value).get('phone');
-				} else {
-					return value;
-				}
-        	}
-		},
+		{ text: 'Institution och program', dataIndex: 'fullDepartment', editor: 'textfield', align: 'left', flex: 1, reference:'fullDeptField'},
+		{ text: 'e-post', dataIndex: 'email', editor: 'textfield', align: 'left', width: 250},
+		{ text: 'Telefon', dataIndex: 'phone', editor: 'textfield', align: 'left', width: 150},
 		{ text: 'Kommentar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 2 }
 
 	],

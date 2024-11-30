@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Calendar;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import se.uu.ebc.luntan.enums.Department;
 import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
 import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
@@ -29,7 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class RegistrationService {
 
-
+	private final Department DEFAULT_DEPARTMENT = Department.IBG;
+	
 	@Autowired
 	IndividualCourseRegRepo regsRepo;
 
@@ -161,6 +166,7 @@ public class RegistrationService {
 			c.setName(cvo.getName());
 			c.setPhone(cvo.getPhone());
 			c.setFullDepartment(cvo.getFullDepartment());
+			c.setDepartment(extractDepartment(cvo.getFullDepartment()));
 			c.setEmail(cvo.getEmail());
 
 			if (cvo.getAssignmentId()!= null){
@@ -175,7 +181,22 @@ public class RegistrationService {
 		}
 	}
 
+	private Department extractDepartment(String fullDepartment) {
+		Department dp = DEFAULT_DEPARTMENT;
+		try {
+		   for(Department dept : Department.values()) {
+			   Pattern pattern = Pattern.compile(dept.deptName());
+			   Matcher matcher = pattern.matcher(fullDepartment);
+			   if (matcher.find()) {
+				   dp = dept;
+			   }
+		   }
+		} catch (Exception e) {
 
+		} finally {
+			return dp;
+		}	
+	}
 
 	/* Individual Course Credit Basis */
 

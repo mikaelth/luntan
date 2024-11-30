@@ -13,7 +13,9 @@ Ext.define('Luntan.view.courses.CourseRegController', {
         // Create a model instance
         var r = Ext.create('Luntan.model.IndCourseReg');
         r.set('economyDocId',thisEDoc);
-
+        r.set('registrationDate',new Date());
+		r.set('ibgReg',true);
+		
 		var rec = grid.getStore().insert(0, r);
         grid.plugins[0].startEdit(rec[0]);
 

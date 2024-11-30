@@ -87,8 +87,24 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 
 	onNewTeacher: function ( theComboBox, newValue, oldValue ) {
 		console.log("Teacher changed");
-	
+
+		var ts = this.getViewModel().get('teachers'),
+			rec = this.getViewModel().data.currentICT,
+			teach = ts.getById(newValue);
+			
+			if (teach != undefined) {
+					rec.set('name',teach.get('name'));
+					rec.set('fullDepartment', teach.get('fullDepartment'));
+					rec.set('phone', teach.get('phone'));
+					rec.set('email', teach.get('mail'));
+			} else {
+					rec.set('name','Personens namn');
+					rec.set('fullDepartment', 'Personens institution och program');
+					rec.set('phone', '018-471 1000');
+					rec.set('email', 'studierektor-ibg@uu.se');
+			}
 	},
+
    	onBeforeRender: function (grid) {
    	},
 

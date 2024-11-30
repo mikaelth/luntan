@@ -105,10 +105,15 @@ public class IndividualCourseRegistration extends Auditable {
 
 
 	public Department getDepartment() {
-		Department dept = teachers
+		List<IndividualCourseTeacher> coordinators = teachers
 			.stream()
   			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
-			.collect( Collectors.collectingAndThen( Collectors.toList(), list ->list.get(0).getDepartment() ));
+			.collect(toList());
+			
+		Department dept = (coordinators.size() == 0) ? Department.IBG : coordinators.get(0).getDepartment();
+
+		log.debug("Course: " + courseBag.getDesignation() + ", coordinators department: " + dept.toString());
+		
 		return dept;
 	}
 
