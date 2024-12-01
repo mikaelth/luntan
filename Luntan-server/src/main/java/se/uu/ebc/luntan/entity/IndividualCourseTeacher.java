@@ -99,22 +99,4 @@ public class IndividualCourseTeacher extends Auditable {
 		return grant;	
 	}
 	
-/* 
-	public Department getDepartment() {
-		Department dp = Department.IBG;
-		try {
-		   for(Department dept : Department.values()) {
-			   Pattern pattern = Pattern.compile(dept.deptName());
-			   Matcher matcher = pattern.matcher(fullDepartment);
-			   if (matcher.find()) {
-				   dp = dept;
-			   }
-		   }
-		} catch (Exception e) {
-
-		} finally {
-			return dp;
-		}
-	}
- */
 }

@@ -2,6 +2,7 @@ package se.uu.ebc.luntan.vo;
 
 
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
+import se.uu.ebc.luntan.enums.Department;
 import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class IndRegVO {
 	private Long courseInstanceId;
 	private Long economyDocId;
 
-//	private String regDepartment;
+	private Department department;
 //	private Long coordinatorId;
 
     /* Public methods */
@@ -50,7 +51,7 @@ public class IndRegVO {
 		this.registrationDate = xe.getRegistrationDate();
 		this.note = xe.getNote();
 		this.studentName = xe.getStudentName();
-//		this.regDepartment = xe.getRegDepartment();
+		this.department = xe.getDepartment();
 		this.ibgReg = xe.isIbgReg();
 
 		this.creditBasisRecId = xe.getCreditBasisRecord() == null ? null : xe.getCreditBasisRecord().getId();

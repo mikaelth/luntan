@@ -5,20 +5,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.Calendar;
+
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.IndCourseTeacherKind;
+
 import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
 import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
 import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
+
 import se.uu.ebc.luntan.vo.IndRegVO;
 import se.uu.ebc.luntan.vo.IndCourseTeacherVO;
 import se.uu.ebc.luntan.vo.IndCCBasisVO;
+
 import se.uu.ebc.luntan.repo.IndividualCourseRegRepo;
 import se.uu.ebc.luntan.repo.IndividualCourseTeacherRepo;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
@@ -91,7 +99,6 @@ public class RegistrationService {
 
 			c.setStartDate(cvo.getStartDate()) ;
 			c.setStudentName(cvo.getStudentName()) ;
-//			c.setRegDepartment(cvo.getRegDepartment()) ;
 			c.setIbgReg(cvo.isIbgReg());
 			c.setNote(cvo.getNote()) ;
 
@@ -100,6 +107,8 @@ public class RegistrationService {
 				c.setCoordinator(teacherRepo.findById(cvo.getCoordinatorId()).get());
 			}
  */
+
+			c.setDepartment( extractCoordinatingDepartment(c.getTeachers()) ) ;
 
 			if (cvo.getCourseInstanceId()!= null){
 				c.setCourseBag((IndividualYearlyCourse)ciRepo.findById(cvo.getCourseInstanceId()).get());
@@ -116,6 +125,16 @@ public class RegistrationService {
 		}
 	}
 
+	private Department extractCoordinatingDepartment(Set<IndividualCourseTeacher> teachers) {
+		List<IndividualCourseTeacher> coordinators = teachers
+			.stream()
+  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
+			.collect(toList());
+			
+		Department dept = (coordinators.size() == 0) ? DEFAULT_DEPARTMENT : extractDepartment(coordinators.get(0).getFullDepartment());
+
+		return dept;
+	}
 
 
 	/* Individual Course Teachers */
@@ -158,7 +177,6 @@ public class RegistrationService {
 			c.setId(cvo.getId()) ;
 
 			c.setLdapEntry(cvo.getLdapEntry());
-			c.setDepartment(cvo.getDepartment()) ;
 			c.setTeacherType(cvo.getTeacherType()) ;
 			c.setNote(cvo.getNote()) ;
 
@@ -166,21 +184,24 @@ public class RegistrationService {
 			c.setName(cvo.getName());
 			c.setPhone(cvo.getPhone());
 			c.setFullDepartment(cvo.getFullDepartment());
-			c.setDepartment(extractDepartment(cvo.getFullDepartment()));
 			c.setEmail(cvo.getEmail());
 
+			c.setDepartment(extractDepartment(cvo.getFullDepartment()));
+
 			if (cvo.getAssignmentId()!= null){
-				c.setAssignment(regsRepo.findById(cvo.getAssignmentId()).get());
+				IndividualCourseRegistration reg = regsRepo.findById(cvo.getAssignmentId()).get();
+				c.setAssignment(reg);
+				if (cvo.getTeacherType() == IndCourseTeacherKind.Coordinator) {
+					reg.setDepartment(c.getDepartment());
+				}				
 			}
-
-
 		} catch (Exception e) {
 			log.error("toICTeacher got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return c;
 		}
 	}
-
+	
 	private Department extractDepartment(String fullDepartment) {
 		Department dp = DEFAULT_DEPARTMENT;
 		try {

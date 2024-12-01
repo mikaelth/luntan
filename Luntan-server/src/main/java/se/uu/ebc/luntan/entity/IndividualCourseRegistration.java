@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.CascadeType;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 import java.util.Set;
 import java.util.List;
@@ -63,11 +65,10 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "STUDENT")
 	private String studentName;
 
-/*
 	@NotNull
-	@Column(name = "REGDEPT")
-	private String regDepartment;
- */
+	@Enumerated(EnumType.STRING)
+	@Column(name = "COORDDEPT")
+	private Department department;
 
 	@NotNull
 	@Column(name = "IBGREG")
@@ -91,31 +92,11 @@ public class IndividualCourseRegistration extends Auditable {
 	@Column(name = "NOTE")
 	private String note;
 
-/*
-	@NotNull
-    @OneToOne
-	@JoinColumn(name = "COORDINATOR_FK")
-	private IndividualCourseTeacher coordinator;
- */
-
 	@OneToMany(mappedBy = "assignment",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<IndividualCourseTeacher> teachers = new HashSet<IndividualCourseTeacher>();
 
 	// Business methods
 
-
-	public Department getDepartment() {
-		List<IndividualCourseTeacher> coordinators = teachers
-			.stream()
-  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
-			.collect(toList());
-			
-		Department dept = (coordinators.size() == 0) ? Department.IBG : coordinators.get(0).getDepartment();
-
-		log.debug("Course: " + courseBag.getDesignation() + ", coordinators department: " + dept.toString());
-		
-		return dept;
-	}
 
 	public IndividualCourseTeacher getCoordinator() {
 		IndividualCourseTeacher coordinator = teachers
