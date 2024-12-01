@@ -7,6 +7,8 @@ import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
+import lombok.Setter;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @Slf4j
@@ -30,7 +32,9 @@ public class IndRegVO {
 	private Long courseInstanceId;
 	private Long economyDocId;
 
+	@Setter(AccessLevel.NONE)
 	private Department department;
+	
 //	private Long coordinatorId;
 
     /* Public methods */

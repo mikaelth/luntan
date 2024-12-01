@@ -59,12 +59,10 @@ public class IndividualYearlyCourse  extends CourseInstance {
 
 	@ElementCollection
 	@MapKeyEnumerated(EnumType.STRING)
-//    private Map<Department,Integer> predictedStudentDistribution = new HashMap<Department,Integer>();
     private Map<Department,Integer> predictedStudentDistribution;
 
 	@ElementCollection
 	@MapKeyEnumerated(EnumType.STRING)
-//    private Map<Department,Integer> lockedStudentDistribution = new HashMap<Department,Integer>();
     private Map<Department,Integer> lockedStudentDistribution;
 
 	@ElementCollection
@@ -145,7 +143,6 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	}
 	
 	private Map<Department, Integer> currentStudentsDist() {
-//		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear() +": " + this.registeredDistStudents()+", " +this.predictedDistStudents()+", " +this.preceedingCI);
 		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear());
 		Map<Department, Integer> currentStudents = new HashMap<Department, Integer>();
 	
@@ -158,12 +155,12 @@ public class IndividualYearlyCourse  extends CourseInstance {
 					currentStudents = new HashMap<Department, Integer>();
 				} else {
 					if (this.preceedingIYC().preceedingIYC() == null || this.preceedingIYC().preceedingIYC() == this.preceedingIYC() || this.preceedingIYC().preceedingIYC().regStudDist().size() == 0) {
-							if(this.preceedingIYC().regStudDist().size() == 0) {
-								this.modelCase=StudentModelNumberCase.PREVIOUSMODEL;
-								currentStudents = this.preceedingIYC().predStudDist();
-							} else {
+							if(this.preceedingIYC().isRegistrationValid()) {
 								this.modelCase=StudentModelNumberCase.PREVIOUSREG;
 								currentStudents = this.preceedingIYC().regStudDist();
+							} else {
+								this.modelCase=StudentModelNumberCase.PREVIOUSMODEL;
+								currentStudents = this.preceedingIYC().predStudDist();
 							}
 					} else {
 							this.modelCase=StudentModelNumberCase.REG2YEARS;

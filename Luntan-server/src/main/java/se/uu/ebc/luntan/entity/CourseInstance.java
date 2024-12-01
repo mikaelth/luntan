@@ -312,7 +312,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 					currentStudents = DEFAULT_REG_STUDENT_NUMBER;
 				} else {
 					if (this.preceedingCI.getPreceedingCI() == null || this.preceedingCI.getPreceedingCI() == this.preceedingCI || this.preceedingCI.getPreceedingCI().getRegisteredStudents() == null) {
-							if(this.preceedingCI.getRegisteredStudents() == null || this.preceedingCI.getRegisteredStudents() == 0) {
+							if(this.preceedingCI.getRegisteredStudents() == null || (!this.preceedingCI.isRegistrationValid() && this.preceedingCI.getRegisteredStudents() == 0)) {
 								this.modelCase=StudentModelNumberCase.PREVIOUSMODEL;
 								currentStudents = this.preceedingCI.getModelStudentNumber();
 							} else {
