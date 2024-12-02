@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RegistrationService {
 
 	private final Department DEFAULT_DEPARTMENT = Department.IBG;
-	
+
 	@Autowired
 	IndividualCourseRegRepo regsRepo;
 
@@ -130,7 +130,7 @@ public class RegistrationService {
 			.stream()
   			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
 			.collect(toList());
-			
+
 		Department dept = (coordinators.size() == 0) ? DEFAULT_DEPARTMENT : extractDepartment(coordinators.get(0).getFullDepartment());
 
 		return dept;
@@ -163,6 +163,8 @@ public class RegistrationService {
 
     public synchronized void deleteICTeacher(Long cID) throws Exception {
 		IndividualCourseTeacher c = ictRepo.findById(cID).get();
+		log.debug("deleteICTeacher: "+ cID);
+
 		ictRepo.delete(c);
     }
 
@@ -193,7 +195,7 @@ public class RegistrationService {
 				c.setAssignment(reg);
 				if (cvo.getTeacherType() == IndCourseTeacherKind.Coordinator) {
 					reg.setDepartment(c.getDepartment());
-				}				
+				}
 			}
 		} catch (Exception e) {
 			log.error("toICTeacher got a pesky exception: "+ e + e.getCause());
@@ -201,7 +203,7 @@ public class RegistrationService {
 			return c;
 		}
 	}
-	
+
 	private Department extractDepartment(String fullDepartment) {
 		Department dp = DEFAULT_DEPARTMENT;
 		try {
@@ -216,7 +218,7 @@ public class RegistrationService {
 
 		} finally {
 			return dp;
-		}	
+		}
 	}
 
 	/* Individual Course Credit Basis */

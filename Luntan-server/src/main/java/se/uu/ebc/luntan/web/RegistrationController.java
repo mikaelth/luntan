@@ -201,7 +201,7 @@ public class RegistrationController {
 
 
 	@Secured({("ROLE_REGISTRATIONHANDLER")})
-	@RequestMapping(value = "/icrs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	@RequestMapping(value = "/rest/icrs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteRegistration(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -276,11 +276,12 @@ public class RegistrationController {
 
 
 	@Secured({("ROLE_REGISTRATIONHANDLER")})
-	@RequestMapping(value = "/icts/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	@RequestMapping(value = "rest/icts/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteICTeacher(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
+			log.debug("deleteICTeacher with id " + id);
 			regService.deleteICTeacher(id);
             return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
         } catch (Exception e) {

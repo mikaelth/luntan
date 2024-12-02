@@ -35,6 +35,22 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
             }
    },
 
+    onSave: function()
+    {
+    	var teacherStore = this.getView().getStore().hasOwnProperty('source') ? this.getView().getStore().getSource() : this.getView().getStore();
+       	var regStore = this.getViewModel().get('registrations').hasOwnProperty('source') ? this.getViewModel().get('registrations').getSource() : this.getViewModel().get('registrations');
+		var currentReg = this.getViewModel().get('current.reg');
+
+        teacherStore.sync({callback: function (batch, options) {
+        	console.log("In callback " + batch);
+			currentReg.set({'department': 'IBG'}, {
+				dirty: true
+			});
+			regStore.sync();
+        }});
+
+    },
+
 
 	onStoreContentUpdated: function (theStore, theRecords) {
 		console.log("Updated in controller")
@@ -54,7 +70,7 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 
 	onCheckChange: function (checkbox, rowIndex, checked, record) {
 		console.log("Check changed");
-/* 
+/*
 			var form   = checkbox.up('ictlist').findPlugin('rowediting').getEditor().form,
 				fields  = [
 					form.findField('fullDepartment'),
@@ -82,7 +98,7 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 
 	onNewTeacherKind: function ( theComboBox, newValue, oldValue ) {
 		console.log("Teacher kind changed");
-	
+
 	},
 
 	onNewTeacher: function ( theComboBox, newValue, oldValue ) {
@@ -91,7 +107,7 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 		var ts = this.getViewModel().get('teachers'),
 			rec = this.getViewModel().data.currentICT,
 			teach = ts.getById(newValue);
-			
+
 			if (teach != undefined) {
 					rec.set('name',teach.get('name'));
 					rec.set('fullDepartment', teach.get('fullDepartment'));
@@ -112,13 +128,13 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 
 		console.log("ICT controller init");
 
-/* 
+/*
  		view.findPlugin('rowediting').addListener('checkChange', function(checkbox, rowIndex, checked, record) {
 			console.log("ICT controller External check changed");
  		};
  */
- 		
- 
+
+
  		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 			/* Disabling editing of specific fileds */
 			var form   = rowEditing.getEditor().form,
@@ -144,7 +160,7 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 			}
 			return true;
         });
- 
+
 
    	}
 
