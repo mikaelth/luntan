@@ -42,7 +42,7 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 		var currentReg = this.getViewModel().get('current.reg');
 
         teacherStore.sync({callback: function (batch, options) {
-        	console.log("In callback " + batch);
+        	console.log("In callback ", batch);
 			currentReg.set({'department': 'IBG'}, {
 				dirty: true
 			});

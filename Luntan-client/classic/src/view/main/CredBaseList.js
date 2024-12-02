@@ -23,12 +23,12 @@ Ext.define('Luntan.view.main.CredBaseList', {
 		store: '{credbasis}',
 		title: '<b>Betalningsunderlag</b>'
 	},
-	
+
 	features: [{ ftype: 'grouping',startCollapsed: false }],
 
 //    columns:  [{ xtype: 'IndividualCourseRegColumns'}],
- 
-	columns: 
+
+	columns:
     [
 		{xtype:'actioncolumn',
             width:100, align: 'center',
@@ -49,7 +49,9 @@ Ext.define('Luntan.view.main.CredBaseList', {
 			}]
         },
 
+/*
 		{ xtype: 'checkcolumn', text: 'Låst', dataIndex: 'locked', editor: 'checkboxfield', editable: true, align: 'center', width: 70, filter: 'boolean'},
+ */
 
 		{ text: 'Antal registreringar', dataIndex: 'numberOfRegs', filter: 'number', align: 'left', width: 150 },
 		{ xtype: 'datecolumn',text: 'Skapad', dataIndex: 'createdDate', format:'Y-m-d', filter: 'date', align: 'left', width: 150},
@@ -57,7 +59,7 @@ Ext.define('Luntan.view.main.CredBaseList', {
 		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 1 }
 
 	],
- 
+
 
 	config : {
 	}

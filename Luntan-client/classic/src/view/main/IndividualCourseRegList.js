@@ -24,7 +24,7 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 		{ xtype: 'checkcolumn', text: 'KURT', dataIndex: 'courseEvalSetUp', editor: 'checkboxfield', editable: true, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
 		{ xtype: 'datecolumn',text: 'Registreriingsdatum', dataIndex: 'registrationDate', editable: false, format:'Y-m-d', filter: 'date', align: 'left', width: 150},
 		{ xtype: 'datecolumn',text: 'Startdatum', dataIndex: 'startDate', format:'Y-m-d', editor: 'datefield', filter: 'date', align: 'left', width: 150},
-		{ text: 'Kurs', dataIndex: 'courseInstanceId', filter: 'list', align: 'left', flex: 2,
+		{ text: 'Kurs', dataIndex: 'courseInstanceId', filter: 'string', align: 'left', flex: 2,
          	renderer: function(value) {
 				if (Ext.getStore('CourseInstanceStore').getById(value) != undefined) {
 					return Ext.getStore('CourseInstanceStore').getById(value).get('courseDesignation');
