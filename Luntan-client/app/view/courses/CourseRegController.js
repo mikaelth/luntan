@@ -3,13 +3,31 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
     alias: 'controller.coursereglist',
 
+    onSelectionChange: function(sm, rec) {
+		var deleteButton = this.lookupReference('btnRemove'),
+			cbId = rec[0].get('courseInstanceId');
+			ci = this.getViewModel().get('icis').getById( cbId );
+		
+		console.log(ci);
+		console.log( cbId );
+				
+		if (ci.get('registrationValid')) {
+			deleteButton.disable();
+		} else {
+			deleteButton.enable();
+		}
+
+
+    
+    },
+
 
     onCreate: function()
     {
         var grid = this.getView(),
         	thisEDoc = this.getViewModel().get('current.edoc.id');
          grid.plugins[0].cancelEdit();
-//this.view.up().up().lookupReference('ictList').controller.onCreate();
+
         // Create a model instance
         var r = Ext.create('Luntan.model.IndCourseReg');
         r.set('economyDocId',thisEDoc);
@@ -71,6 +89,40 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 			});
 
  */
+ 
+  		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
+			/* Disabling editing of specific fileds */
+			var form   = rowEditing.getEditor().form,
+				fields  = [
+					form.findField('startDate'),
+					form.findField('courseInstanceId'),
+					form.findField('studentName'),
+					form.findField('ibgReg')
+				],
+				icbId = context.record.get('courseInstanceId'),
+				creditBasisId = context.record.get('creditBasisRecId'),
+				vM = context.grid.up().getViewModel();
+				ci = vM.get('icis').getById(icbId),
+				creditBasis = vM.get('credbasis').getById(creditBasisId);
+				
+			var status = !ci.get('registrationValid') && ( (creditBasis == null) || creditBasis.get('sent') == null );
+
+			if(status){
+				fields.forEach(function(field){
+					field.enable()
+				});
+//				form.findField('ldapEntry').disable();
+
+			} else {
+				fields.forEach(function(field){
+					field.disable()
+				});
+//				form.findField('ldapEntry').enable();
+
+			}
+			return true;
+        });
+
 	}
 
 });

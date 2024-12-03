@@ -8,7 +8,8 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			edoc: null,
 			reg : null,
 			cbase: null,
-			ict: null
+			ict: null,
+			icbId: 0
 		},
 		regDeptsValues: [{dept: "IBG", value: true}, {dept: "Annan institution", value: false}]
     },
@@ -30,7 +31,10 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			filters: [
 				{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}
 			],
-			sorters: [{property:'courseDesignation', direction: 'ASC'}]
+			sorters: [
+				{property:'courseDesignation', direction: 'ASC'},
+				{property:'studentName', direction: 'ASC'}							
+			]
 		},
 
 		regsincreds : {
@@ -53,9 +57,23 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			source: 'CourseInstanceStore',
 			filters: [
  				{property: 'individualYearlyCourse', value: true, exactMatch: true},
-				{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}
+				{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true},
+				{property: 'registrationValid', value: false, exactMatch: true}
+		],
+			sorters: [
+				{property:'courseDesignation', direction: 'ASC'},
+				]
+		},
+
+		icbs : {
+			type: 'chained',
+			source: 'CourseInstanceStore',
+			filters: [
+				{property: 'id', value: '{current.icbId}', exactMatch: true}
 			],
-			sorters: [{property:'courseDesignation', direction: 'ASC'}]
+			sorters: [
+				{property:'courseDesignation', direction: 'ASC'},
+			]
 		},
 
 		icts : {
@@ -112,6 +130,18 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
             get: function(reg) {
             	this.set('current.reg', reg);
                 return reg;
+            }
+        },
+
+        currentICB: {
+            // We need to bind deep to be notified on each model change
+            bind: {
+                bindTo: '{coursereglist.selection.courseInstanceId}', //--> reference configurated on the grid view (reference: ciList)
+                deep: true
+            },
+            get: function(icbId) {
+            	this.set('current.icbId', icbId);
+                return icbId;
             }
         },
 
