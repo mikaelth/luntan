@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Calendar;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.*;
+import java.util.Comparator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -201,7 +202,7 @@ public class RegistrationController {
 
 
 	@Secured({("ROLE_REGISTRATIONHANDLER")})
-	@RequestMapping(value = "/rest/icrs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	@RequestMapping(value = "rest/icrs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteRegistration(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -353,7 +354,7 @@ public class RegistrationController {
 
 
 	@Secured({("ROLE_REGISTRATIONHANDLER")})
-	@RequestMapping(value = "/iccbs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+	@RequestMapping(value = "rest/iccbs/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	public ResponseEntity<String> deleteICCBasis(@PathVariable("id") Long id) {
 		HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -371,7 +372,10 @@ public class RegistrationController {
 		try {
 
 			EconomyDocument edoc = edocRepo.findByYear(year);
-			List<IndividualCourseTeacher> teachers = teacherRepo.findTeachersByYear(year);
+			
+			List<IndividualCourseTeacher> teachers = teacherRepo.findTeachersByYear(year).stream()
+				.sorted(Comparator.comparing(IndividualCourseTeacher::getDeptAndName))
+				.collect(Collectors.toList());
 
 			log.debug("Teachers: " + teachers);
 

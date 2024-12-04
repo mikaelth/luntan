@@ -5,13 +5,13 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
     onSelectionChange: function(sm, rec) {
 		var deleteButton = this.lookupReference('btnRemove'),
-			cbId = rec[0].get('courseInstanceId');
+			cbId = rec[0] == null ? 0 : rec[0].get('courseInstanceId');
 			ci = this.getViewModel().get('icis').getById( cbId );
 		
 		console.log(ci);
 		console.log( cbId );
 				
-		if (ci.get('registrationValid')) {
+		if (cbId == 0 || ci.get('registrationValid')) {
 			deleteButton.disable();
 		} else {
 			deleteButton.enable();
@@ -20,7 +20,6 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 
     
     },
-
 
     onCreate: function()
     {
@@ -68,10 +67,12 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				}
 			});
 
+/* 
 		view.lookupReference('comboCurrentYear').addListener('select', function(combo,record) {
 			this.lookupReferenceHolder().lookupReference('btnIndCourseTeachers').enable();
 			return true;
         });
+ */
 
 /*
 
@@ -91,7 +92,9 @@ Ext.define('Luntan.view.courses.CourseRegController', {
  */
  
   		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
+
 			/* Disabling editing of specific fileds */
+
 			var form   = rowEditing.getEditor().form,
 				fields  = [
 					form.findField('startDate'),
@@ -103,21 +106,24 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				creditBasisId = context.record.get('creditBasisRecId'),
 				vM = context.grid.up().getViewModel();
 				ci = vM.get('icis').getById(icbId),
-				creditBasis = vM.get('credbasis').getById(creditBasisId);
+				creditBasis = vM.get('credbasis').getById(creditBasisId),
+				status = false;
 				
-			var status = !ci.get('registrationValid') && ( (creditBasis == null) || creditBasis.get('sent') == null );
-
+			if (ci == null) { 
+				status = true;
+			} else {
+				status = !ci.get('registrationValid') && ( (creditBasis == null) || creditBasis.get('sent') == null );
+			}
+			
 			if(status){
 				fields.forEach(function(field){
 					field.enable()
 				});
-//				form.findField('ldapEntry').disable();
 
 			} else {
 				fields.forEach(function(field){
 					field.disable()
 				});
-//				form.findField('ldapEntry').enable();
 
 			}
 			return true;

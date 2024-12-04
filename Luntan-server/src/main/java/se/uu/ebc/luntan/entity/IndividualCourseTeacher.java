@@ -99,4 +99,11 @@ public class IndividualCourseTeacher extends Auditable {
 		return grant;	
 	}
 	
+	public String getDeptAndName() {
+	
+		return this.department + this.name + this.fullDepartment;
+//		return this.fullDepartment + this.name;
+//		return this.department + this.name;
+		
+	}
 }

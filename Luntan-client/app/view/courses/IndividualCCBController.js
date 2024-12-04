@@ -3,6 +3,19 @@ Ext.define('Luntan.view.courses.IndividualCCBController', {
 
     alias: 'controller.credbaselist',
 
+    onSelectionChange: function(sm, rec) {
+		var deleteButton = this.lookupReference('btnRemove'),
+			ccbSent = (rec[0] == null ? false : (rec[0].get('sent') == null ? false : true ));
+		
+		console.log(ccbSent);
+				
+		if (ccbSent) {
+			deleteButton.disable();
+		} else {
+			deleteButton.enable();
+		}
+    }, 
+    
     
     onCreate: function()
     {

@@ -88,7 +88,6 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			type: 'chained',
 			source: 'IndCourseCreditBasisStore',
 			filters: [
-// 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true},
 			],
 		},
 		regDept : {
