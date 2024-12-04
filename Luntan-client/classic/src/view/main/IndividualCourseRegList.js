@@ -63,7 +63,7 @@ Ext.define('Luntan.view.main.IndividualCourseRegList', {
 				queryMode: 'local',
 				lastQuery: '',
 				displayField: 'id',
-			    valueField: 'value',
+			    valueField: 'value'
  			}
 		},
 		{ text: 'Koordinerande', dataIndex: 'department', filter: 'list', align: 'left', width: 150},

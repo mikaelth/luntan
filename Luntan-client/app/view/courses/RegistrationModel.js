@@ -61,8 +61,8 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 				{property: 'registrationValid', value: false, exactMatch: true}
 		],
 			sorters: [
-				{property:'courseDesignation', direction: 'ASC'},
-				]
+				{property:'courseDesignation', direction: 'ASC'}
+			]
 		},
 
 		icbs : {
@@ -72,7 +72,7 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 				{property: 'id', value: '{current.icbId}', exactMatch: true}
 			],
 			sorters: [
-				{property:'courseDesignation', direction: 'ASC'},
+				{property:'courseDesignation', direction: 'ASC'}
 			]
 		},
 
@@ -80,15 +80,14 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 			type: 'chained',
 			source: 'IndCourseTeacherStore',
 			filters: [
- 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true},
-			],
+ 				{property: 'assignmentId', value: '{current.reg.id}', exactMatch: true}
+			]
 		},
 
  		credbasis : {
 			type: 'chained',
 			source: 'IndCourseCreditBasisStore',
-			filters: [
-			],
+			filters: []
 		},
 		regDept : {
 			autolaod: true,
@@ -97,14 +96,13 @@ Ext.define('Luntan.view.courses.RegistrationModel', {
 				reader: {
 					type: 'json',
 					rootProperty: 'regDeptsValues'
-				 },
+				 }
 			 },
 			fields: [
 			   {name: 'dept', type: 'string'},
 			   {name: 'value', type: 'boolean'}
 			]
 		}
-
 	},
 
 	formulas: {

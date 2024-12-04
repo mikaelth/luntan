@@ -33,7 +33,7 @@ Ext.define('Luntan.view.main.CredBaseCourseRegList', {
 				} else {
 					return value;
 				}
-        	},
+        	}
 		},
 		{ text: 'Kurs', dataIndex: 'courseInstanceId', editable: false, filter: 'string', align: 'left', flex: 2,
          	renderer: function(value) {
@@ -42,7 +42,7 @@ Ext.define('Luntan.view.main.CredBaseCourseRegList', {
 				} else {
 					return value;
 				}
-        	},
+        	}
 		},
 		{ text: 'Student', dataIndex: 'studentName', /* editor: 'textfield' ,*/ editable: false, filter: 'string', align: 'left', flex: 2},
 		{ text: 'Reg inst.', dataIndex: 'ibgReg', filter: 'boolean', align: 'left', width:170,
