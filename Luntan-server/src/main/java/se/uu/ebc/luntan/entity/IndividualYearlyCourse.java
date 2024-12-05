@@ -71,7 +71,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
 
     @OneToMany(mappedBy = "courseBag")
 	private List<IndividualCourseRegistration> registrationEvents;
-	
+
 	/* Business methods */
 
 
@@ -130,7 +130,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
 
 	private Integer registeredDistStudents() {
 		log.debug("registeredDistStudents()");
-		return registeredStudentDistribution == null ? 
+		return registeredStudentDistribution == null ?
 			registrationEvents == null ? 0 : registrationEvents.stream().mapToInt(IndividualCourseRegistration::getStudents).sum() :
 			registeredStudentDistribution.values().stream().reduce(0, Integer::sum);
 	}
@@ -141,11 +141,11 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	private IndividualYearlyCourse preceedingIYC() {
 		return (IndividualYearlyCourse) this.preceedingCI;
 	}
-	
+
 	private Map<Department, Integer> currentStudentsDist() {
 		log.debug("currentStudents(): " +this.getDesignation()+", " + this.economyDoc.getYear());
 		Map<Department, Integer> currentStudents = new HashMap<Department, Integer>();
-	
+
 		try {
 
 		if (registeredDistStudents() == 0) {
@@ -177,7 +177,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
 		};
 	} catch (Exception e) {
 			log.error("Caught a pesky exception " + e+ ", " +e.getCause());
-	
+
 	} finally {
 
 		log.debug(this.modelCase.toString());
@@ -205,18 +205,18 @@ public class IndividualYearlyCourse  extends CourseInstance {
 
 
 	public Map<Department, Integer>	regStudDist() {
-		return registeredStudentDistribution == null ? 
-			registeredStudentDistribution : 
+		return registeredStudentDistribution == null ?
+			registeredStudentDistribution :
 			studentRegCountDist();
 	}
 	public Map<Department, Integer>	predStudDist() {
 		return this.predictedStudentDistribution;
 	}
-	
+
 	public boolean isRegCongruent() {
 		return registeredDistStudents().equals(this.registeredStudents);
 	}
-	
+
 	public Map<Department, Integer> studentRegCountDist() {
 		Map<Department, Integer> summary = new HashMap<Department, Integer>();
 		if (this.registrationEvents.size() > 0) {
@@ -225,13 +225,13 @@ public class IndividualYearlyCourse  extends CourseInstance {
 					summary.put(regEvent.getDepartment(), summary.get( regEvent.getDepartment() ) + regEvent.getStudents() );
 				} else {
 					summary.put(regEvent.getDepartment(),regEvent.getStudents());
-				}			
+				}
 			}
 		}
 		return summary;
 	}
-	
-	
+
+
 	@Override
 	public Map<Department,Float> computeGrants() {
 		log.debug("computeGrants()");
@@ -246,7 +246,7 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	@Override
 	public Map<Department,Float> computeAdjustedGrants() {
 		log.debug("computeAdjustedGrants()");
-		return (this.registeredStudentDistribution != null) ? 
+		return (this.registeredStudentDistribution != null) ?
 			computeGrantDist( this.registeredStudentDistribution, fundingModel.computeFunding(1,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance), registeredStudents ) :
 			computeGrants();
 	}
@@ -259,24 +259,24 @@ public class IndividualYearlyCourse  extends CourseInstance {
 
 	@Override
  	public Float computeSupervisorsGrant() {
-		log.debug("computeSupervisorsGrant()");
- 		return computeSuperGrant(getModelStudentNumber());
+		log.debug("computeSupervisorsGrant(), " + this.getDesignation());
+ 		return this.computeSuperGrant(getModelStudentNumber());
  	}
 
 	public Float computeSuperGrant(Integer students) {
-		log.debug("computeSupervisorsGrant()");
+		log.debug("computeSuperGrant(), " + this.getDesignation());
  		return fundingModel.computeSupervisorFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
 
 
 	@Override
  	public Float computeReadersGrant() {
-		log.debug("computeReadersGrant()");
- 		return computeReadGrant(getModelStudentNumber());
+		log.debug("computeReadersGrant(), " + this.getDesignation());
+ 		return this.computeReadGrant(getModelStudentNumber());
  	}
 
  	public Float computeReadGrant(Integer students) {
-		log.debug("computeReadersGrant()");
+		log.debug("computeReadGrant(), " + this.getDesignation());
  		return fundingModel.computeReaderFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  	}
 
@@ -289,6 +289,6 @@ public class IndividualYearlyCourse  extends CourseInstance {
 	public Integer getModelStudentNumber() {
 		return getModelStudentNumberDist().values().stream().reduce(0, Integer::sum);
 	}
-	
+
 
 }

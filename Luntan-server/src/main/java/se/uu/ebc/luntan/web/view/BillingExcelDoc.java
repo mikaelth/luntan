@@ -93,62 +93,62 @@ public class BillingExcelDoc extends AbstractXlsView
         //POPULATE VALUE ROWS/COLUMNS
         currentRow++;//exclude header
         for(IndividualCourseRegistration reg: bdoc.getRegistrations()){
-			for ( IndividualCourseTeacher teacher : reg.getSuperAndReader() ) { 
-//				if (teacher.computeCreditFunds() > 0){
+			for ( IndividualCourseTeacher teacher : reg.getSuperAndReader() ) {
+				if (teacher.computeCreditFunds() > 0){
 
 					row = sheet.createRow(currentRow);
 					currentColumn = 0;
-		
+
 					cell = row.createCell(currentColumn++);
 					cell.setCellType(CellType.NUMERIC);
 					cell.setCellStyle(styleDateFormat);
 					cell.setCellValue(reg.getRegistrationDate());
-		
+
 					cell = row.createCell(currentColumn++);
 					cell.setCellType(CellType.NUMERIC);
 					cell.setCellStyle(styleDateFormat);
 					cell.setCellValue(reg.getStartDate());
-		
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(reg.getCourseBag().getDesignation());
 					cell.setCellValue(text);
-		
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(reg.getStudentName());
 					cell.setCellValue(text);
-		
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(reg.getCoordinator().getName());
 					cell.setCellValue(text);
-	
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(teacher.getTeacherType().toString());
 					cell.setCellValue(text);
-	
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(teacher.getName());
 					cell.setCellValue(text);
-	
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(teacher.getFullDepartment());
 					cell.setCellValue(text);
-	
+
 					cell = row.createCell(currentColumn++);
 					cell.setCellType(CellType.NUMERIC);
 					cell.setCellStyle(styleCurrencyFormat);
 					cell.setCellValue(teacher.computeCreditFunds());
-	
+
 					cell = row.createCell(currentColumn++);
 					text = new HSSFRichTextString(teacher.getNote());
 					cell.setCellValue(text);
-	
+
 
 					currentRow++;
-//				}
+				}
 			}
         }
 
-/* 
+/*
 		currentRow++;
 
 		for (EconomyDocGrant edg : edoc.getEconomyDocGrants()) {

@@ -7,10 +7,10 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 		var deleteButton = this.lookupReference('btnRemove'),
 			cbId = rec[0] == null ? 0 : rec[0].get('courseInstanceId');
 			ci = this.getViewModel().get('icis').getById( cbId );
-		
+
 		console.log(ci);
 		console.log( cbId );
-				
+
 		if (cbId == 0 || ci.get('registrationValid')) {
 			deleteButton.disable();
 		} else {
@@ -18,7 +18,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 		}
 
 
-    
+
     },
 
     onCreate: function()
@@ -32,7 +32,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
         r.set('economyDocId',thisEDoc);
         r.set('registrationDate',new Date());
 		r.set('ibgReg',true);
-		
+
 		var rec = grid.getStore().insert(0, r);
         grid.plugins[0].startEdit(rec[0]);
 
@@ -67,12 +67,12 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				}
 			});
 
-/* 
+
 		view.lookupReference('comboCurrentYear').addListener('select', function(combo,record) {
 			this.lookupReferenceHolder().lookupReference('btnIndCourseTeachers').enable();
 			return true;
         });
- */
+
 
 /*
 
@@ -90,7 +90,7 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 			});
 
  */
- 
+
   		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 
 			/* Disabling editing of specific fileds */
@@ -108,19 +108,23 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				ci = vM.get('icis').getById(icbId),
 				creditBasis = vM.get('credbasis').getById(creditBasisId),
 				status = false;
-				
-			if (ci == null) { 
+
+			if (ci == null) {
 				status = true;
 			} else {
 				status = !ci.get('registrationValid') && ( (creditBasis == null) || creditBasis.get('sent') == null );
 			}
-			
-			if(status){
+
+console.log(status);
+
+			if (status) {
+console.log("true", status);
 				fields.forEach(function(field){
 					field.enable()
 				});
 
 			} else {
+console.log("false", status);
 				fields.forEach(function(field){
 					field.disable()
 				});

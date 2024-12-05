@@ -84,7 +84,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 
 			}
 		},
-		{ xtype: 'checkcolumn', text: 'Extern', dataIndex: 'external', editor: 'checkboxfield', editable: true, 
+		{ xtype: 'checkcolumn', text: 'Extern', dataIndex: 'external', editor: 'checkboxfield', editable: true,
 			listeners: {checkchange: 'onCheckChange'}, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
 //		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
 		{ text: 'Lärare', dataIndex: 'ldapEntry', align: 'left', flex: 1,
@@ -112,7 +112,7 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 		{ text: 'Institution och program', dataIndex: 'fullDepartment', editor: 'textfield', align: 'left', flex: 1, reference:'fullDeptField'},
 		{ text: 'e-post', dataIndex: 'email', editor: 'textfield', align: 'left', width: 250},
 		{ text: 'Telefon', dataIndex: 'phone', editor: 'textfield', align: 'left', width: 150},
-		{ text: 'Kommentar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 2 }
+		{ text: 'Anteckningar', dataIndex: 'note', editor: 'textfield', filter: 'string', align: 'left', flex: 2 }
 
 	],
 

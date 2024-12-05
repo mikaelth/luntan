@@ -269,6 +269,7 @@ public class StaffService {
      */
     private class StaffAttributesMapper implements AttributesMapper<Staff> {
         private boolean eligible;
+		private boolean biology;
 
         public Staff mapFromAttributes(Attributes attrs) throws NamingException {
             Staff person = new Staff();
@@ -316,6 +317,12 @@ public class StaffService {
         public StaffAttributesMapper (boolean eligible) {
         	this.eligible = eligible;
         }
+
+        public StaffAttributesMapper (boolean eligible, boolean biology) {
+        	this.eligible = eligible;
+        	this.biology = biology;
+        }
+
          public StaffAttributesMapper () {}
    }
 

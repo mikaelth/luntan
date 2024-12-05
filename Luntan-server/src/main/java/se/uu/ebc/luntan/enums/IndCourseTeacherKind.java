@@ -4,7 +4,8 @@ public enum IndCourseTeacherKind
 {
 	Coordinator("Koordinator"),
 	Supervisor("Handledare"),
-	Reader("Ämnesgranskare");
+	Reader("Ämnesgranskare"),
+	Examiner("Examinator");
 
 	private final String designation;
 
@@ -12,7 +13,7 @@ public enum IndCourseTeacherKind
 		this.designation = name;
 	}
 
-    @Override 
+    @Override
     public String toString() { return designation; }
 
 }

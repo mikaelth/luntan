@@ -58,29 +58,30 @@ public class IndividualYearlyTUNDegreeCourse extends IndividualYearlyCourse {
 
 	private static final Float TEKNAT_READER_BASE_CREDITS = 60.0f;
 
-	
+
 	/* Business methods */
-	
+
 	@Override
  	public Float computeSupervisorsGrant() {
-		log.debug("computeSupervisorsGrant()");
+		log.debug("computeSupervisorsGrant(), " + this.getDesignation());
  		return 0.0f;
  	}
 
+	@Override
 	public Float computeSuperGrant(Integer students) {
-		log.debug("computeSupervisorsGrant()");
+		log.debug("computeSuperGrant(), " + this.getDesignation());
  		return 0.0f;
  	}
-
 
 	@Override
  	public Float computeReadersGrant() {
-		log.debug("computeReadersGrant()");
- 		return computeReadGrant(getModelStudentNumber());
+		log.debug("computeReadersGrant(), " + this.getDesignation());
+ 		return this.computeReadGrant(getModelStudentNumber());
  	}
 
+	@Override
  	public Float computeReadGrant(Integer students) {
-		log.debug("computeReadersGrant(), number of studennts: " + students);
+		log.debug("computeReadGrant(), number of students: " + students);
 // 		return fundingModel.computeReaderFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
  		return students*this.economyDoc.getReaderBaseValue()*this.course.getCredits()/TEKNAT_READER_BASE_CREDITS;
  	}
