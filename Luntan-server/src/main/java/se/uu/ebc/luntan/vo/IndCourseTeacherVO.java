@@ -22,6 +22,7 @@ public class IndCourseTeacherVO {
 	private IndCourseTeacherKind teacherType;
 
 	private boolean external = false;
+	private Integer teachFactor;
 
 	private String name;
 	private String fullDepartment;
@@ -48,6 +49,7 @@ public class IndCourseTeacherVO {
 		this.teacherType = xe.getTeacherType();
 
 		this.external = xe.isExternal();
+		this.teachFactor = xe.getTFactor();
 
 		this.name = xe.getName();
 		this.fullDepartment = xe.getFullDepartment();

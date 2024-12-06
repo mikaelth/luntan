@@ -143,12 +143,30 @@ public class IndividualCourseRegistration extends Auditable {
 	}
 
 	public Float computeSupervisorsGrant() {
-		return this.courseBag.computeSuperGrant(1)/(getSupervisors().isEmpty() ? 1 : getSupervisors().size());
+		return this.courseBag.computeSuperGrant(1);
+//		return this.courseBag.computeSuperGrant(1)/(getSupervisors().isEmpty() ? 1 : getSupervisors().size());
 	}
 
 	public Float computeReadersGrant() {
 //		return this.courseBag.computeReadGrant(1)/(getReaders().isEmpty() ? 1 : getReaders().size());
-		return computeSupervisorsGrant() == 0.0f ? (this.courseBag.computeReadGrant(1)/(getReaders().isEmpty() ? 1 : getReaders().size())) : 0.0f;
+
+		return computeSupervisorsGrant() == 0.0f ? this.courseBag.computeReadGrant(1) : 0.0f;
+
+//		return computeSupervisorsGrant() == 0.0f ? (this.courseBag.computeReadGrant(1)/( getReaders().isEmpty() ? 1 : lots) ) : 0.0f;
+//		return computeSupervisorsGrant() == 0.0f ? (this.courseBag.computeReadGrant(1)/(getReaders().isEmpty() ? 1 : getReaders().size())) : 0.0f;
 	}
 
+	public Integer getReadersTeachFactors() {
+		return this.getReaders()
+			.stream()
+			.mapToInt (x -> x.getTeachFactor())
+			.sum();
+	}
+
+	public Integer getSupervisorsTeachFactors() {
+		return this.getSupervisors()
+			.stream()
+			.mapToInt (x -> x.getTeachFactor())
+			.sum();
+	}
 }

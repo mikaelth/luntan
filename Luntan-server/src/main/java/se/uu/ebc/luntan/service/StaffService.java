@@ -89,6 +89,14 @@ public class StaffService {
 		return theStaff;
 	}
 
+	public List<Staff> getTeachersExtended () {
+		List<Staff> theStaff = getTeachersBiology();
+		theStaff.addAll(getItImbimIgpKemiTeachers());
+
+		return theStaff;
+	}
+
+
 	@Cacheable("examinermap")
 	public Map<String, Staff> getDesignatedExaminers() {
 		Map<String, Staff> staffMap = new HashMap<String, Staff>();
@@ -153,6 +161,38 @@ public class StaffService {
 				);
 
         return ldapTemplate.search(query, new StaffAttributesMapper(true));
+    }
+
+	private List<Staff> getItImbimIgpKemiTeachers () {
+
+        LdapQuery query = query()
+        		.base(BASE_DN)
+                .where("objectclass").is("person")
+                .and(query()
+                	.where("title").like("universitetslektor*")
+                	.or("title").like("professor*")
+                	.or("title").like("seniorprofessor*")
+                	.or("title").like("biträdande universitetslektor*")
+                	.or("title").like("forskarassistent*")
+                	.or("title").like("adjunkt*")
+                	.or("title").like("universitetsadjunkt*")
+                	.or("title").like("stipendiat*")
+                	.or("title").like("forskare*")
+               		.or("title").like("Postdoktor*")
+               		.or("title").like("post doc*")
+               		.or("title").like("doktorand*")
+                )
+                .and(query()
+                	.where("department").like("Institutionen för immunologi, genetik och patologi*")
+                	.or("department").like("Institutionen för medicinsk biokemi och mikrobiologi*")
+                	.or("department").like("Institutionen för informationsteknologi*")
+ 					.or("department").like("Institutionen för kemi*")
+				)
+				.and(query()
+					.where("title").not().like("professor emer*")
+				);
+
+        return ldapTemplate.search(query, new StaffAttributesMapper(false,false));
     }
 
 	private List<Staff> getBiologyOtherStaff () {
@@ -269,7 +309,7 @@ public class StaffService {
      */
     private class StaffAttributesMapper implements AttributesMapper<Staff> {
         private boolean eligible;
-		private boolean biology;
+		private boolean biology = true;
 
         public Staff mapFromAttributes(Attributes attrs) throws NamingException {
             Staff person = new Staff();
@@ -304,6 +344,7 @@ public class StaffService {
 				}
 
 				person.setExaminerEligible(eligible);
+				person.setBiologySection(biology);
 
             } catch (Exception e) {
 				log.error("Got a pesky exception: "  + e);

@@ -132,11 +132,14 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
-			List<Staff> staff = staffService.getTeachersBiology();
+//			List<Staff> staff = staffService.getTeachersBiology();
+			List<Staff> staff = staffService.getTeachersExtended();
 
+/*
 			for (Staff person : staff){
-				log.debug("Lookup: " + staffService.findStaff(person.getDn().toString()).toString());
+				log.trace("Lookup: " + staffService.findStaff(person.getDn().toString()).toString());
 			}
+ */
 
  			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").include("examinerEligible").rootName("staff").deepSerialize(staff), headers, HttpStatus.OK);
 		} catch (Exception e) {

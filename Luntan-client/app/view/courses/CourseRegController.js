@@ -107,24 +107,20 @@ Ext.define('Luntan.view.courses.CourseRegController', {
 				vM = context.grid.up().getViewModel();
 				ci = vM.get('icis').getById(icbId),
 				creditBasis = vM.get('credbasis').getById(creditBasisId),
-				status = false;
+				fieldsEnabled = false;
 
 			if (ci == null) {
-				status = true;
+				fieldsEnabled = true;
 			} else {
-				status = !ci.get('registrationValid') && ( (creditBasis == null) || creditBasis.get('sent') == null );
+				fieldsEnabled = !ci.get('registrationValid') && ( (creditBasis == null) || creditBasis.get('sent') == null );
 			}
 
-console.log(status);
-
-			if (status) {
-console.log("true", status);
+			if (fieldsEnabled) {
 				fields.forEach(function(field){
 					field.enable()
 				});
 
 			} else {
-console.log("false", status);
 				fields.forEach(function(field){
 					field.disable()
 				});

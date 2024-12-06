@@ -10,10 +10,7 @@ import java.util.StringJoiner;
 import lombok.Data;
 
 @Entry(
-//  base = "cn=People,dc=uu,dc=se", 
-//  base = "ou=Systematisk biologi", 
-//  base = "title=universitetslektor", 
-  base = "cn=People,dc=uu,dc=se", 
+  base = "cn=People,dc=uu,dc=se",
   objectClasses = { "person", "inetOrgPerson", "top", "uuAKKAperson", "eduPerson" })
 
 @Data
@@ -22,7 +19,6 @@ public final class Staff {
     @Id
     private Name dn;
 
-//    private @DnAttribute(value = "employeeNumber", index=0) String employeeNumber;
     private @Attribute(name = "employeeNumber")
     		@DnAttribute("employeeNumber") String employeeNumber;
     private @Attribute(name = "uid") String username;
@@ -34,10 +30,12 @@ public final class Staff {
     private @Attribute(name = "telephoneNumber") String phone;
     private @Attribute(name = "mail") String mail;
     private @Attribute(name = "department") String fullDepartment;
+
     private boolean examinerEligible;
+	private boolean biologySection;
 
 	// Business methods
-	
+
 	public String getSortingName () {
 		return familyName == null ? employeeNumber : familyName + ", " + givenName;
 	}
@@ -49,33 +47,33 @@ public final class Staff {
 	public String getFullDepartment() {
 		return fullDepartment == null ? "MISSING" : fullDepartment;
 	}
-	
+
 	public String getNameAndOu () {
-	
+
 		StringJoiner staffJoiner = new StringJoiner(", ");
- 
+
 		staffJoiner.add(name);
-		staffJoiner.add(title);		
+		staffJoiner.add(title);
 		staffJoiner.add(fullDepartment);
-		
+
 		return staffJoiner.toString();
-	} 
-	
+	}
+
 	public String getNameAndContact() {
 		StringJoiner staffJoiner = new StringJoiner(", ");
- 
+
 		staffJoiner.add(name);
-		staffJoiner.add(mail);		
+		staffJoiner.add(mail);
 		staffJoiner.add(phone);
-		
+
 		return staffJoiner.toString();
-	
-		
+
+
 	}
-	
-/* 
+
+/*
 	public boolean isExaminerEligible() {
-	
+
 		return !title.toLowerCase().contains("forskare");
 	}
  */

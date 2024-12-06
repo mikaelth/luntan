@@ -11,22 +11,22 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
 			cCourse: null
 		}
     },
-    
+
     stores: {
 		depts: 'DepartmentStore',
 
-		coursegroups: 'CourseGroupStore',    	
+		coursegroups: 'CourseGroupStore',
 
-		coursetypes: 'CourseTypeStore',    	
+		coursetypes: 'CourseTypeStore',
 
-		courses: 'CourseStore',    	
+		courses: 'CourseStore',
 
   		availBoards: {
  			type:'chained',
  			source:'EduBoardStore',
  			sorters: [{property:'displayname', direction: 'DESC'}]
  		},
- 
+
   		examinerslistings: {
  			type:'chained',
  			source:'ExaminersListStore',
@@ -42,26 +42,25 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
 					}
 				}
 			}
- 
+
   		},
 
- 
-/* 
-		listedteachers : {
-			type: 'chained',
-			source: 'TeacherStore'
-		},
- */
 		teachers : {
 			type: 'chained',
 			source: 'TeacherStore',
-			filters:[{property:'examinerEligible', value: true, exactMatch: true}],
+			filters:[
+				{property:'examinerEligible', value: true, exactMatch: true},
+				{property:'biologySection', value: true, exactMatch: true}
+			],
 			sorters: [{property:'name', direction: 'ASC'}]
 		},
 
 		seniorStaff : {
 			type: 'chained',
 			source: 'TeacherStore',
+			filters:[
+				{property:'biologySection', value: true, exactMatch: true}
+			],
 			sorters: [{property:'name', direction: 'ASC'}]
 		},
 
@@ -69,41 +68,41 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
 			type: 'chained',
 			source: 'ExaminerStore',
 			filters: [
- 				{property: 'courseId', value: '{current.cid}', exactMatch: true}, 
+ 				{property: 'courseId', value: '{current.cid}', exactMatch: true},
  				{property: 'decided', value: false, exactMatch: true}
 			],
 //			sorters: {property:'rank', direction: 'ASC'},
-			nextRank : function() { 
-				var rs = this.data.items, v = 0; 
-				for(var i = 0; i < rs.length; i++){ 
-					v = Math.max(v, (1 * rs[i].data['rank']) || 0); 
-				} 
-				return v+1; 
-			} 			
-			
+			nextRank : function() {
+				var rs = this.data.items, v = 0;
+				for(var i = 0; i < rs.length; i++){
+					v = Math.max(v, (1 * rs[i].data['rank']) || 0);
+				}
+				return v+1;
+			}
+
 		},
 
 		listedexaminers : {
 			type: 'chained',
 			source: 'ExaminerStore',
 			filters: [
-				{property: 'decisionId', value: '{current.did}', exactMatch: true} 
+				{property: 'decisionId', value: '{current.did}', exactMatch: true}
 			],
 			sorters: [{property:'courseId', direction: 'ASC'},{property:'rank', direction: 'ASC'}]
-/* 
-			nextRank : function() { 
-				var rs = this.data.items, v = 0; 
-				for(var i = 0; i < rs.length; i++){ 
-					v = Math.max(v, (1 * rs[i].data['rank']) || 0); 
-				} 
-				return v+1; 
-			} 			
+/*
+			nextRank : function() {
+				var rs = this.data.items, v = 0;
+				for(var i = 0; i < rs.length; i++){
+					v = Math.max(v, (1 * rs[i].data['rank']) || 0);
+				}
+				return v+1;
+			}
  */
-			
+
 		}
-		    	
+
 	},
-	
+
 	formulas: {
 
         currentCourse: {
@@ -116,7 +115,7 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
             	this.set('current.cid', cid);
                 return cid;
             }
- 
+
 		},
         currentFormalCourse: {
             // We need to bind deep to be notified on each model change
@@ -128,7 +127,7 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
             	this.set('current.cCourse', cCourse);
                 return cCourse;
             }
- 
+
 		},
         currentDecision: {
             // We need to bind deep to be notified on each model change
@@ -140,7 +139,7 @@ Ext.define('Luntan.view.courses.ExaminerModel', {
             	this.set('current.did', did);
                 return did;
             }
- 
+
 		}
  	}
 

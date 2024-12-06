@@ -135,6 +135,11 @@ public class BillingExcelDoc extends AbstractXlsView
 
 					cell = row.createCell(currentColumn++);
 					cell.setCellType(CellType.NUMERIC);
+					cell.setCellStyle(stylePercentFormat);
+					cell.setCellValue(teacher.getTeachFactorFraction());
+
+					cell = row.createCell(currentColumn++);
+					cell.setCellType(CellType.NUMERIC);
 					cell.setCellStyle(styleCurrencyFormat);
 					cell.setCellValue(teacher.computeCreditFunds());
 

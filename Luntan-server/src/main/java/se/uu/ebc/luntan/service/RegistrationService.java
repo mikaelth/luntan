@@ -183,6 +183,8 @@ public class RegistrationService {
 			c.setNote(cvo.getNote()) ;
 
 			c.setExternal(cvo.isExternal());
+			c.setTFactor(cvo.getTeachFactor());
+
 			c.setName(cvo.getName());
 			c.setPhone(cvo.getPhone());
 			c.setFullDepartment(cvo.getFullDepartment());

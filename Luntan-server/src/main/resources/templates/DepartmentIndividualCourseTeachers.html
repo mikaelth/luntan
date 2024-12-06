@@ -23,6 +23,8 @@
 				<th>Student</th>
 				<th>Kursstart</th>
 				<th>Ersättning</th>
+				<th>Andel</th>
+				<th>Betalning</th>
 				<th>Kommentar</th>
 			</tr>
 
@@ -34,6 +36,8 @@
 				<td th:text="${teach.assignment.studentName}" />
 				<td th:text="${#dates.format(teach.assignment.startDate,'yyyy-MM-dd')}" />
 				<td th:text="${#numbers.formatInteger(teach.computeCreditFunds(),1)}+ ' kr'" />
+				<td th:text="${#numbers.formatInteger(teach.teachFactorFraction*100,1)}+ ' %'" />
+				<td th:text="${#dates.format(teach.assignment.creditBasisRecord?.sent,'yyyy-MM-dd')}" />
 
 				<td th:text="${teach.assignment.note}" />
 			</tr>

@@ -68,6 +68,9 @@ public class IndividualCourseTeacher extends Auditable {
 	@Column(name="EXTERNAL")
 	private boolean external = false;
 
+	@Column(name="TFACTOR")
+	private Integer tFactor;
+
 	@Column(name="NAME")
 	private String name;
 
@@ -89,21 +92,40 @@ public class IndividualCourseTeacher extends Auditable {
 
 	public Float computeCreditFunds() {
 		Float grant = 0.0f;
-		log.debug("computeCreditFunds()")	;	
+		log.debug("computeCreditFunds()")	;
 		if (this.teacherType.equals (IndCourseTeacherKind.Supervisor)) {
-			grant = this.assignment.computeSupervisorsGrant();
+			grant = this.assignment.computeSupervisorsGrant()*this.getTeachFactor()/this.assignment.getSupervisorsTeachFactors();
 		} else if (this.teacherType.equals (IndCourseTeacherKind.Reader)) {
-			grant = this.assignment.computeReadersGrant();		
-		} 
+			grant = this.assignment.computeReadersGrant()*this.getTeachFactor()/this.assignment.getReadersTeachFactors();
+		}
 
-		return grant;	
+		return grant;
 	}
-	
+
 	public String getDeptAndName() {
-	
+
 		return this.department + this.name + this.fullDepartment;
 //		return this.fullDepartment + this.name;
 //		return this.department + this.name;
-		
+
+	}
+
+	public Integer getTeachFactor() {
+		return (tFactor == null || tFactor == 0) ? 1 : tFactor;
+	}
+
+	public Float getTeachFactorFraction() {
+		Float teachFraction = 1.0f;
+
+		if (this.teacherType.equals (IndCourseTeacherKind.Supervisor)) {
+			teachFraction = ((float)this.getTeachFactor())/this.assignment.getSupervisorsTeachFactors();
+		} else if (this.teacherType.equals (IndCourseTeacherKind.Reader)) {
+			teachFraction = ((float)this.getTeachFactor())/this.assignment.getReadersTeachFactors();
+		}
+
+log.debug("Factor " + teachFraction + ", teach " + getTeachFactor() +", " + teacherType.toString());
+
+		return teachFraction;
+
 	}
 }

@@ -372,7 +372,7 @@ public class RegistrationController {
 		try {
 
 			EconomyDocument edoc = edocRepo.findByYear(year);
-			
+
 			List<IndividualCourseTeacher> teachers = teacherRepo.findTeachersByYear(year).stream()
 				.sorted(Comparator.comparing(IndividualCourseTeacher::getDeptAndName))
 				.collect(Collectors.toList());
@@ -459,6 +459,7 @@ public class RegistrationController {
         headers.add("Ersättning till");
         headers.add("Namn");
         headers.add("Enhet att betala till");
+        headers.add("Andel av total");
         headers.add("Belopp att betala");
         headers.add("Kommentar");
 /*

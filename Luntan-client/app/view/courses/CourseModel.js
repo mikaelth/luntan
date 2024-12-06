@@ -15,16 +15,16 @@ Ext.define('Luntan.view.courses.CourseModel', {
         	cloneDestED: null
 		}
     },
-    
-    stores: {
-		coursegroups: 'CourseGroupStore',    	
 
-		courses: 'CourseStore',    	
-  
+    stores: {
+		coursegroups: 'CourseGroupStore',
+
+		courses: 'CourseStore',
+
 		extradesstore: {
 			type: 'chained',
 			source: 'CIDesignationStore'
-		},    	
+		},
  		usedYears: {
  			type:'chained',
  			source:'EconomyDocStore',
@@ -42,7 +42,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
 			filters: [{property: 'economyDocId', value: '{current.edoc.id}', exactMatch: true}],
 			sorters: [{property:'courseName', direction: 'ASC'}],
 			groupField: 'courseGroup'
-		},    	
+		},
 		citaskstore: {
 			type: 'chained',
 			source: 'CourseInstanceStore',
@@ -64,30 +64,36 @@ Ext.define('Luntan.view.courses.CourseModel', {
 		teachers : {
 			type: 'chained',
 			source: 'TeacherStore',
-			filters:[{property:'examinerEligible', value: true, exactMatch: true}],
+			filters:[
+				{property:'examinerEligible', value: true, exactMatch: true},
+				{property:'biologySection', value: true, exactMatch: true}
+			],
 			sorters: [{property:'name', direction: 'ASC'}]
 		},
 		seniorStaff : {
 			type: 'chained',
 			source: 'TeacherStore',
+			filters:[
+				{property:'biologySection', value: true, exactMatch: true}
+			],
 			sorters: [{property:'name', direction: 'ASC'}]
 		},
 		examiners : {
 			type: 'chained',
 			source: 'ExaminerStore',
 			filters: [{property: 'courseId', value: '{current.fcid}', exactMatch: true}, {property: 'decided', value: false, exactMatch: true}]
-			
+
 		},
 		programmes: {
 			type: 'chained',
 			source: 'ProgrammeStore'
 		}
 
-		    	
+
 	},
-	
+
 	formulas: {
-/* 
+/*
         workingEDoc: {
             // We need to bind deep to be notified on each model change
             bind: {
@@ -124,11 +130,11 @@ Ext.define('Luntan.view.courses.CourseModel', {
                 return cloneDestED;
             }
         },
- 
+
  		disableEditBtns :  function (get) {
  			return get('current.edoc') === null || get('current.edoc.locked');
  		},
- 		
+
         currentCI: {
             // We need to bind deep to be notified on each model change
             bind: {
@@ -151,7 +157,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
             	this.set('current.cid', cid);
                 return cid;
             }
- 
+
 		},
         currentFormalCourse: {
             // We need to bind deep to be notified on each model change
@@ -163,7 +169,7 @@ Ext.define('Luntan.view.courses.CourseModel', {
             	this.set('current.fcid', fcid);
                 return fcid;
             }
- 
+
 		}
 	}
 
