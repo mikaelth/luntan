@@ -144,7 +144,8 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 					form.findField('email'),
 					form.findField('phone')
 				],
-			status = context.grid.up().getViewModel().get('current.ict.external');
+				status = context.record.getData().external;
+
 			if(status){
 				fields.forEach(function(field){
 					field.enable()
