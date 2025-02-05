@@ -25,10 +25,32 @@ Ext.define('Luntan.view.courses.CourseInstanceTaskController', {
    	},
 
 
+   	onCourseInstances: function () {
+		var year = this.getViewModel().get('current.edoc.year');
+		window.open(Luntan.data.Constants.BASE_URL.concat('public/view/courseinstanceinfo?year=').concat(year == null ? new Date().getFullYear() : year));
+   	},
+
+
    	init: function (view) {
 
-		view.down('toolbar').remove(view.lookupReference('btnCreate'));
-		view.down('toolbar').remove(view.lookupReference('btnRemove'));
+		var tb = view.down('toolbar');
+						
+
+		tb.remove(view.lookupReference('btnCreate'));
+		tb.remove(view.lookupReference('btnRemove'));
+
+		tb.insert(2,
+			{
+				xtype: 'button',
+				showText: true,
+				tooltip:'Se årets kurser och kursledare',
+				text: 'Kurser och kursledare',
+				reference: 'btnCourseInstances',
+				disabled: false,
+				listeners: {
+				  click: 'onCourseInstances'
+				}
+			});			
 
 		view.findPlugin('rowediting').addListener('beforeEdit', function(rowEditing, context) {
 			/* Disabling editing of specific fileds */

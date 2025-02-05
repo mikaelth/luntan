@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Kursekonomidokument</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+</head>
+<body>
+
+	<h1 th:text="'Kursinstanser och kursledare ' + ${year}" />
+
+		<table id = "course_instances">
+			<tr>
+				<th>Kurs</th>
+				<th>Kursledare</th>
+			</tr>
+			<tr th:each="ci: ${sortedCIs}">
+				<td th:text="${ci.designation}" />
+				<td th:text="${ci.courseLeader == null} ? '' : (${#maps.containsKey(courseLeaderMap,ci.courseLeader)}? ${courseLeaderMap.get(ci.courseLeader).nameAndContact} : ${ci.courseLeader})" />
+		</table>
+
+	<br />
+	<br />
+	<p>
+		Current time is <span th:text="${serverTime}" />
+	</p>
+</body>
+</html>

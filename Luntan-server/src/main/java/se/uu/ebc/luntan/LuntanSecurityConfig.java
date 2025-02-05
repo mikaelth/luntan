@@ -134,13 +134,14 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 
  */
 			http.authorizeRequests()
-				.antMatchers("/bemanning/**").hasIpAddress("::1")
+				.antMatchers("/bemanning/**").hasIpAddress("::1") //loop-back address for future use with BP
 				.antMatchers("/index.*").authenticated()
 				.antMatchers("/loginredirect.html").authenticated()
 				.antMatchers("/InREST.html").authenticated()
 				.antMatchers("/Luntan/index.html").authenticated()
 				.antMatchers("/Luntan/**").permitAll()
 				.antMatchers("/login/**").permitAll()
+				.antMatchers("/public/**").permitAll()
 				.antMatchers("/rest/bulk/**").hasRole("REGISTRATIONUPDATER")
 				.antMatchers("/rest/**").authenticated()
 				.antMatchers("/view/**").authenticated()

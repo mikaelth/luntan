@@ -905,6 +905,39 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 		}
     }
 
+
+    @RequestMapping(value = "/public/view/courseinstanceinfo", method = RequestMethod.GET)
+    public String viewCourseInstanceInfo(@RequestParam(value = "year", required = true) Integer year, Model model, Principal principal, HttpServletRequest request) {
+			log.debug("viewDepartmentExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+
+       try {
+/* Testing 
+			Map<String, Staff> testMap = new HashMap<String,Staff>();
+			testMap.put("Apa",new Staff());
+			model.addAttribute("courseLeaderMap", testMap);
+*/
+
+			EconomyDocument edoc = emRepo.findByYear(year);
+			List<CourseInstance> sortedCIs = edoc.getCourseInstances().stream()
+				.sorted(Comparator.comparing(CourseInstance::getShortDesignation))
+				.collect(Collectors.toList());
+			
+    	    model.addAttribute("year", year);
+    	    model.addAttribute("sortedCIs", sortedCIs);
+			model.addAttribute("courseLeaderMap", staffService.getCourseLeaders(edoc));
+			model.addAttribute("serverTime", new Date());
+
+    		return "CourseInstanceOverview";
+ 
+        } catch (Exception e) {
+			log.error("viewCourseInstanceInfo, caught a pesky exception "+ e);
+			return "{\"ERROR\":"+e.getMessage()+"\"}";
+		}
+
+	}
+
+
+
 	/**
 	 * <p>The method asSortedList returns a sorted list from a collection of objects
 	 * </p>
