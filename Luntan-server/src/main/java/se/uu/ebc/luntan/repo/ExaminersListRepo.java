@@ -11,15 +11,18 @@ import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.entity.ExaminersDecision;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 @Transactional //(readOnly = true)
 public interface ExaminersListRepo extends JpaRepository<ExaminersList, Long>, JpaSpecificationExecutor<ExaminersList>{
 
 
-	@Query(value="select * from examiners_list as el where board=?1 AND decision_date < ?2 order by decision_date DESC limit 1", 
+	@Query(value="select * from examiners_list as el where board=?1 AND decision_date < ?2 order by decision_date DESC limit 1",
 		nativeQuery=true)
 	public ExaminersDecision findPreceeding(String board, Date date);
 
+	@Query(nativeQuery = true, value = "select * from examiners_list AS ed where (ed.board, ed.decision_date) in (SELECT el.board,max(el.decision_date) FROM examiners_list AS el group by el.board)")
+	public List<ExaminersDecision> findCurrentDecisions();
 
 }

@@ -62,6 +62,7 @@ import se.uu.ebc.luntan.repo.CourseRepo;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.repo.ProgrammeRepo;
 import se.uu.ebc.luntan.repo.ExaminersListRepo;
+import se.uu.ebc.luntan.repo.ExaminersDecisionRepo;
 import se.uu.ebc.luntan.repo.ExaminerRepo;
 
 import se.uu.ebc.luntan.service.EconomyDocumentService;
@@ -128,6 +129,9 @@ public class EconomyDocController {
 
  	@Autowired
 	ExaminersListRepo elRepo;
+
+ 	@Autowired
+	ExaminersDecisionRepo edRepo;
 
  	@Autowired
 	ExaminerRepo exRepo;
@@ -911,24 +915,37 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			log.debug("viewDepartmentExaminers, model "+ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
        try {
-/* Testing 
+/* Testing
 			Map<String, Staff> testMap = new HashMap<String,Staff>();
 			testMap.put("Apa",new Staff());
 			model.addAttribute("courseLeaderMap", testMap);
 */
 
+			List<ExaminersDecision> eds = elRepo.findCurrentDecisions();
+			log.debug("Decisions " + eds);
+			List<Examiner> examinerSet = new ArrayList<Examiner>();
+			for (ExaminersDecision ed : eds) {
+				examinerSet.addAll(exRepo.findPrimariesByDecision(ed));
+			}
+			log.debug("Examinerset " + examinerSet);
+			Map<Course,Staff> courseExaminers = new HashMap<Course,Staff>();
+			for (Examiner ex : examinerSet) {
+				courseExaminers.put(ex.getCourse(),staffService.findbyEmployeeNumber(ex.getExaminer()));
+			}
+			log.debug("Examiners " + courseExaminers);
 			EconomyDocument edoc = emRepo.findByYear(year);
 			List<CourseInstance> sortedCIs = edoc.getCourseInstances().stream()
 				.sorted(Comparator.comparing(CourseInstance::getShortDesignation))
 				.collect(Collectors.toList());
-			
+
     	    model.addAttribute("year", year);
     	    model.addAttribute("sortedCIs", sortedCIs);
 			model.addAttribute("courseLeaderMap", staffService.getCourseLeaders(edoc));
+			model.addAttribute("examinerMap", courseExaminers);
 			model.addAttribute("serverTime", new Date());
 
     		return "CourseInstanceOverview";
- 
+
         } catch (Exception e) {
 			log.error("viewCourseInstanceInfo, caught a pesky exception "+ e);
 			return "{\"ERROR\":"+e.getMessage()+"\"}";

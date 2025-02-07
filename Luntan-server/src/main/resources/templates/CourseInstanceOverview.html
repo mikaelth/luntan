@@ -13,10 +13,13 @@
 			<tr>
 				<th>Kurs</th>
 				<th>Kursledare</th>
+				<th>Examinator primus</th>
 			</tr>
 			<tr th:each="ci: ${sortedCIs}">
 				<td th:text="${ci.designation}" />
 				<td th:text="${ci.courseLeader == null} ? '' : (${#maps.containsKey(courseLeaderMap,ci.courseLeader)}? ${courseLeaderMap.get(ci.courseLeader).nameAndContact} : ${ci.courseLeader})" />
+				<td th:text="${ci.course == null} ? '' : (${#maps.containsKey(examinerMap,ci.course)}? ${examinerMap.get(ci.course).nameAndContact} : ${ci.courseLeader})" />
+			</tr>
 		</table>
 
 	<br />
