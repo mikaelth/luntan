@@ -142,6 +142,7 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/Luntan/**").permitAll()
 				.antMatchers("/login/**").permitAll()
 				.antMatchers("/public/**").permitAll()
+				.antMatchers("/styles/main.css").permitAll()
 				.antMatchers("/rest/bulk/**").hasRole("REGISTRATIONUPDATER")
 				.antMatchers("/rest/**").authenticated()
 				.antMatchers("/view/**").authenticated()
