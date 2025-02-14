@@ -840,6 +840,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 		TBK2M&pInr=DATA	Masterprogram i bioinformatik, dataingång
 		TBI2M			Masterprogram i biologi
 		TBF2M			Masterprogram i biofysik
+		TEB2M			Masterprogram i evolutionsbiologi (MEME)
 
 		TMB2Y			Civilingenjörsprogrammet i molekylär bioteknik
 		TMV2Y			Civilingenjörsprogrammet i miljö- och vattenteknik

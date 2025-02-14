@@ -91,7 +91,7 @@ public class CourseController {
 
 
 	private final String INACTIVE_STATEMENT = "Kursen är avvecklad";
-	
+
 	@Autowired
 	CourseService courseService;
 
@@ -295,7 +295,7 @@ public class CourseController {
 			ciVO.setId(id);
 
 			/* If role is STAFFDIRECTOR, only allow updating course leader */
-			
+
 			if (request.isUserInRole("ROLE_STAFFDIRECTOR")) {
 				ciVO = courseService.saveCourseLeader(ciVO);
 			} else {
@@ -303,12 +303,12 @@ public class CourseController {
 			}
 
 			log.debug("updateCourseInstance, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
-			
+
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
- 
+
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -359,21 +359,21 @@ public class CourseController {
 	@Secured({("ROLE_REGISTRATIONUPDATER")})
 	@RequestMapping(value = "/bulk/cibycsv", method = RequestMethod.GET)
     public String viewCSVCIUploadRequest(@RequestParam(value = "year", required = true) Integer year, Model model, HttpServletRequest request) {
-		log.debug("viewCSVCIUploadRequest: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));		
-		try {			
+		log.debug("viewCSVCIUploadRequest: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
+		try {
 			CourseInstancesCSVUploadFB fb = new CourseInstancesCSVUploadFB();
   			fb.setYear(year);
 			fb.setIgnoreExistingValues(false);
-			
+
 			model.addAttribute("years",edRepo.getYears());
  			model.addAttribute("formValues",fb);
-			log.debug("viewCSVCIUploadRequest: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));		
+			log.debug("viewCSVCIUploadRequest: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 
 			return "ViewCSVCIUpload";
 
         } catch (Exception e) {
 				log.error("viewCSVCIUploadRequest, pesky exception "+e);
-           return "{\"ERROR\":"+e.getMessage()+"\"}";        
+           return "{\"ERROR\":"+e.getMessage()+"\"}";
         }
 	}
 
@@ -381,10 +381,10 @@ public class CourseController {
 	@RequestMapping(value="/bulk/requestUpdateRegsFromCSV", method = RequestMethod.POST, headers = "Accept=application/json")
     public String requestUpdateRegsFromCSV(Model model, HttpServletRequest request, HttpServletResponse response, final CourseInstancesCSVUploadFB formValues) {
 
-		log.debug("FormValues: " + ReflectionToStringBuilder.toString(formValues, ToStringStyle.MULTI_LINE_STYLE));		
+		log.debug("FormValues: " + ReflectionToStringBuilder.toString(formValues, ToStringStyle.MULTI_LINE_STYLE));
 		log.debug("Model: " + ReflectionToStringBuilder.toString(model, ToStringStyle.MULTI_LINE_STYLE));
 		log.debug("Request: " + ReflectionToStringBuilder.toString(request, ToStringStyle.MULTI_LINE_STYLE));
-		
+
        // validate file
         if (formValues.getCiFile().isEmpty()) {
 			log.error("No file received");
@@ -395,7 +395,7 @@ public class CourseController {
 // 			log.debug("Year: " + formValues.getYear());
 //			log.debug("File: " + formValues.getCiFile().toString());
  			EconomyDocument edoc = edocRepo.findByYear(formValues.getYear());
- 			
+
             // parse CSV file to create a list of `Specimen` objects
             try (Reader reader = new BufferedReader(new InputStreamReader(formValues.getCiFile().getInputStream()))) {
 
@@ -409,10 +409,10 @@ public class CourseController {
 
                 // convert `CsvToBean` object to list of specimens
                 List<LADOKEntryVO> cis = csvToBean.parse();
-		
+
 				Map<String, Long> counts = cis.stream().collect(Collectors.groupingBy(c -> c.getCourseCode(), Collectors.counting()));
 				log.debug("Occurrences: " + counts);
-				
+
 				for (LADOKEntryVO ci : cis) {
 					log.debug(ci.getCourseCode() + ", added ci " + ci.getInstanceCode() + " with " + ci.getRegistered() + " registered students; "+ci.getSize());
 
@@ -536,7 +536,7 @@ public class CourseController {
     }
 
 
-/* 
+/*
 	@RequestMapping(value="/test", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> test() {
@@ -545,7 +545,7 @@ public class CourseController {
         try {
 
 			courseService.updateBalanceED();
-			
+
  			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize("Done"), headers, HttpStatus.OK);
 // 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("test").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(examinerService.getAvailableByBoard(EduBoard.NUN)), headers, HttpStatus.OK);
 		} catch (Exception e) {
@@ -634,18 +634,21 @@ public class CourseController {
     @RequestMapping(value="/courses/checkinactive", method = RequestMethod.GET)
     public ResponseEntity<String> checkInactiveCourses() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.add("Content-Type", "application/json; charset=utf-8");
+		log.debug("In : checkInactiveCourses()");
         try {
 			List<Course> courses = courseRepo.findAll();
-
+			log.debug("Courses: " + courses.size());
 			for (Course course : courses) {
 				if (!course.isInactive()) {
 					Document doc = Jsoup.connect("https://www.uu.se/utbildning/utbildningar/selma/kursplan/?kKod="+course.getCode()).get();
 					if (doc != null) {
-						Elements syllabus = doc.select("ul.syllabusFacts");
+//						Elements syllabus = doc.select("ul.syllabusFacts");
+						Elements syllabus = doc.select("div.education");
 						String theText = syllabus.text();
-						log.debug("Syllabus text for "+ course.getCode() + ", " + theText);
+						log.debug("Kollar kursen "+ course.getCode());
 						if (theText != null && theText.contains(INACTIVE_STATEMENT)) {
+							log.debug("Inactive: "+ course.getCode());
 							course.setInactive(true);
 							courseRepo.save(course);
 						}
