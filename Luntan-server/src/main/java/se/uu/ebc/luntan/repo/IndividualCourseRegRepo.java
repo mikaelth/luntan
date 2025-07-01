@@ -22,7 +22,10 @@ public interface IndividualCourseRegRepo extends JpaRepository<IndividualCourseR
  	@Query("SELECT distinct cr FROM IndividualCourseRegistration AS cr WHERE cr.creditBasisRecord is null")
  	public List<IndividualCourseRegistration> findUnattached();
 
+ 	@Query("SELECT distinct cr FROM IndividualCourseRegistration AS cr WHERE (cr.creditBasisRecord is null AND cr.startDate < CURRENT_DATE)")
+ 	public List<IndividualCourseRegistration> findUnattachedBeforeToday();
+
 //  	@Query("SELECT count(*) FROM IndividualCourseRegistration AS cr WHERE cr.creditBasisRecord = ?1")
 //  	public Integer numberOfRegs(IndividualCourseCreditBasis iccBasis);
-	
+
 }

@@ -27,6 +27,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import se.uu.ebc.luntan.enums.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 
 @Slf4j
@@ -89,12 +92,17 @@ public class IndividualCourseTeacher extends Auditable {
 
 	// Business methods
 
+	private static Date NO_EXTERNAL_SUPERVISORS_PAID = new GregorianCalendar(2025, Calendar.MARCH, 31).getTime();
 
 	public Float computeCreditFunds() {
 		Float grant = 0.0f;
 		log.debug("computeCreditFunds()")	;
 		if (this.teacherType.equals (IndCourseTeacherKind.Supervisor)) {
-			grant = this.assignment.computeSupervisorsGrant()*this.getTeachFactor()/this.assignment.getSupervisorsTeachFactors();
+			if (this.external && (this.assignment.getCreationDate().after(NO_EXTERNAL_SUPERVISORS_PAID))) {
+				grant = 0.0f;
+			} else {
+				grant = this.assignment.computeSupervisorsGrant()*this.getTeachFactor()/this.assignment.getSupervisorsTeachFactors();
+			}
 		} else if (this.teacherType.equals (IndCourseTeacherKind.Reader)) {
 			grant = this.assignment.computeReadersGrant()*this.getTeachFactor()/this.assignment.getReadersTeachFactors();
 		}

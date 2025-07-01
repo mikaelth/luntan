@@ -244,7 +244,8 @@ public class RegistrationService {
     	IndividualCourseCreditBasis c = cVO.getId() == null ? toICCBasis(cVO) : toICCBasis(credRepo.findById(cVO.getId()).get(), cVO);
     	credRepo.save(c);
 		if (c.getRegistrations().size()==0) {
-			for (IndividualCourseRegistration cr : regsRepo.findUnattached()) {
+//			for (IndividualCourseRegistration cr : regsRepo.findUnattached()) {
+			for (IndividualCourseRegistration cr : regsRepo.findUnattachedBeforeToday()) {
 				cr.setCreditBasisRecord(c);
 				regsRepo.save(cr);
 				regsRepo.save(cr);
