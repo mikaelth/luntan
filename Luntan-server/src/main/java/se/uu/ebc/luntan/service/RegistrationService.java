@@ -182,6 +182,7 @@ public class RegistrationService {
 			c.setTeacherType(cvo.getTeacherType()) ;
 			c.setNote(cvo.getNote()) ;
 
+			c.setNotUU(cvo.isNotUU());
 			c.setExternal(cvo.isExternal());
 			c.setTFactor(cvo.getTeachFactor());
 

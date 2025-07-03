@@ -21,6 +21,7 @@ public class IndCourseTeacherVO {
 	private Department department;
 	private IndCourseTeacherKind teacherType;
 
+	private boolean notUU = false;
 	private boolean external = false;
 	private Integer teachFactor;
 
@@ -48,6 +49,7 @@ public class IndCourseTeacherVO {
 		this.department = xe.getDepartment();
 		this.teacherType = xe.getTeacherType();
 
+		this.notUU = xe.isNotUU();
 		this.external = xe.isExternal();
 		this.teachFactor = xe.getTFactor();
 

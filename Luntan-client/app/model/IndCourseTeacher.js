@@ -24,6 +24,7 @@ Ext.define('Luntan.model.IndCourseTeacher', {
 		{name: 'ldapEntry', type: 'string'},
 		{name: 'teacherType', type: 'string'},
 		{name: 'teachFactor', type: 'int'},
+		{name: 'notUU', type: 'boolean'},
 		{name: 'external', type: 'boolean'},
 		{name: 'name', type: 'string'},
 		{name: 'fullDepartment', type: 'string'},

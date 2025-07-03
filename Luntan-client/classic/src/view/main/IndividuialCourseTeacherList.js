@@ -85,7 +85,9 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 			}
 		},
 		{text: 'Faktor', dataIndex: 'teachFactor', editor: 'numberfield', filter: 'number', align: 'left', width: 100},
-		{ xtype: 'checkcolumn', text: 'Extern', dataIndex: 'external', editor: 'checkboxfield', editable: true,
+		{ xtype: 'checkcolumn', text: 'Ej UU', dataIndex: 'notUU', editor: 'checkboxfield', editable: true,
+			listeners: {checkchange: 'onCheckChange'}, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
+		{ xtype: 'checkcolumn', text: 'Ej katalog', dataIndex: 'external', editor: 'checkboxfield', editable: true,
 			listeners: {checkchange: 'onCheckChange'}, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
 //		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
 		{ text: 'Lärare', dataIndex: 'ldapEntry', align: 'left', flex: 1,
