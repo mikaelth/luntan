@@ -106,7 +106,7 @@ public class IndividualCourseTeacher extends Auditable {
 			} else {
 				grant = this.assignment.computeSupervisorsGrant()*this.getTeachFactor()/this.assignment.getSupervisorsTeachFactors();
 			}
-		} else if (this.teacherType.equals (IndCourseTeacherKind.Reader)) {
+		} else if (this.teacherType.equals(IndCourseTeacherKind.Reader) && this.assignment.isIbgReg()) {
 			grant = this.assignment.computeReadersGrant()*this.getTeachFactor()/this.assignment.getReadersTeachFactors();
 		}
 
