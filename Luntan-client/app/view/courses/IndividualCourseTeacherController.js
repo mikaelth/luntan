@@ -70,7 +70,7 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 
 	onCheckChange: function (checkbox, rowIndex, checked, record) {
 		console.log("Check changed");
-/*
+
 			var form   = checkbox.up('ictlist').findPlugin('rowediting').getEditor().form,
 				fields  = [
 					form.findField('fullDepartment'),
@@ -92,8 +92,44 @@ Ext.define('Luntan.view.courses.IndividualCourseTeacherController', {
 				form.findField('ldapEntry').enable();
 
 			}
+			
+			this.getView().getPlugin('tredit').completeEdit();
+			this.getView().getPlugin('tredit').startEdit(record);
+
 			return true;
- */
+ 
+	},
+
+	onEditCheckChange: function (editor, checkbox, record) {
+		console.log("Check changed");
+
+			var form   = editor.getEditor().form,
+				fields  = [
+					form.findField('fullDepartment'),
+					form.findField('name'),
+					form.findField('email'),
+					form.findField('phone')
+				],
+			status = checkbox.checked;
+			if(status){
+				fields.forEach(function(field){
+					field.enable()
+				});
+				form.findField('ldapEntry').disable();
+
+			} else {
+				fields.forEach(function(field){
+					field.disable()
+				});
+				form.findField('ldapEntry').enable();
+
+			}
+
+			this.getView().getPlugin('tredit').completeEdit();
+//			this.getView().getPlugin('tredit').startEdit(record);
+			
+			return true;
+ 
 	},
 
 	onNewTeacherKind: function ( theComboBox, newValue, oldValue ) {

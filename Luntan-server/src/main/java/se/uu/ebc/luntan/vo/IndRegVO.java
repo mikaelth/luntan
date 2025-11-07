@@ -59,7 +59,6 @@ public class IndRegVO {
 		this.ibgReg = xe.isIbgReg();
 
 		this.creditBasisRecId = xe.getCreditBasisRecord() == null ? null : xe.getCreditBasisRecord().getId();
-//		this.coordinatorId = xe.getCoordinator() == null ? null : xe.getCoordinator().getId();;
 		this.courseInstanceId = xe.getCourseBag()== null ? null : xe.getCourseBag().getId(); ;
 		this.economyDocId = xe.getCourseBag()== null ? null : xe.getCourseBag().getEconomyDoc().getId(); ;
 

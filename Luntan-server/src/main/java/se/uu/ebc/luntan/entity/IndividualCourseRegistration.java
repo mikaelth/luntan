@@ -22,6 +22,7 @@ import javax.persistence.EnumType;
 
 import java.util.Set;
 import java.util.List;
+import java.util.Optional;
 
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -98,12 +99,20 @@ public class IndividualCourseRegistration extends Auditable {
 	// Business methods
 
 
-	public IndividualCourseTeacher getCoordinator() {
-		IndividualCourseTeacher coordinator = teachers
-			.stream()
-  			.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
-			.collect( Collectors.collectingAndThen( Collectors.toList(), list ->list.get(0) ));
-		return coordinator;
+	public Optional<IndividualCourseTeacher> getCoordinator() {
+		Optional<IndividualCourseTeacher> coordinator = null;
+		try {
+		coordinator = Optional.of (
+				teachers
+				.stream()
+  				.filter( c -> c.getTeacherType().equals (IndCourseTeacherKind.Coordinator) )
+				.collect( Collectors.collectingAndThen( Collectors.toList(), list ->list.get(0) )) 
+			);
+		} catch (Exception e) {
+			coordinator = Optional.empty();
+		} finally {
+			return coordinator;
+		}
 	}
 
 	public List<IndividualCourseTeacher> getSupervisors() {

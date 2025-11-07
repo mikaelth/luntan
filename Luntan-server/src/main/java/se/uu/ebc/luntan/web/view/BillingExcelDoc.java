@@ -118,7 +118,7 @@ public class BillingExcelDoc extends AbstractXlsView
 					cell.setCellValue(text);
 
 					cell = row.createCell(currentColumn++);
-					text = new HSSFRichTextString(reg.getCoordinator().getName());
+					text = new HSSFRichTextString(reg.getCoordinator().isPresent() ? reg.getCoordinator().get().getName() : "");
 					cell.setCellValue(text);
 
 					cell = row.createCell(currentColumn++);

@@ -102,12 +102,6 @@ public class RegistrationService {
 			c.setIbgReg(cvo.isIbgReg());
 			c.setNote(cvo.getNote()) ;
 
-/*
-			if (cvo.getCoordinatorId()!= null){
-				c.setCoordinator(teacherRepo.findById(cvo.getCoordinatorId()).get());
-			}
- */
-
 			c.setDepartment( extractCoordinatingDepartment(c.getTeachers()) ) ;
 
 			if (cvo.getCourseInstanceId()!= null){

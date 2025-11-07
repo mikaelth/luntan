@@ -46,6 +46,49 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
     },
  */
 
+    plugins: [{
+        ptype: 'rowediting',
+        id: "tredit",
+        clicksToEdit: 2,
+		autoCancel: false,
+		reference: 'theRowEditor',
+        listeners: [{
+            cancelEdit: function(rowEditing, context) {
+         		console.log("CancelEdit");
+
+                // Canceling editing of a locally added, unsaved record: remove it
+                if (context.record.phantom) {
+                	if (context.store.hasOwnProperty('store')) {
+                    	context.store.store.remove(context.record); //chained store
+                    } else {
+						context.store.remove(context.record);
+					}
+                }
+            }
+        }, {
+        	beforeEdit: function( editor, context, eOpts )  {
+        		console.log("BeforeEdit");
+        		console.log(context);
+        	}
+        }, {
+        	afterEdit: function( editor, context, eOpts )  {
+        		console.log("AfterEdit");
+        		console.log(context);
+        	}
+        }, {
+        	edit: function( editor, context, eOpts )  {
+        		console.log("Edit");
+        		console.log(context);
+				theCheckbox = this.getEditor().form.findField('external');
+				theCheckbox.on("checkchange", this.grid.controller.onEditCheckChange(editor,theCheckbox, context.record), this); 
+        	}
+        }, {
+        	checkchange: function( )  {
+        		console.log("CheckChange");
+        	}
+        }]
+    }],
+
 	listeners: {
 		storechange: function (view) {
 			console.log("storechange", view);
@@ -86,9 +129,9 @@ Ext.define('Luntan.view.main.IndividuialCourseTeacherList', {
 		},
 		{text: 'Faktor', dataIndex: 'teachFactor', editor: 'numberfield', filter: 'number', align: 'left', width: 100},
 		{ xtype: 'checkcolumn', text: 'Ej UU', dataIndex: 'notUU', editor: 'checkboxfield', editable: true,
-			listeners: {checkchange: 'onCheckChange'}, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
+			filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
 		{ xtype: 'checkcolumn', text: 'Ej katalog', dataIndex: 'external', editor: 'checkboxfield', editable: true,
-			listeners: {checkchange: 'onCheckChange'}, filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
+			listeners: [{checkchange: 'onCheckChange'}], filter: 'boolean', align: 'center', width: 80, filter: 'boolean'},
 //		{ text: 'LDAP', dataIndex: 'ldapEntry', align: 'left', width: 100},
 		{ text: 'Lärare', dataIndex: 'ldapEntry', align: 'left', flex: 1,
 		    renderer: function(value) {
