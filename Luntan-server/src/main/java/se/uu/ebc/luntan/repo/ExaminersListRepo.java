@@ -22,6 +22,10 @@ public interface ExaminersListRepo extends JpaRepository<ExaminersList, Long>, J
 		nativeQuery=true)
 	public ExaminersDecision findPreceeding(String board, Date date);
 
+	@Query(value="select * from examiners_list as el where decision_date < now() order by decision_date DESC limit 1",
+		nativeQuery=true)
+	public ExaminersDecision findLatestDecision();
+
 	@Query(nativeQuery = true, value = "select * from examiners_list AS ed where (ed.board, ed.decision_date) in (SELECT el.board,max(el.decision_date) FROM examiners_list AS el group by el.board)")
 	public List<ExaminersDecision> findCurrentDecisions();
 
