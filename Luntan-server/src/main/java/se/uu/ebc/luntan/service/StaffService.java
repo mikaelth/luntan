@@ -326,6 +326,7 @@ public class StaffService {
 				Attribute phone = attrs.get("telephonenumber");
 				Attribute mail = attrs.get("mail");
 				Attribute department = attrs.get("department");
+				Attribute pNIN = attrs.get("norEduPersonNIN");
 
 				if (ou != null){
 					person.setDepartment((String)ou.get());
@@ -341,6 +342,9 @@ public class StaffService {
 				}
 				if (department != null){
 					person.setFullDepartment((String)department.get());
+				}
+				if (pNIN != null){
+					person.setPNIN((String)pNIN.get());
 				}
 
 				person.setExaminerEligible(eligible);

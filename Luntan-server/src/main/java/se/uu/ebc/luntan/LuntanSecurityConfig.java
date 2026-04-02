@@ -54,13 +54,12 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
         serviceProperties.setSendRenew(false);
 		log.debug("serviceProperties() " + serviceProperties);
 		log.debug("serviceProperties() " + serviceProperties.getService());
-//System.out.println("serviceProperties() " + serviceProperties.getService());
         return serviceProperties;
     }
 
     @Bean
     public CasAuthenticationProvider casAuthenticationProvider() {
-		log.debug("authenticationUserDetailsService()");
+		log.debug("casAuthenticationProvider()");
         CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
         casAuthenticationProvider.setAuthenticationUserDetailsService(authenticationUserDetailsService());
         casAuthenticationProvider.setServiceProperties(serviceProperties());
