@@ -53,20 +53,20 @@ public class BPService {
 
 	@Autowired
 	StaffService staffService;
-	
+
     @Autowired
 	ExaminersListRepo exlRepo;
 
- 
- 
+
+
  	/* Examiners */
 
 
 	public List<BPPersonVO> examinersOnLatestDecisionList() {
-		
+
 		ExaminersList exl = exlRepo.findLatestDecision();
-		
-/* 
+
+/*
 		List<ExaminerVO> exvoList = exl.getExaminers().stream()
 			.map( e -> new ExaminerVO(e))
 			.collect(Collectors.toList());
@@ -77,19 +77,19 @@ public class BPService {
 				.lastModifiedBy(e.getLastModifiedBy())
 				.lastModifiedDate(e.getLastModifiedDate())
 				.courseCode(e.getCourse().getCode())
-//				.firstName(staffService.findbyEmployeeNumber(e.getExaminer()).getGivenName())
-//				.lastName(staffService.findbyEmployeeNumber(e.getExaminer()).getFamilyName())
+				.firstName(staffService.findbyEmployeeNumber(e.getExaminer()).getGivenName())
+				.lastName(staffService.findbyEmployeeNumber(e.getExaminer()).getFamilyName())
 				.ldapEntry(e.getExaminer())
-//				.userName(staffService.findbyEmployeeNumber(e.getExaminer()).getUsername())
+				.userName(staffService.findbyEmployeeNumber(e.getExaminer()).getUsername())
 				.build()
 			)
 			.collect(Collectors.toList());
 
 
 		log.debug("examinersOnLatestDecisionList, theList "+ReflectionToStringBuilder.toString(exl, ToStringStyle.MULTI_LINE_STYLE));
-		
+
 		return exvoList;
 	}
 
- 
+
 }

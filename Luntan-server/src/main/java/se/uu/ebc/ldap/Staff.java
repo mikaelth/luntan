@@ -30,6 +30,7 @@ public final class Staff {
     private @Attribute(name = "telephoneNumber") String phone;
     private @Attribute(name = "mail") String mail;
     private @Attribute(name = "department") String fullDepartment;
+	private @Attribute(name = "norEduPersonNIN") String pNIN;
 
     private boolean examinerEligible;
 	private boolean biologySection;
