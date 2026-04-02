@@ -11,12 +11,12 @@ import se.uu.ebc.luntan.repo.FundingModelRepo;
 import se.uu.ebc.luntan.vo.FMVO;
 
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class FundingModelService {
 
-    private static Logger logger = Logger.getLogger(FundingModelService.class.getName());
 
 	@Autowired
 	FundingModelRepo fmRepo;
@@ -24,27 +24,27 @@ public class FundingModelService {
 
 
 	/* Courses */
-	
+
 	public List<FMVO> getAllFMs() throws Exception {
 		List<FMVO> fmVO = new ArrayList<FMVO>();
-		try {	
+		try {
 			for (FundingModel fm : fmRepo.findAll()) {
  				fmVO.add(new FMVO(fm));
  			}
-         	return fmVO;        	        
+         	return fmVO;
         } catch (Exception e) {
 
 			return null;
-			
+
         }
     }
-    
+
 /*
     public CourseVO saveCourse(CourseVO cVO) throws Exception {
     	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()), cVO);
     	courseRepo.save(c);
 		return new CourseVO(c);
-    
+
     }
 
 
@@ -53,7 +53,7 @@ public class FundingModelService {
 		courseRepo.delete(c);
     }
 
- 
+
 	private Course toCourse (CourseVO cvo) throws Exception {
  		return toCourse (new Course(), cvo);
    	}
@@ -73,12 +73,12 @@ public class FundingModelService {
 
 
 		} catch (Exception e) {
-			logger.error("toCourse got a pesky exception: "+ e + e.getCause());
+			log.error("toCourse got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return c;
 		}
 	}
- 
+
 
 */
 

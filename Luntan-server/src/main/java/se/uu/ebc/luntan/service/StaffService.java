@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.NamingException;
+import module java.naming;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;

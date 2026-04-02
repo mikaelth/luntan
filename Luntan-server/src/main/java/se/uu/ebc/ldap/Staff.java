@@ -4,7 +4,7 @@ import org.springframework.ldap.odm.annotations.Attribute;
 import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
 import org.springframework.ldap.odm.annotations.DnAttribute;
-import javax.naming.Name;
+import module java.naming;
 import java.util.StringJoiner;
 
 import lombok.Data;

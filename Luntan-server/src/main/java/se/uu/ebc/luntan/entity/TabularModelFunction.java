@@ -4,46 +4,43 @@ import java.util.Set;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ElementCollection;
-import org.hibernate.annotations.GenericGenerator;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ElementCollection;
 
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Table(name = "TABULAR_MODEL_DATA")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class TabularModelFunction  extends Auditable {
-	
-    private static Logger log = Logger.getLogger(TabularModelFunction.class.getName());
-	
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
-	@GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
-    
+
     public Long getId() {
         return this.id;
     }
-    
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    
+
     @OneToMany(mappedBy = "tabledValues")
     private Set<FundingModel> fundingModels;
-    
+
     @Column(name = "DESIGNATION", length = 255)
     private String designation;
 
@@ -54,10 +51,10 @@ public class TabularModelFunction  extends Auditable {
 
     @ElementCollection
     private Map<Integer,Float> valueTable;
-    
- 
+
+
    /* Setters and getters */
- 
+
     public String getDesignation()
     {
     	return this.designation;
@@ -89,19 +86,19 @@ public class TabularModelFunction  extends Auditable {
 		}
  		return (TreeMap)this.valueTable;
  	}
-	
+
 	/* Constructors */
-	
+
 	public TabularModelFunction() {
 	}
-	
+
 	/* Business methods */
 
-	
+
 	float getTabledValue(Integer students) {
 		return valueTable.get(getValueTable().floorKey(students));
 	}
-	
-	
-	 
+
+
+
 }

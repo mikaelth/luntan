@@ -16,12 +16,14 @@ import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
 
 
-import org.apache.log4j.Logger;
 
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class EconomyDocumentService {
 
-    private static Logger logger = Logger.getLogger(EconomyDocumentService.class.getName());
 
 	@Autowired
 	EconomyDocumentRepo edRepo;
@@ -37,23 +39,23 @@ public class EconomyDocumentService {
 
 
 	/* EconomyDocument */
-	
+
 	public List<EconomyDocVO> getAllEDs() throws Exception {
 		List<EconomyDocVO> edVO = new ArrayList<EconomyDocVO>();
-		try {	
+		try {
 			for (EconomyDocument ed : edRepo.findAll()) {
  				edVO.add(new EconomyDocVO(ed));
  			}
-         	return edVO;        	        
+         	return edVO;
         } catch (Exception e) {
 
-			logger.error("getAllEDs got a pesky exception: "+ e + e.getCause());
+			log.error("getAllEDs got a pesky exception: "+ e + e.getCause());
 
 			return null;
-			
+
         }
     }
-    
+
 
     public EconomyDocVO saveEDoc(EconomyDocVO edVO) throws Exception {
     	EconomyDocument ed = edVO.getId() == null ? toEDoc(edVO) : toEDoc(edRepo.findById(edVO.getId()).get(), edVO);
@@ -65,7 +67,7 @@ public class EconomyDocumentService {
     	}
 
 		return new EconomyDocVO(ed);
-    
+
     }
 
 
@@ -74,7 +76,7 @@ public class EconomyDocumentService {
 		edRepo.delete(ed);
     }
 
- 
+
 	private EconomyDocument toEDoc (EconomyDocVO edVO) throws Exception {
  		return toEDoc (new EconomyDocument(), edVO);
    	}
@@ -83,7 +85,7 @@ public class EconomyDocumentService {
 
 
 		try {
-			
+
 			boolean lckChg = ed.isLocked() ^ edVO.isLocked();
 
 			ed.setId(edVO.getId()) ;
@@ -94,7 +96,7 @@ public class EconomyDocumentService {
 			ed.setAccountedDepts(edVO.getAccountedDepts());
 			ed.setLocked(edVO.isLocked());
 			ed.setRegistrationsValid(edVO.isRegistrationsValid());
-			
+
 //			ed.setCourseInstances(edVO.getCourseInstances());
 
 			/* If lock status has changed, we need to update and save the course instances as well */
@@ -105,39 +107,39 @@ public class EconomyDocumentService {
 			}
 
 		} catch (Exception e) {
-			logger.error("toEDoc got a pesky exception: "+ e + e.getCause());
+			log.error("toEDoc got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return ed;
 		}
 	}
- 
+
 
 
 	/* EconomyDocumentGrant */
-	
+
 	public List<EDGVO> getAllEDGrants() throws Exception {
 		List<EDGVO> edgVO = new ArrayList<EDGVO>();
-		try {	
+		try {
 			for (EconomyDocGrant edg : edgRepo.findAll()) {
  				edgVO.add(new EDGVO(edg));
  			}
-         	return edgVO;        	        
+         	return edgVO;
         } catch (Exception e) {
 
-			logger.error("getAllEDs got a pesky exception: "+ e + e.getCause());
+			log.error("getAllEDs got a pesky exception: "+ e + e.getCause());
 
 			return null;
-			
+
         }
     }
-    
+
 
     public EDGVO saveEDGrant(EDGVO edgVO) throws Exception {
     	EconomyDocGrant edg = edgVO.getId() == null ? toEDGrant(edgVO) : toEDGrant(edgRepo.findById(edgVO.getId()).get(), edgVO);
     	edgRepo.save(edg);
 
 		return new EDGVO(edg);
-    
+
     }
 
 
@@ -146,7 +148,7 @@ public class EconomyDocumentService {
 		edgRepo.delete(edg);
     }
 
- 
+
 	private EconomyDocGrant toEDGrant (EDGVO edgVO) throws Exception {
  		return toEDGrant (new EconomyDocGrant(), edgVO);
    	}
@@ -155,25 +157,25 @@ public class EconomyDocumentService {
 
 
 		try {
-			
+
 			edg.setId(edgVO.getId());
-			
+
 			edg.setEconomyDoc(edRepo.findById(edgVO.getEconomyDocId()).get());
-			
+
 			edg.setNote(edgVO.getNote());
 			edg.setItemDesignation(edgVO.getItemDesignation());
-			edg.setGrantKind(edgVO.getGrantKind());		
+			edg.setGrantKind(edgVO.getGrantKind());
 			edg.setTotalGrant(edgVO.getTotalGrant());
     		edg.setUsedForKey(edgVO.isUsedForKey());
 
 			edg.setGrantDistribution(edgVO.getGrantDistribution());
 
 		} catch (Exception e) {
-			logger.error("toEDGrant got a pesky exception: "+ e + e.getCause());
+			log.error("toEDGrant got a pesky exception: "+ e + e.getCause());
 		} finally {
 			return edg;
 		}
 	}
-	
+
 
 }

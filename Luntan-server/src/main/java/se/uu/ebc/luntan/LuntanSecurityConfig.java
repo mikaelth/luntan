@@ -1,49 +1,44 @@
 package se.uu.ebc.luntan;
 
-import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
-
-//import org.apache.log4j.Logger;
+import org.apereo.cas.client.validation.Cas30ServiceTicketValidator;
+import org.apereo.cas.client.validation.TicketValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.cas.authentication.CasAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.cas.ServiceProperties;
+import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 
 import se.uu.ebc.luntan.security.SecurityService;
 import se.uu.ebc.luntan.security.RESTAuthenticationEntryPoint;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 
 @Slf4j
 @Configuration
-//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-@EnableAutoConfiguration
-@EnableWebMvcSecurity
-public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+@Profile("prod")
+public class LuntanSecurityConfig {
 
-//	static Logger log = Logger.getLogger(LuntanSecurityConfig.class.getName());
+    @Value("${luntan.base.url}")
+    String baseUrl;
 
-	@Value("${luntan.base.url}")
-	String baseUrl;
+    @Value("${luntan.environment.dev}")
+    boolean devEnv = false;
 
-	@Value("${luntan.environment.dev}")
-	boolean devEnv = false;
-
-	@Bean
-    public AuthenticationUserDetailsService authenticationUserDetailsService() {
-		log.debug("authenticationUserDetailsService()");
+    @Bean
+    public AuthenticationUserDetailsService<org.springframework.security.cas.authentication.CasAssertionAuthenticationToken> authenticationUserDetailsService() {
+        log.debug("authenticationUserDetailsService()");
         return new SecurityService();
     }
 
@@ -52,116 +47,94 @@ public class LuntanSecurityConfig extends WebSecurityConfigurerAdapter {
         ServiceProperties serviceProperties = new ServiceProperties();
         serviceProperties.setService(baseUrl + "/login/cas");
         serviceProperties.setSendRenew(false);
-		log.debug("serviceProperties() " + serviceProperties);
-		log.debug("serviceProperties() " + serviceProperties.getService());
+        log.debug("serviceProperties() " + serviceProperties);
         return serviceProperties;
     }
 
     @Bean
     public CasAuthenticationProvider casAuthenticationProvider() {
-		log.debug("casAuthenticationProvider()");
+        log.debug("casAuthenticationProvider()");
         CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
         casAuthenticationProvider.setAuthenticationUserDetailsService(authenticationUserDetailsService());
         casAuthenticationProvider.setServiceProperties(serviceProperties());
         casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
         casAuthenticationProvider.setKey("ThisIsSomeKindOfKey");
-		log.debug("casAuthenticationProvider() " + casAuthenticationProvider);
         return casAuthenticationProvider;
     }
 
+/*
     @Bean
     public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
-//        return new Cas20ServiceTicketValidator("https://cas.weblogin.uu.se/cas");
         return new Cas20ServiceTicketValidator("https://weblogin.uu.se/idp/profile/cas");
+    }
+ */
+    /**
+     * CAS ticket validator
+     */
+    @Bean
+    public TicketValidator ticketValidator() {
+        return new Cas30ServiceTicketValidator(casServerUrl);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(casAuthenticationProvider());
     }
 
     @Bean
     public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
         CasAuthenticationFilter casAuthenticationFilter = new CasAuthenticationFilter();
         casAuthenticationFilter.setAuthenticationManager(authenticationManager());
-		log.debug("casAuthenticationFilter() " + casAuthenticationFilter);
+        log.debug("casAuthenticationFilter() " + casAuthenticationFilter);
         return casAuthenticationFilter;
     }
-
 
     @Bean
     public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-//        casAuthenticationEntryPoint.setLoginUrl("https://cas.weblogin.uu.se/cas/login");
         casAuthenticationEntryPoint.setLoginUrl("https://weblogin.uu.se/idp/profile/cas/login");
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
 
-
+    @Bean
+    public RESTAuthenticationEntryPoint restCasAuthenticationEntryPoint() {
+        RESTAuthenticationEntryPoint restCasAuthenticationEntryPoint = new RESTAuthenticationEntryPoint();
+        restCasAuthenticationEntryPoint.setCasAuthenticationEntryPoint(casAuthenticationEntryPoint());
+        return restCasAuthenticationEntryPoint;
+    }
 
     @Bean
-    public RESTAuthenticationEntryPoint restcasAuthenticationEntryPoint() {
-        RESTAuthenticationEntryPoint restcasAuthenticationEntryPoint = new RESTAuthenticationEntryPoint();
-        restcasAuthenticationEntryPoint.setCasAuthenticationEntryPoint(casAuthenticationEntryPoint());
-        return restcasAuthenticationEntryPoint;
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.debug("configure()");
+
+        http.addFilter(casAuthenticationFilter())
+            .csrf(csrf -> csrf.disable());
+
+        if (devEnv) {
+            http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        } else {
+            http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/bemanning/**").access(
+                    new org.springframework.security.web.access.expression.WebExpressionAuthorizationManager("hasIpAddress('::1')")
+                )
+                .requestMatchers("/index.*").authenticated()
+                .requestMatchers("/loginredirect.html").authenticated()
+                .requestMatchers("/InREST.html").authenticated()
+                .requestMatchers("/Luntan/index.html").authenticated()
+                .requestMatchers("/Luntan/**").permitAll()
+                .requestMatchers("/login/**").permitAll()
+                .requestMatchers("/public/**").permitAll()
+                .requestMatchers("/styles/main.css").permitAll()
+                .requestMatchers("/rest/bulk/**").hasRole("REGISTRATIONUPDATER")
+                .requestMatchers("/rest/**").authenticated()
+                .requestMatchers("/view/**").authenticated()
+                .anyRequest().authenticated()
+            );
+        }
+
+        http.exceptionHandling(ex -> ex.authenticationEntryPoint(restCasAuthenticationEntryPoint()));
+
+        return http.build();
     }
-
-
-
-   @Override
-    protected void configure(HttpSecurity http) throws Exception {
-		log.debug("configure()");
-
-        http
-            .addFilter(casAuthenticationFilter()).csrf().disable();
-
- 		http.csrf().disable();
-
-
-		if (devEnv) {
-			http
-				.authorizeRequests().antMatchers("/**").permitAll();
-		} else {
-/*
-			http.authorizeRequests()
-				.antMatchers("/index.*").authenticated()
-				.antMatchers("/loginredirect.html").authenticated()
-				.antMatchers("/InREST.html").authenticated()
-				.antMatchers("/login/**").permitAll()
-				.antMatchers("/Luntan/index.html").authenticated()
-				.antMatchers("/Luntan/**").permitAll()
-				.antMatchers("/rest/bulk/**").hasRole("REGISTRATIONUPDATER")
-				.antMatchers("/rest/**").authenticated()
-				.antMatchers("/view/**").authenticated()
-				.antMatchers("/**").authenticated();
-
- */
-			http.authorizeRequests()
-				.antMatchers("/bemanning/**").hasIpAddress("::1") //loop-back address for future use with BP
-				.antMatchers("/index.*").authenticated()
-				.antMatchers("/loginredirect.html").authenticated()
-				.antMatchers("/InREST.html").authenticated()
-				.antMatchers("/Luntan/index.html").authenticated()
-				.antMatchers("/Luntan/**").permitAll()
-				.antMatchers("/login/**").permitAll()
-				.antMatchers("/public/**").permitAll()
-				.antMatchers("/styles/main.css").permitAll()
-				.antMatchers("/rest/bulk/**").hasRole("REGISTRATIONUPDATER")
-				.antMatchers("/rest/**").authenticated()
-				.antMatchers("/view/**").authenticated()
-				.anyRequest().authenticated();
-		}
-
-
-        http
-            .exceptionHandling()
-                .authenticationEntryPoint(restcasAuthenticationEntryPoint());
-    }
-
-//    @Override
-    @Autowired
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		log.debug("configureGloabal() " + auth);
-        auth
-            .authenticationProvider(casAuthenticationProvider());
-    }
-
-
-
 }

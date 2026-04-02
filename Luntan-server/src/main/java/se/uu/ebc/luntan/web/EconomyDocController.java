@@ -43,8 +43,8 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.HashSet;
 import java.security.Principal;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -54,7 +54,7 @@ import org.jsoup.nodes.Document;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
 
-import org.apache.log4j.Logger;
+
 
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
@@ -100,7 +100,6 @@ import se.uu.ebc.luntan.web.view.CourseInstancesExcel;
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class EconomyDocController {
 
-//    private Logger log = Logger.getLogger(EconomyDocController.class.getName());
 
 	@Autowired
 	EconomyDocumentRepo emRepo;

@@ -2,11 +2,11 @@ package se.uu.ebc.luntan.entity;
 
 import java.util.Date;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.EntityListeners;
-import javax.persistence.Column;
-import javax.persistence.TemporalType;
-import javax.persistence.Temporal;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Column;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Temporal;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;

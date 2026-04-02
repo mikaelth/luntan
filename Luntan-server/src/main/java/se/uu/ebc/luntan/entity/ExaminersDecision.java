@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.ElementCollection;
-import javax.validation.constraints.NotNull;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.DiscriminatorValue;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ElementCollection;
+import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.DiscriminatorValue;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;

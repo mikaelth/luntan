@@ -1,8 +1,8 @@
 package  se.uu.ebc.luntan.entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.DiscriminatorValue;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;

@@ -1,5 +1,5 @@
 package se.uu.ebc.luntan.web;
- 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 
-//import org.apache.log4j.Logger;
+//
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin(origins = "http://localhost:1841", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class AuxItemsController {
 
-//    private static Logger log = Logger.getLogger(AuxItemsController.class.getName());
 
 	@Autowired
 	EconomyDocumentRepo econDocRepo;
@@ -135,4 +134,4 @@ public class AuxItemsController {
     	return theList;
     }
 
-} 
+}

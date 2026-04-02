@@ -11,27 +11,27 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.lang.Math;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.ElementCollection;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.persistence.MapKeyEnumerated;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.MapKeyEnumerated;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 
-import org.hibernate.annotations.GenericGenerator;
+
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
@@ -45,7 +45,7 @@ import lombok.AccessLevel;
 import se.uu.ebc.luntan.enums.*;
 import se.uu.ebc.luntan.aux.GrantMaps;
 
-import javax.naming.Name;
+import module java.naming;
 
 @Slf4j
 //@Data
@@ -54,7 +54,7 @@ import javax.naming.Name;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorColumn(name="course_type", 
+@DiscriminatorColumn(name="course_type",
 	discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue("1")
 @Entity
@@ -64,8 +64,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	private static final Integer DEFAULT_REG_STUDENT_NUMBER = 15;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
-	@GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 

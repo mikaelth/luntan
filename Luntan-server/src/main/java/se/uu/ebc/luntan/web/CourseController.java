@@ -17,8 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.Reader;
@@ -46,13 +46,13 @@ import java.util.Calendar;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-//import org.apache.log4j.Logger;
+//
 
 import se.uu.ebc.luntan.service.CourseService;
 import se.uu.ebc.luntan.service.ProgrammeService;

@@ -24,8 +24,8 @@ import java.util.HashMap;
 
 import java.security.Principal;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.Reader;
@@ -54,13 +54,13 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.*;
 import java.util.Comparator;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-//import org.apache.log4j.Logger;
+//
 
 import se.uu.ebc.luntan.service.CourseService;
 import se.uu.ebc.luntan.service.ProgrammeService;

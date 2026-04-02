@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class FMVO {
 
 
-//    private static Logger logger = Logger.getLogger(FMVO.class.getName());
 
 	private Long id;
 

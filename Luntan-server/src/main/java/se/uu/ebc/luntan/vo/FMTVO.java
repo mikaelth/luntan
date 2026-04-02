@@ -11,16 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FMTVO {
 
-    
-//    private static Logger logger = Logger.getLogger(FMTVO.class.getName());
-	 
+
+
     private Long fmId;
     private Integer number;
     private Float value;
-	
+
  	/* Setters and getters */
- 	   
-/* 
+
+/*
 
 
     public Long getFmId()
@@ -58,12 +57,12 @@ public class FMTVO {
  */
 
 
-    
+
     /* Public methods */
 
-  
+
  	/* Constructors */
 
-	
+
 
 }

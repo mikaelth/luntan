@@ -6,15 +6,16 @@ import java.util.HashSet;
 import se.uu.ebc.luntan.security.User;
 import se.uu.ebc.luntan.enums.UserRoleType;
 
-import org.apache.log4j.Logger;
 
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class UserVO {
 
-    
-    private static Logger logger = Logger.getLogger(UserVO.class.getName());
-	 
+
 	private Long id;
-	   
+
     private String username;
   	private String formName;
 	private String name;
@@ -26,7 +27,7 @@ public class UserVO {
 	private Set<UserRoleType> userRoles = new HashSet<UserRoleType>();
 
  	/* Setters and getters */
- 	   
+
 
 	public Long getId()
 	{
@@ -41,11 +42,11 @@ public class UserVO {
     public String getUsername() {
         return username;
     }
-    
+
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
 	public String getFormName()
 	{
 		return this.formName;
@@ -121,17 +122,17 @@ public class UserVO {
 	{
 		this.userRoles = userRoles;
 	}
- 
-    
+
+
     /* Public methods */
 
-  
+
  	/* Constructors */
 
 	public UserVO (User p) {
 
 		this.id = p.getId();
-		
+
 		this.username= p.getUsername();
 		this.formName = p.getFormName();
 		this.name = p.getName();
@@ -140,9 +141,9 @@ public class UserVO {
 		this.email = p.getEmail();
 		this.note = p.getComment();
 		this.userRoles = p.getUserRoles();
-		
+
 	}
-	
+
 	public UserVO() {}
 
 }
