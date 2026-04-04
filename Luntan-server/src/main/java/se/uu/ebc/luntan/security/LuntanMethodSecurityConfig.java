@@ -1,4 +1,4 @@
-package se.uu.ebc.luntan;
+package se.uu.ebc.luntan.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

@@ -1,4 +1,4 @@
-package se.uu.ebc.luntan;
+package se.uu.ebc.luntan.security;
 
 import org.apereo.cas.client.validation.Cas30ServiceTicketValidator;
 import org.apereo.cas.client.validation.TicketValidator;
@@ -18,9 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
-import se.uu.ebc.luntan.security.SecurityService;
-import se.uu.ebc.luntan.security.RESTAuthenticationEntryPoint;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 
@@ -35,6 +32,10 @@ public class LuntanSecurityConfig {
 
     @Value("${luntan.environment.dev}")
     boolean devEnv = false;
+
+    @Value("${cas.server.url:https://cas.uu.se/cas}")
+    private String casServerUrl;
+
 
     @Bean
     public AuthenticationUserDetailsService<org.springframework.security.cas.authentication.CasAssertionAuthenticationToken> authenticationUserDetailsService() {
@@ -57,7 +58,8 @@ public class LuntanSecurityConfig {
         CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
         casAuthenticationProvider.setAuthenticationUserDetailsService(authenticationUserDetailsService());
         casAuthenticationProvider.setServiceProperties(serviceProperties());
-        casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
+//        casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
+        casAuthenticationProvider.setTicketValidator(ticketValidator());
         casAuthenticationProvider.setKey("ThisIsSomeKindOfKey");
         return casAuthenticationProvider;
     }
@@ -85,7 +87,8 @@ public class LuntanSecurityConfig {
     public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
         CasAuthenticationFilter casAuthenticationFilter = new CasAuthenticationFilter();
         casAuthenticationFilter.setAuthenticationManager(authenticationManager());
-        log.debug("casAuthenticationFilter() " + casAuthenticationFilter);
+/* */   casAuthenticationFilter.setFilterProcessesUrl("/login/cas");
+       log.debug("casAuthenticationFilter() " + casAuthenticationFilter);
         return casAuthenticationFilter;
     }
 

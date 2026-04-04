@@ -8,6 +8,5 @@ import org.springframework.security.cas.authentication.CasAssertionAuthenticatio
 public interface LuntanUserService extends AuthenticationUserDetailsService<CasAssertionAuthenticationToken> {
 
     UserDetails loadUserByUsername(String username);
-
     UserDetails loadUserDetails(Authentication token);
 }

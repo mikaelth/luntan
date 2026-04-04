@@ -10,7 +10,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
@@ -40,8 +39,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 
 import se.uu.ebc.luntan.security.AuditorAwareImpl;
-
-
+import se.uu.ebc.luntan.security.LuntanMethodSecurityConfig;
+import se.uu.ebc.luntan.security.LuntanSecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
