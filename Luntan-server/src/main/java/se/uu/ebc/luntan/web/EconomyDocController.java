@@ -30,7 +30,7 @@ import flexjson.transformer.DateTransformer;
 import java.lang.Number;
 import java.math.BigInteger;
 import java.util.regex.Pattern;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -160,12 +160,12 @@ public class EconomyDocController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateEDGrant, edVO "+ReflectionToStringBuilder.toString(edVO, ToStringStyle.MULTI_LINE_STYLE));
 			edVO.setId(id);
 			edVO = edService.saveEDGrant(edVO);
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocgrants").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(edVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocgrants").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(edVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -180,7 +180,7 @@ public class EconomyDocController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			EDGVO edVO = new JSONDeserializer<EDGVO>().use(null, EDGVO.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			edVO = edService.saveEDGrant(edVO);
 
 
@@ -234,7 +234,7 @@ public class EconomyDocController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			fm = fmRepo.save(fm);
 
  			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fm);
@@ -253,7 +253,7 @@ public class EconomyDocController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			fm = fmRepo.save(fm);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+fm.getId().toString()).build().toUriString());
@@ -305,12 +305,12 @@ public class EconomyDocController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateED, edVO "+ReflectionToStringBuilder.toString(edVO, ToStringStyle.MULTI_LINE_STYLE));
 			edVO.setId(id);
 			edVO = edService.saveEDoc(edVO);
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(edVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("edocs").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(edVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -325,7 +325,7 @@ public class EconomyDocController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			EconomyDocVO edVO = new JSONDeserializer<EconomyDocVO>().use(null, EconomyDocVO.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			edVO = edService.saveEDoc(edVO);
 
 
@@ -377,14 +377,14 @@ public class EconomyDocController {
 			} else {
 				for (EduBoard board : EduBoard.values()) {
 					exMap.put(board,exRepo.findAvailableByBoard(board));
-					model.addAttribute("decisionDate", new Date());
+					model.addAttribute("decisionDate", LocalDateTime.now());
 					model.addAttribute("defaultExaminers", new ArrayList<String>());
 				}
 			}
 //			EconomyDocument edoc = emRepo.findByYear(year);
 
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 //			model.addAttribute("edoc", edoc);
 //			model.addAttribute("staff", staffService);
 			model.addAttribute("staffMap", staffService.getDesignatedExaminers());
@@ -417,7 +417,7 @@ public class EconomyDocController {
 			} else {
 				for (EduBoard board : EduBoard.values()) {
 					examiners.addAll(exRepo.findAvailableByBoard(board));
-					model.addAttribute("decisionDate", new Date());
+					model.addAttribute("decisionDate", LocalDateTime.now());
 				}
 			}
 
@@ -433,7 +433,7 @@ public class EconomyDocController {
          	deptExaminers.sort(Comparator.comparing(DeptExaminer::getDepartment).thenComparing(DeptExaminer::getName));
 
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 //			model.addAttribute("staffMap", staffMap);
 			model.addAttribute("examiners", deptExaminers);
 // 			model.addAttribute("boards", exMap.keySet());
@@ -459,7 +459,7 @@ public class EconomyDocController {
 			model.put("defaultExaminers", ((ExaminersDecision)el).getDefaultExaminers());
 			model.put("board",((ExaminersDecision)el).getBoard());
 		} else {
-			model.put("decisionDate", new Date());
+			model.put("decisionDate", LocalDateTime.now());
 			model.put("defaultExaminers", new ArrayList<String>());
 			model.put("board","någon");
 		}
@@ -493,7 +493,7 @@ public class EconomyDocController {
 			ExaminersList pel;
 			List<Object[]> courseDiffList = new ArrayList<Object[]>();
 			for(EduBoard theBoard : EduBoard.values()) {
-				pel = elRepo.findPreceeding( theBoard.name(), new Date() );
+				pel = elRepo.findPreceeding( theBoard.name(), LocalDateTime.now() );
 				if (pel != null) {
 					courseDiffList.addAll( exRepo.compareELists( el.getId(), pel.getId(), theBoard.name() ) );
 					log.debug( "The previous decision: " +  pel);
@@ -576,7 +576,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			}
 			log.debug("viewAdjustmentDoc, course groups done");
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
 			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
@@ -615,7 +615,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			}
 			log.debug("viewEconomyDoc, course groups done");
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
 			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
@@ -653,7 +653,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			}
 			log.debug("viewEconomyDocSupplement, course groups done");
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
 			model.addAttribute("usedGroups", asSortedList(ciMap.keySet()));
@@ -744,7 +744,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 			}
 			log.debug("viewAdjustmentDoc, course groups done");
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("courseInstances", ciMap);
 			model.addAttribute("courseSummaryInstances", directList);
@@ -874,7 +874,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
 		courseList.addAll(courseMap.keySet());
 		Collections.sort(courseList);
 
-        model.addAttribute("serverTime", new Date());
+        model.addAttribute("serverTime", LocalDateTime.now());
         model.addAttribute("programmes", programmes.stream().map(Programme::getSELMAPath).collect(Collectors.toList()));
         model.addAttribute("courses", courseMap);
         model.addAttribute("courseList", courseList);
@@ -942,7 +942,7 @@ for (CourseInstance ci : edoc.getBalancedCourseInstances()) {
     	    model.addAttribute("sortedCIs", sortedCIs);
 			model.addAttribute("courseLeaderMap", staffService.getCourseLeaders(edoc));
 			model.addAttribute("examinerMap", courseExaminers);
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 
     		return "CourseInstanceOverview";
 

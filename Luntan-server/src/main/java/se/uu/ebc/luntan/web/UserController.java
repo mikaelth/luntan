@@ -30,7 +30,7 @@ import flexjson.JSONSerializer;
 import flexjson.transformer.DateTransformer;
 
 import java.security.Principal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -94,7 +94,7 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			UserVO pVO = new JSONDeserializer<UserVO>().use(null, UserVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			UserVO pVO = new JSONDeserializer<UserVO>().use(null, UserVO.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			pVO = this.savePerson(pVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+pVO.getId().toString()).build().toUriString());

@@ -84,7 +84,7 @@ public class TabularModelFunction  extends Auditable {
 		if (!(this.valueTable instanceof TreeMap)) {
 			this.valueTable = new TreeMap<Integer,Float>(this.valueTable);
 		}
- 		return (TreeMap)this.valueTable;
+ 		return (TreeMap<Integer,Float>)this.valueTable;
  	}
 
 	/* Constructors */

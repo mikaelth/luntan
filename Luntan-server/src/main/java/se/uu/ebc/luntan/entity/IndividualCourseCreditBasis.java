@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+//import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
@@ -59,7 +61,7 @@ public class IndividualCourseCreditBasis extends Auditable {
     private Set<IndividualCourseRegistration> registrations = new HashSet<IndividualCourseRegistration>();
 
     @Column(name = "SENT")
-    private Date sent;
+    private LocalDateTime sent;
 
     @Column(name = "NOTE")
     private String note;

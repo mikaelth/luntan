@@ -39,7 +39,7 @@ import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Calendar;
@@ -128,7 +128,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("programmes").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(progRepo.findAll()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("programmes").transform(new DateTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(progRepo.findAll()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -160,7 +160,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			ProgrammeVO cVO = new JSONDeserializer<ProgrammeVO>().use(null, ProgrammeVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			ProgrammeVO cVO = new JSONDeserializer<ProgrammeVO>().use(null, ProgrammeVO.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			cVO = progService.saveProgramme(cVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+cVO.getId().toString()).build().toUriString());
@@ -199,7 +199,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(courseRepo.findAll()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(courseRepo.findAll()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -234,7 +234,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			CourseVO cVO = new JSONDeserializer<CourseVO>().use(null, CourseVO.class).use(Date.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
+			CourseVO cVO = new JSONDeserializer<CourseVO>().use(null, CourseVO.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
 			cVO = courseService.saveCourse(cVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+cVO.getId().toString()).build().toUriString());
@@ -273,7 +273,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(courseService.getAllCourseInstances()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(courseService.getAllCourseInstances()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			log.debug("Caught a pesky exception in allCourseInstances() "+ e + ", " +e.getCause());
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -288,7 +288,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateCourseInstance, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			log.debug("updateCourseInstance, grantDistribution "+ReflectionToStringBuilder.toString(ciVO.getGrantDistribution(), ToStringStyle.MULTI_LINE_STYLE));
 			log.debug("updateCourseInstance, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
@@ -304,7 +304,7 @@ public class CourseController {
 
 			log.debug("updateCourseInstance, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -322,7 +322,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			CourseInstanceVO ciVO = new JSONDeserializer<CourseInstanceVO>().use(null, CourseInstanceVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("createCourseInstance, before save, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			ciVO = courseService.saveCourseInstance(ciVO);
 			log.debug("createCourseInstance, after save, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
@@ -330,7 +330,7 @@ public class CourseController {
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("cis").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
@@ -449,7 +449,7 @@ public class CourseController {
 					log.debug(ci.getCourseCode() + ", " + ci.getInstanceCode() + ", " + ci.getRegistered() + ", " + ci.getStatus());
 				}
 
-				model.addAttribute("serverTime", new Date());
+				model.addAttribute("serverTime", LocalDateTime.now());
 				model.addAttribute("year", formValues.getYear());
 				model.addAttribute("cis", cis);
 
@@ -472,7 +472,7 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateTransformer("yyyy-MM-dd"), Date.class).serialize(examinerService.getAllExaminers()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateTransformer("yyyy-MM-dd"), LocalDateTime.class).serialize(examinerService.getAllExaminers()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -485,12 +485,12 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			ExaminerVO exVO = new JSONDeserializer<ExaminerVO>().use(null, ExaminerVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			ExaminerVO exVO = new JSONDeserializer<ExaminerVO>().use(null, ExaminerVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateExaminer, exVO "+ReflectionToStringBuilder.toString(exVO, ToStringStyle.MULTI_LINE_STYLE));
 			exVO.setId(id);
 			exVO = examinerService.saveExaminer(exVO);
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(exVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(exVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -506,13 +506,13 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			ExaminerVO exVO = new JSONDeserializer<ExaminerVO>().use(null, ExaminerVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			ExaminerVO exVO = new JSONDeserializer<ExaminerVO>().use(null, ExaminerVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("createExaminer, exVO "+ReflectionToStringBuilder.toString(exVO, ToStringStyle.MULTI_LINE_STYLE));
 			exVO = examinerService.saveExaminer(exVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+exVO.getId().toString()).build().toUriString());
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(exVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examiners").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(exVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
@@ -566,7 +566,7 @@ public class CourseController {
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
 			log.debug("allExaminersLists, examiners lists "+ReflectionToStringBuilder.toString(examinerService.getAllExaminersLists(), ToStringStyle.MULTI_LINE_STYLE));
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(examinerService.getAllExaminersLists()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(examinerService.getAllExaminersLists()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -579,12 +579,12 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			ExListVO exVO = new JSONDeserializer<ExListVO>().use(null, ExListVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			ExListVO exVO = new JSONDeserializer<ExListVO>().use(null, ExListVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateExaminer, exVO "+ReflectionToStringBuilder.toString(exVO, ToStringStyle.MULTI_LINE_STYLE));
 			exVO.setId(id);
 			exVO = examinerService.updateExaminersDecision(exVO);
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(exVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(exVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -600,13 +600,13 @@ public class CourseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			ExListVO exVO = new JSONDeserializer<ExListVO>().use(null, ExListVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			ExListVO exVO = new JSONDeserializer<ExListVO>().use(null, ExListVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("createExaminerList, exVO "+ReflectionToStringBuilder.toString(exVO, ToStringStyle.MULTI_LINE_STYLE));
 			exVO = examinerService.createExaminersDecision(exVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+exVO.getId().toString()).build().toUriString());
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(exVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("examinerslists").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(exVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
@@ -655,7 +655,7 @@ public class CourseController {
 					}
 				}
 			}
-			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), Date.class).deepSerialize(courses), headers, HttpStatus.OK);
+			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("courses").transform(new DateTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(courses), headers, HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -2,7 +2,7 @@ package se.uu.ebc.luntan.vo;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.entity.ExaminersDecision;
@@ -20,7 +20,7 @@ public class ExListVO extends AuditableVO{
     private Long id;
     private EduBoard board;
     private boolean decided;
-    private Date decisionDate;
+    private LocalDateTime decisionDate;
     private String note;
 	private List<String> defaultExaminers = new ArrayList<String>();
     

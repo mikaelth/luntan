@@ -1,6 +1,6 @@
 package se.uu.ebc.luntan.vo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import se.uu.ebc.luntan.entity.Auditable;
 
@@ -10,7 +10,7 @@ public class AuditableVO {
 //     private String createdBy;
 //     private Date creationDate;
     private String lastModifiedBy;
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
 
 
@@ -52,12 +52,12 @@ public class AuditableVO {
     }
 
 
-    public Date getLastModifiedDate()
+    public LocalDateTime getLastModifiedDate()
     {
     	return this.lastModifiedDate;
     }
 
-    public void setLastModifiedDate(Date lastModifiedDate)
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate)
     {
     	this.lastModifiedDate = lastModifiedDate;
     }

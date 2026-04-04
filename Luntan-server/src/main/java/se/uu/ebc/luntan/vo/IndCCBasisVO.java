@@ -2,7 +2,7 @@ package se.uu.ebc.luntan.vo;
 
 
 import se.uu.ebc.luntan.entity.IndividualCourseCreditBasis;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -15,8 +15,8 @@ public class IndCCBasisVO {
 
 	private Long id;
 
-    private Date sent;
-  	private Date createdDate;
+    private LocalDateTime sent;
+  	private LocalDateTime createdDate;
 	private Integer NumberOfRegs;
     private String note;
    

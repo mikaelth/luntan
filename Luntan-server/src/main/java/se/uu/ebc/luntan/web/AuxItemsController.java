@@ -31,7 +31,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/userroletypes")
     public List<Map<String, UserRoleType>> userRoleTypes() {
-    	List theList = new ArrayList<Map<String, UserRoleType>>();
+    	List<Map<String, UserRoleType>> theList = new ArrayList<Map<String, UserRoleType>>();
     	for (UserRoleType s : UserRoleType.values()) {
 			java.util.Map<String,UserRoleType> vMap = new java.util.HashMap<String, UserRoleType>();
 			vMap.put("label", s);
@@ -41,7 +41,7 @@ public class AuxItemsController {
     }
 	@RequestMapping("/departments")
     public List<Map<String, Department>> departments() {
-    	List theList = new ArrayList<Map<String, Department>>();
+    	List<Map<String, Department>> theList = new ArrayList<Map<String, Department>>();
     	for (Department s : Department.values()) {
 			java.util.Map<String,Department> vMap = new java.util.HashMap<String, Department>();
 			vMap.put("label", s);
@@ -52,7 +52,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/grantkinds")
     public List<Map<String, String>> grantKinds() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>> theList = new ArrayList<Map<String, String>>();
     	for (EDGKind s : EDGKind.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("id", s.name());
@@ -64,7 +64,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/coursegroups")
     public List<Map<String, String>> courseGroup() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>> theList = new ArrayList<Map<String, String>>();
     	for (CourseGroup s : CourseGroup.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 //			vMap.put("label", s.toString());
@@ -77,7 +77,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/cidesignations")
     public List<Map<String, String>> ciDesignation() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>> theList = new ArrayList<Map<String, String>>();
     	for (CIDesignation s : CIDesignation.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("id", s.name());
@@ -89,7 +89,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/eduboards")
     public List<Map<String, String>> eduBoard() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>> theList = new ArrayList<Map<String, String>>();
     	for (EduBoard s : EduBoard.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("id", s.name());
@@ -101,7 +101,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/coursetypes")
     public List<Map<String, String>> courseType() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>>  theList = new ArrayList<Map<String, String>>();
     	for (CourseType s : CourseType.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("id", s.name());
@@ -113,7 +113,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/ictkinds")
     public List<Map<String, String>> IndCourseTeacherKind() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>>  theList = new ArrayList<Map<String, String>>();
     	for (IndCourseTeacherKind s : IndCourseTeacherKind.values()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("id", s.name());
@@ -125,7 +125,7 @@ public class AuxItemsController {
 
 	@RequestMapping("/years")
     public List<Map<String, String>> usedYears() {
-    	List theList = new ArrayList<Map<String, String>>();
+    	List<Map<String, String>>  theList = new ArrayList<Map<String, String>>();
     	for (Integer s : econDocRepo.getYears()) {
 			java.util.Map<String,String> vMap = new java.util.HashMap<String, String>();
 			vMap.put("label", s.toString());

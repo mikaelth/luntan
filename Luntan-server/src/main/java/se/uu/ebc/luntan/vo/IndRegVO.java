@@ -3,7 +3,7 @@ package se.uu.ebc.luntan.vo;
 
 import se.uu.ebc.luntan.entity.IndividualCourseRegistration;
 import se.uu.ebc.luntan.enums.Department;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;
@@ -21,8 +21,8 @@ public class IndRegVO {
 	private boolean courseEvalSetUp;
 	private boolean studentDone;
 
-	private Date startDate;
-	private Date registrationDate;
+	private LocalDateTime startDate;
+	private LocalDateTime registrationDate;
 
 	private String note;
 	private String studentName;

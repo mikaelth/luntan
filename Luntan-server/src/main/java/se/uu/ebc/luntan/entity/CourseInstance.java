@@ -190,7 +190,7 @@ public class CourseInstance  extends Auditable implements Comparable<CourseInsta
 	}
 
 	public boolean isSupplementary() {
-		return this.economyDoc.isLocked() ? this.creationDate.after(this.economyDoc.getLockDate()) : false;
+		return this.economyDoc.isLocked() ? this.creationDate.isAfter(this.economyDoc.getLockDate()) : false;
 	}
 
 	public String getDesignation() {

@@ -1,6 +1,5 @@
 package se.uu.ebc.luntan.vo;
 
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import org.springframework.web.multipart.MultipartFile;

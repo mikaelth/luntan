@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.uu.ebc.luntan.entity.ExaminersList;
 import se.uu.ebc.luntan.entity.ExaminersDecision;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -20,7 +20,7 @@ public interface ExaminersListRepo extends JpaRepository<ExaminersList, Long>, J
 
 	@Query(value="select * from examiners_list as el where board=?1 AND decision_date < ?2 order by decision_date DESC limit 1",
 		nativeQuery=true)
-	public ExaminersDecision findPreceeding(String board, Date date);
+	public ExaminersDecision findPreceeding(String board, LocalDateTime date);
 
 	@Query(value="select * from examiners_list as el where decision_date < now() order by decision_date DESC limit 1",
 		nativeQuery=true)

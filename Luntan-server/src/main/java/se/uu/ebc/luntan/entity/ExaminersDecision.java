@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +38,7 @@ public class ExaminersDecision extends ExaminersList {
  */
     
 	@Column(name = "DECISION_DATE")
-	private Date decisionDate;
+	private LocalDateTime decisionDate;
 	
     @Column(name = "BOARD")
 	@NotNull

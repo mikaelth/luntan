@@ -1,6 +1,6 @@
 package se.uu.ebc.luntan.vo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import lombok.*;
 public class BPPersonVO {
 
     private String lastModifiedBy;
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
     private String firstName;
     private String lastName;
     private String ldapEntry;

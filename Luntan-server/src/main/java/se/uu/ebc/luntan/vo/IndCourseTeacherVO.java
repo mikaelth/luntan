@@ -4,7 +4,6 @@ import se.uu.ebc.luntan.enums.IndCourseTeacherKind;
 import se.uu.ebc.luntan.enums.Department;
 
 import se.uu.ebc.luntan.entity.IndividualCourseTeacher;
-import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.Data;

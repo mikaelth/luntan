@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+//import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
@@ -78,7 +79,7 @@ public class EconomyDocument  extends Auditable {
     private boolean locked = false;
 
     @Column(name = "LOCK_DATE")
-    private Date lockDate;
+    private LocalDateTime lockDate;
 
     @Column(name = "REGS_VALID")
     private boolean registrationsValid = false;
@@ -111,7 +112,7 @@ public class EconomyDocument  extends Auditable {
 	public void setLocked(boolean locked) {
 		if (locked ^ this.locked) {
 			if (locked) {
-				this.lockDate = new Date();
+				this.lockDate = LocalDateTime.now();
 			} else {
 				this.lockDate = null;
 			}

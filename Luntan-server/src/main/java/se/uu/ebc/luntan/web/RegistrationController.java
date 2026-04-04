@@ -46,7 +46,7 @@ import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Calendar;
@@ -147,7 +147,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(regService.getAllRegistrations()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(regService.getAllRegistrations()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -160,7 +160,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			IndRegVO ciVO = new JSONDeserializer<IndRegVO>().use(null, IndRegVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			IndRegVO ciVO = new JSONDeserializer<IndRegVO>().use(null, IndRegVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateRegistration, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			log.debug("updateRegistration, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
 			ciVO.setId(id);
@@ -169,7 +169,7 @@ public class RegistrationController {
 
 			log.debug("updateRegistration, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -186,12 +186,12 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			IndRegVO ciVO = new JSONDeserializer<IndRegVO>().use(null, IndRegVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			IndRegVO ciVO = new JSONDeserializer<IndRegVO>().use(null, IndRegVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			ciVO = regService.saveRegistration(ciVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icrs").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
@@ -222,7 +222,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(regService.getAllICTeachers()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(regService.getAllICTeachers()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -235,7 +235,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			IndCourseTeacherVO ciVO = new JSONDeserializer<IndCourseTeacherVO>().use(null, IndCourseTeacherVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			IndCourseTeacherVO ciVO = new JSONDeserializer<IndCourseTeacherVO>().use(null, IndCourseTeacherVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateICTeacher, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			log.debug("updateICTeacher, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
 			ciVO.setId(id);
@@ -244,7 +244,7 @@ public class RegistrationController {
 
 			log.debug("updateICTeacher, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("icts").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -261,7 +261,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			IndCourseTeacherVO ciVO = new JSONDeserializer<IndCourseTeacherVO>().use(null, IndCourseTeacherVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			IndCourseTeacherVO ciVO = new JSONDeserializer<IndCourseTeacherVO>().use(null, IndCourseTeacherVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			ciVO = regService.saveICTeacher(ciVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
@@ -299,7 +299,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         try {
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(regService.getAllICCBasis()), headers, HttpStatus.OK);
+ 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(regService.getAllICCBasis()), headers, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -312,7 +312,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			IndCCBasisVO ciVO = new JSONDeserializer<IndCCBasisVO>().use(null, IndCCBasisVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			IndCCBasisVO ciVO = new JSONDeserializer<IndCCBasisVO>().use(null, IndCCBasisVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			log.debug("updateICCBasis, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 			log.debug("updateICCBasis, principal "+ReflectionToStringBuilder.toString(request.getUserPrincipal(), ToStringStyle.MULTI_LINE_STYLE));
 			ciVO.setId(id);
@@ -321,7 +321,7 @@ public class RegistrationController {
 
 			log.debug("updateICCBasis, before serialize, ciVO "+ReflectionToStringBuilder.toString(ciVO, ToStringStyle.MULTI_LINE_STYLE));
 
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), Date.class).deepSerialize(ciVO);
+ 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("iccbs").transform(new DateNullTransformer("yyyy-MM-dd"), LocalDateTime.class).deepSerialize(ciVO);
 			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
 
             return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
@@ -338,7 +338,7 @@ public class RegistrationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         try {
-			IndCCBasisVO ciVO = new JSONDeserializer<IndCCBasisVO>().use(null, IndCCBasisVO.class).use(Date.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
+			IndCCBasisVO ciVO = new JSONDeserializer<IndCCBasisVO>().use(null, IndCCBasisVO.class).use(LocalDateTime.class, new DateNullTransformer("yyyy-MM-dd") ).deserialize(json);
 			ciVO = regService.saveICCBasis(ciVO);
             RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
             headers.add("Location",uriBuilder.path(a.value()[0]+"/"+ciVO.getId().toString()).build().toUriString());
@@ -379,7 +379,7 @@ public class RegistrationController {
 
 			log.debug("Teachers: " + teachers);
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 			model.addAttribute("edoc", edoc);
 			model.addAttribute("teachers", teachers);
 
@@ -412,7 +412,7 @@ public class RegistrationController {
 			} else {
 				for (EduBoard board : EduBoard.values()) {
 					examiners.addAll(exRepo.findAvailableByBoard(board));
-					model.addAttribute("decisionDate", new Date());
+					model.addAttribute("decisionDate", LocalDateTime.now());
 				}
 			}
 
@@ -429,7 +429,7 @@ public class RegistrationController {
 
  */
 
-			model.addAttribute("serverTime", new Date());
+			model.addAttribute("serverTime", LocalDateTime.now());
 			model.addAttribute("bdoc", bdoc);
 
     		return "BillingView";

@@ -1,7 +1,7 @@
 package  se.uu.ebc.luntan.entity;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 import jakarta.persistence.Column;
@@ -59,7 +59,7 @@ public class IndividualCourseRegistration extends Auditable {
     private Long id;
 
 	@Column(name = "STARTDATE")
-	private Date startDate;
+	private LocalDateTime startDate;
 
 	@NotNull
 	@Column(name = "STUDENT")
@@ -142,7 +142,7 @@ public class IndividualCourseRegistration extends Auditable {
 		return creditBasisRecord == null ? false : true;
 	}
 
-	public Date getRegistrationDate() {
+	public LocalDateTime getRegistrationDate() {
 		return this.creationDate;
 	}
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import module java.naming;
@@ -112,7 +112,7 @@ public class StaffService {
 
 		for (EduBoard edb : ciRepo.findExamEDUBoards(eDoc)) {
 			log.debug("EduBoard " + edb.toString()+", "+ edb.name());
-			ExaminersDecision ed = elRepo.findPreceeding(edb.name(), new Date());
+			ExaminersDecision ed = elRepo.findPreceeding(edb.name(), LocalDateTime.now());
 			log.debug("Examiner decision " + ed);
 			examiners.addAll(examinerRepo.findPrimariesByDecision(ed));
 		}
