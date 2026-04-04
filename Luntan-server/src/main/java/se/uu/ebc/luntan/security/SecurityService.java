@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class SecurityService implements LuntanUserService {
     }
 
     @Override
-    public UserDetails loadUserDetails(Authentication token) throws UsernameNotFoundException {
+    public UserDetails loadUserDetails(CasAssertionAuthenticationToken token) throws UsernameNotFoundException {
         log.debug("loadUserDetails, got token {}", token);
         String username = token.getPrincipal() instanceof String s ? s : "";
         return loadUserByUsername(username);
