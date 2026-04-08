@@ -1,4 +1,4 @@
-package se.uu.ebc.luntan.web;
+package se.uu.ebc.luntan.controller;
 
 
 //import org.springframework.web.bind.annotation.RestController;
@@ -73,6 +73,9 @@ import se.uu.ebc.luntan.service.ExaminersService;
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.entity.FundingModel;
+import se.uu.ebc.luntan.controller.view.CourseInstancesExcel;
+import se.uu.ebc.luntan.controller.view.EconomyDocExcel;
+import se.uu.ebc.luntan.controller.view.ExaminersExcel;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.Programme;
 import se.uu.ebc.luntan.entity.ExaminersList;
@@ -89,10 +92,6 @@ import se.uu.ebc.luntan.vo.EconomyDocVO;
 import se.uu.ebc.luntan.vo.EDGVO;
 
 import se.uu.ebc.luntan.util.DateNullTransformer;
-
-import se.uu.ebc.luntan.web.view.EconomyDocExcel;
-import se.uu.ebc.luntan.web.view.ExaminersExcel;
-import se.uu.ebc.luntan.web.view.CourseInstancesExcel;
 
 @Slf4j
 @Controller
@@ -210,77 +209,6 @@ public class EconomyDocController {
         }
     }
 
-
-	/* Funding models */
-
-    @RequestMapping(value="rest/fundingmodels", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<String> allFMs() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        try {
-// 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fmService.getAllFMs()), headers, HttpStatus.OK);
- 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fmRepo.findAll()), headers, HttpStatus.OK);
-// 			return new ResponseEntity<String>(new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").deepSerialize(fmRepo.findAll()), headers, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-	@Secured({("ROLE_SUBJECTCOORDINATOR")})
-    @RequestMapping(value="rest/fundingmodels/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateFM(@RequestBody String json, @PathVariable("id") Long id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        try {
-			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
-			fm = fmRepo.save(fm);
-
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fm);
-			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
-
-            return new ResponseEntity<String>(restResponse, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-	@Secured({("ROLE_SUBJECTCOORDINATOR")})
-    @RequestMapping(value="rest/fundingmodels", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createFM(@RequestBody String json, UriComponentsBuilder uriBuilder) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        try {
-			FundingModel fm = new JSONDeserializer<FundingModel>().use(null, FundingModel.class).use(LocalDateTime.class, new DateTransformer("yyyy-MM-dd") ).deserialize(json);
-			fm = fmRepo.save(fm);
-            RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
-            headers.add("Location",uriBuilder.path(a.value()[0]+"/"+fm.getId().toString()).build().toUriString());
-
- 			String restResponse = new JSONSerializer().prettyPrint(true).exclude("*.class").rootName("fundingmodels").transform(new DateTransformer("yyyy-MM-dd"), "lastModifiedDate").deepSerialize(fm);
-			restResponse = new StringBuilder(restResponse).insert(1, "success: true,").toString();
-
-            return new ResponseEntity<String>(restResponse, headers, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-	@Secured({("ROLE_SUBJECTCOORDINATOR")})
-	@RequestMapping(value = "rest/fundingmodels/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-	public ResponseEntity<String> deleteFM(@PathVariable("id") Long id) {
-		HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        try {
-//			fmRepo.delete(fmRepo.findById(id));
-			fmRepo.delete(fmRepo.findById(id).get());
-            return new ResponseEntity<String>("{success: true, id : " +id.toString() + "}", headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("{\"ERROR\":"+e.getMessage()+"\"}", headers, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
 
 

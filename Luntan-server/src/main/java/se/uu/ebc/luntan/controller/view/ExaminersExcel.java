@@ -1,4 +1,4 @@
-package se.uu.ebc.luntan.web.view;
+package se.uu.ebc.luntan.controller.view;
 
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -9,7 +9,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.CellType;
 
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,8 @@ import se.uu.ebc.ldap.Staff;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.Examiner;
 import se.uu.ebc.luntan.entity.ExaminersList;
-import se.uu.ebc.luntan.entity.CourseInstance;
-import se.uu.ebc.luntan.entity.EconomyDocument;
-import se.uu.ebc.luntan.enums.Department;
 
-public class CourseInstancesExcel extends AbstractXlsView
+public class ExaminersExcel extends AbstractXlsView
 {
     @SuppressWarnings("unchecked")
     @Override
@@ -42,9 +38,11 @@ public class CourseInstancesExcel extends AbstractXlsView
         //VARIABLES REQUIRED IN MODEL
         String sheetName = (String)model.get("sheetname");
         List<String> headers = (List<String>)model.get("headers");
-        EconomyDocument edoc = (EconomyDocument)model.get("edoc");
-        Map<String, Staff> courseLeaderMap = (Map<String, Staff>)model.get("courseLeaderMap");
-        Map<String, Staff> examinerMap = (Map<String, Staff>)model.get("examinerMap");
+        ExaminersList el = (ExaminersList)model.get("exList");
+        List<Examiner> examiners = (List<Examiner>)model.get("examiners");
+        Map<String, Staff> staff = (Map<String, Staff>)model.get("staffMap");
+        Map<Course,List<Examiner>> em = (Map<Course,List<Examiner>>)model.get("exMap");
+        Map<String, String> mm = (Map<String, String>)model.get("matchMap");
 
         List<String> numericColumns = new ArrayList<String>();
         if (model.containsKey("numericcolumns"))
@@ -70,7 +68,6 @@ public class CourseInstancesExcel extends AbstractXlsView
 
 		CreationHelper ch = workbook.getCreationHelper();
     	HSSFCellStyle styleCurrencyFormat = (HSSFCellStyle)workbook.createCellStyle();
-//    	styleCurrencyFormat.setDataFormat(HSSFDataFormat.getBuiltinFormat("# ##0 kr"));
     	styleCurrencyFormat.setDataFormat(ch.createDataFormat().getFormat("# ##0 kr"));
 
     	HSSFCellStyle stylePercentFormat = (HSSFCellStyle)workbook.createCellStyle();
@@ -92,48 +89,34 @@ public class CourseInstancesExcel extends AbstractXlsView
 
         //POPULATE VALUE ROWS/COLUMNS
         currentRow++;//exclude header
-        for(CourseInstance ci: edoc.getCourseInstances()){
+        for(Course course: em.keySet()){
             row = sheet.createRow(currentRow);
         	currentColumn = 0;
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getCourse().getCourseGroup().displayName());                
+			text = new HSSFRichTextString(course.getCode());                
 			cell.setCellValue(text);                    
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getInstanceCode());                
+			text = new HSSFRichTextString(course.getSeName()+", "+course.getCredits()+" hp");                
 			cell.setCellValue(text);                    
 
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getDesignation());                
-			cell.setCellValue(text);                    
-
-            cell = row.createCell(currentColumn++);
-            cell.setCellType(CellType.NUMERIC);
-            cell.setCellValue(ci.getCourse().getCredits());
-
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isFirstInstance() ? "X" : "");                
-			cell.setCellValue(text);                    
-
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(courseLeaderMap.get(ci.getCourseLeader()).getNameAndContact());                
-			cell.setCellValue(text);                    
-
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(examinerMap.containsKey(ci.getCourse()) ? examinerMap.get(ci.getCourse()).getNameAndContact() : "Missing");                
-			cell.setCellValue(text);                    
-
-            cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.getNote());                
-			cell.setCellValue(text);                    
+			String examinerNames = em.get(course).stream()
+        		.map( ex -> staff.get(ex.getExaminer()).getName() )
+        		.collect( Collectors.joining( ", " ) );
 
 			cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(ci.isSupplementary() ? "Tillagd som supplement " + ci.getCreationDate() : "");                
-			cell.setCellValue(text);                    
+			text = new HSSFRichTextString(examinerNames);                
+			cell.setCellValue(text);  
+                  
+			cell = row.createCell(currentColumn++);
+			text = new HSSFRichTextString( mm.get(course.getCode()) );                
+//			text = new HSSFRichTextString( course.getCode() );                
+			cell.setCellValue(text);  
 
-            currentRow++;
+			currentRow++;
         }
+
 
     }
 }

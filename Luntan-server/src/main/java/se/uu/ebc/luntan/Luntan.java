@@ -45,18 +45,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @EnableLdapRepositories(basePackages = "se.uu.ebc.ldap")
-@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application.properties")
 @EnableTransactionManagement
-@EnableJpaAuditing(auditorAwareRef="auditorProvider")
+//@EnableJpaAuditing(auditorAwareRef="auditorProvider")
 @EnableScheduling
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 // @Configuration
 // @EnableWebMvc //Disable this and file upload will not work; enable and static will not work.
 @RestController("/")
 @SpringBootApplication
 @CrossOrigin(origins = "http://localhost:1841")
-@Import({StaticResourceConfiguration.class, LuntanSecurityConfig.class, LuntanMethodSecurityConfig.class})
-@ComponentScan(basePackages = {"se.uu.ebc.luntan.service","se.uu.ebc.luntan.web","se.uu.ebc.luntan.security"})
+//@Import({StaticResourceConfiguration.class, LuntanSecurityConfig.class, LuntanMethodSecurityConfig.class})
+//@ComponentScan(basePackages = {"se.uu.ebc.luntan.service","se.uu.ebc.luntan.web","se.uu.ebc.luntan.security"})
 public class Luntan extends SpringBootServletInitializer { /* Deploying to Tomcat container */
 
 	private static String trustPath = System.getenv("JAVA_HOME") + "/jre/lib/security/cacerts";

@@ -3,15 +3,29 @@ package se.uu.ebc.luntan.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Calendar;
+import java.util.Comparator;
+
+import java.time.Year;
+
+import jakarta.annotation.PostConstruct;
 
 import se.uu.ebc.luntan.entity.FundingModel;
 import se.uu.ebc.luntan.repo.FundingModelRepo;
-import se.uu.ebc.luntan.vo.FMVO;
 
+
+import se.uu.ebc.luntan.vo.FMVO;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.dao.OptimisticLockingFailureException;
+
 
 @Slf4j
 @Service
@@ -21,65 +35,50 @@ public class FundingModelService {
 	@Autowired
 	FundingModelRepo fmRepo;
 
+	
+	private ModelMapper mapper = new ModelMapper();
+	 	
+ 	
+ 	/* PhD Positions */
 
-
-	/* Courses */
-
-	public List<FMVO> getAllFMs() throws Exception {
-		List<FMVO> fmVO = new ArrayList<FMVO>();
-		try {
-			for (FundingModel fm : fmRepo.findAll()) {
- 				fmVO.add(new FMVO(fm));
+	public List<FMVO> getAllFundingModels() throws ResourceNotFoundException {
+		List<FMVO> fmVOs = new ArrayList<FMVO>();
+			for (FundingModel fm : fmRepo.findAll() ) {
+ 				fmVOs.add(mapper.map(fm,FMVO.class));
  			}
-         	return fmVO;
-        } catch (Exception e) {
-
-			return null;
-
-        }
+         	return fmVOs;        	        
     }
 
-/*
-    public CourseVO saveCourse(CourseVO cVO) throws Exception {
-    	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()), cVO);
-    	courseRepo.save(c);
-		return new CourseVO(c);
-
+ 
+	public FMVO getPhDById (Long id) {
+		log.debug("getById()");
+		FundingModel p = fmRepo.findById(id).get();
+		log.debug(p.toString());
+		return mapper.map(p, FMVO.class);
+	}   
+ 
+    
+    public FMVO saveFundingModel(FMVO pvo) throws Exception {
+    	FundingModel p = pvo.getId() == null ? toFundingModel(pvo) : toFundingModel(fmRepo.findById(pvo.getId()).get(), pvo);
+    	fmRepo.save(p);
+    	
+		FMVO pVO = mapper.map(p,FMVO.class);
+		return pVO;
+    
     }
 
-
-    public synchronized void deleteCourse(Long cID) throws Exception {
-		Course c = courseRepo.findById(cID);
-		courseRepo.delete(c);
+    public synchronized void deleteFundingModel(Long pID) throws IllegalArgumentException, OptimisticLockingFailureException {
+		fmRepo.deleteById(pID);
     }
-
-
-	private Course toCourse (CourseVO cvo) throws Exception {
- 		return toCourse (new Course(), cvo);
+   	 
+	private FundingModel toFundingModel (FMVO pvo) throws Exception {
+		return toFundingModel (new FundingModel(),pvo);
    	}
 
-	private Course toCourse (Course c, CourseVO cvo) throws Exception {
-
-
-		try {
-			c.setId(cvo.getId()) ;
-			c.setCode(cvo.getCode()) ;
-			c.setSeName(cvo.getSeName()) ;
-			c.setEnName(cvo.getEnName()) ;
-			c.setCourseGroup(cvo.getCourseGroup()) ;
-			c.setPeriod(cvo.getPeriod()) ;
-			c.setNote(cvo.getNote()) ;
-			c.setCredits(cvo.getCredits()) ;
-
-
-		} catch (Exception e) {
-			log.error("toCourse got a pesky exception: "+ e + e.getCause());
-		} finally {
-			return c;
-		}
+	private FundingModel toFundingModel (FundingModel p, FMVO pvo) throws Exception {
+		mapper.map(pvo,p);
+		return p;
 	}
-
-
-*/
-
+ 
+	
 }

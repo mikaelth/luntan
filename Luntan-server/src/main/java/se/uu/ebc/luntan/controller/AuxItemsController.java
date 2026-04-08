@@ -1,4 +1,4 @@
-package se.uu.ebc.luntan.web;
+package se.uu.ebc.luntan.controller;
 
 import java.util.ArrayList;
 import java.util.List;

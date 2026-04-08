@@ -1,4 +1,4 @@
-package se.uu.ebc.luntan.web;
+package se.uu.ebc.luntan.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +66,7 @@ import se.uu.ebc.luntan.service.CourseService;
 import se.uu.ebc.luntan.service.ProgrammeService;
 import se.uu.ebc.luntan.service.ExaminersService;
 import se.uu.ebc.luntan.service.RegistrationService;
-
+import se.uu.ebc.luntan.controller.view.BillingExcelDoc;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.entity.Programme;
 import se.uu.ebc.luntan.entity.CourseInstance;
@@ -98,7 +98,6 @@ import lombok.extern.slf4j.Slf4j;
 import se.uu.ebc.luntan.repo.CourseInstanceRepo;
 import se.uu.ebc.luntan.repo.EconomyDocumentRepo;
 import se.uu.ebc.luntan.repo.IndividualCourseTeacherRepo;
-import se.uu.ebc.luntan.web.view.BillingExcelDoc;
 
 @Slf4j
 @Controller
