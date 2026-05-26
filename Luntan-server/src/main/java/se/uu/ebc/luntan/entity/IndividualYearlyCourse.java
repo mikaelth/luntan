@@ -276,8 +276,10 @@ public class IndividualYearlyCourse  extends CourseInstance {
  	}
 
  	public Float computeReadGrant(Integer students) {
-		log.debug("computeReadGrant(), " + this.getDesignation());
- 		return fundingModel.computeReaderFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+		log.debug("computeReadGrant(), {} for {} student", this.getDesignation(),students);
+ 		Float theGrant = fundingModel.computeReaderFunding(students,course.getCredits(),economyDoc.getBaseValue(),this.firstInstance);
+		log.debug("Readers grant is {}",theGrant);
+ 		return theGrant;
  	}
 
 	@Override

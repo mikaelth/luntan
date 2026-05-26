@@ -99,16 +99,22 @@ public class IndividualCourseTeacher extends Auditable {
 
 	public Float computeCreditFunds() {
 		Float grant = 0.0f;
-		log.debug("computeCreditFunds()")	;
+		log.debug("computeCreditFunds() for student {}",this.assignment.getStudentName())	;
+		log.debug("Teacher kind is {}",this.teacherType);
 		if (this.teacherType.equals (IndCourseTeacherKind.Supervisor)) {
 			if (this.notUU && (this.assignment.getCreationDate().after(NO_EXTERNAL_SUPERVISORS_PAID))) {
+				log.debug("Teacher is supervisor and external {}",this,notUU);
 				grant = 0.0f;
 			} else {
+				log.debug("Teacher is supervisor and internal {}",this,notUU);
 				grant = this.assignment.computeSupervisorsGrant()*this.getTeachFactor()/this.assignment.getSupervisorsTeachFactors();
 			}
 		} else if (this.teacherType.equals(IndCourseTeacherKind.Reader) && this.assignment.isIbgReg()) {
+			log.debug("Teaacher is reader and IBG-registration is {}, readers grant is {}", this.assignment.isIbgReg(), this.assignment.computeReadersGrant());
 			grant = this.assignment.computeReadersGrant()*this.getTeachFactor()/this.assignment.getReadersTeachFactors();
 		}
+
+		log.debug("Credit grant is {} for {} and student {}", grant, this.teacherType, this.assignment.getStudentName());
 
 		return grant;
 	}
@@ -122,7 +128,9 @@ public class IndividualCourseTeacher extends Auditable {
 	}
 
 	public Integer getTeachFactor() {
-		return (tFactor == null || tFactor == 0) ? 1 : tFactor;
+		Integer theFactor =  (tFactor == null || tFactor == 0) ? 1 : tFactor;
+		log.debug("The tFactor is {} so the value used is {}", tFactor,theFactor);
+		return theFactor;
 	}
 
 	public Float getTeachFactorFraction() {

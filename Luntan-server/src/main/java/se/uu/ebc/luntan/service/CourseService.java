@@ -10,8 +10,10 @@ import java.util.Calendar;
 
 import se.uu.ebc.luntan.entity.CourseInstance;
 import se.uu.ebc.luntan.entity.IndividualYearlyCourse;
+import se.uu.ebc.luntan.entity.IndividualYearlyTUNDegreeCourse;
 import se.uu.ebc.luntan.entity.Course;
 import se.uu.ebc.luntan.enums.Department;
+import se.uu.ebc.luntan.enums.CourseType;
 import se.uu.ebc.luntan.entity.EconomyDocument;
 import se.uu.ebc.luntan.vo.CourseInstanceVO;
 import se.uu.ebc.luntan.vo.CourseVO;
@@ -49,25 +51,25 @@ public class CourseService {
 
 	public List<CourseVO> getAllCourses() throws Exception {
 		List<CourseVO> cVO = new ArrayList<CourseVO>();
-		try {	
+		try {
 			for (Course c : courseRepo.findAll()) {
  				cVO.add(new CourseVO(c));
  			}
-         	return cVO;        	        
+         	return cVO;
         } catch (Exception e) {
 			log.error("getAllCourses got a pesky exception: "+ e + e.getCause());
 
 			return null;
-			
+
         }
     }
-    
-	
+
+
     public CourseVO saveCourse(CourseVO cVO) throws Exception {
     	Course c = cVO.getId() == null ? toCourse(cVO) : toCourse(courseRepo.findById(cVO.getId()).get(), cVO);
     	courseRepo.save(c);
 		return new CourseVO(c);
-    
+
     }
 
 
@@ -105,35 +107,35 @@ public class CourseService {
 			return c;
 		}
 	}
- 
+
 
 
 
 	/* CourseInstances */
-	
+
 	public List<CourseInstanceVO> getAllCourseInstances() throws Exception {
 		List<CourseInstanceVO> cVO = new ArrayList<CourseInstanceVO>();
-		try {	
+		try {
 			for (CourseInstance ci : ciRepo.findAll()) {
 				log.debug("getAllCourseInstances, ci "+ReflectionToStringBuilder.toString(ci, ToStringStyle.MULTI_LINE_STYLE));
  				cVO.add(new CourseInstanceVO(ci));
  			}
-         	return cVO;        	        
+         	return cVO;
         } catch (Exception e) {
 			log.error("getAllCourseInstances got a pesky exception: "+ e + e.getCause());
 
 			return null;
-			
+
         }
     }
-    
+
 
     public CourseInstanceVO saveCourseInstance(CourseInstanceVO cVO) throws Exception {
 		log.debug("saveCourseInstance");
     	CourseInstance ci = cVO.getId() == null ? toCourseInstance(cVO) : toCourseInstance(ciRepo.findById(cVO.getId()).get(), cVO);
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
-    
+
     }
 
 	/**
@@ -151,7 +153,7 @@ public class CourseService {
 		ci.setNote(cVO.getNote());
     	ciRepo.save(ci);
 		return new CourseInstanceVO(ci);
-    
+
     }
 
 
@@ -186,7 +188,11 @@ public class CourseService {
 	private CourseInstance toCourseInstance (CourseInstanceVO cVO) throws Exception {
 		CourseInstance ci;
 		if (cVO.isIndividualYearlyCourse()) {
-			ci = new IndividualYearlyCourse();
+			if (courseRepo.findById(cVO.getCourseId()).get().getCourseType().equals(CourseType.DEGREE_T)) {
+				ci = new IndividualYearlyTUNDegreeCourse();
+			} else {
+				ci = new IndividualYearlyCourse();
+			}
 		} else {
 			ci = new CourseInstance();
 		}
@@ -208,7 +214,7 @@ public class CourseService {
     		ci.setFirstInstance(cVO.isFirstInstance());
     		ci.setBookendOnly(cVO.isBookendOnly());
     		ci.setNote(cVO.getNote());
-			
+
     		ci.setGrantDistribution(cVO.getGrantDistribution());
 
 			ci.setEconomyDoc(edRepo.findById(cVO.getEconomyDocId()).get());
@@ -233,9 +239,9 @@ public class CourseService {
 					} else {
 						log.debug("Could not update BalancedEconomyDoc with firstOpen" );
 					}
-				}			
+				}
 			}
-		
+
 		} catch (Exception e) {
 			log.error("toCourseInstance got a pesky exception: "+ e + e.getCause());
 			log.error(ReflectionToStringBuilder.toString(e.getStackTrace(), ToStringStyle.MULTI_LINE_STYLE));
@@ -245,8 +251,8 @@ public class CourseService {
 	}
 
 
-/* 
-	public void updateBalanceED () {	
+/*
+	public void updateBalanceED () {
 		try {
 			for (CourseInstance ci :  ciRepo.findBalanceRequestedNotHandled()) {
 				if( ci.isRegistrationValid() ) {
@@ -263,8 +269,8 @@ public class CourseService {
 			log.error("updateBalanceED caught a pesky exception, " + e);
         }
 
-	
+
 	}
-    
+
  */
 }
