@@ -53,7 +53,7 @@ public class ExaminersExcel extends AbstractXlsView
         sheet.setDefaultColumnWidth((short) 12);
         int currentRow = 0;
         short currentColumn = 0;
- 
+
 		//SET GENERAL INFORMATION
 
 		HSSFRow row; // = sheet.createRow(currentRow);
@@ -64,7 +64,7 @@ public class ExaminersExcel extends AbstractXlsView
         HSSFCellStyle headerStyle = (HSSFCellStyle)workbook.createCellStyle();
         HSSFFont headerFont = (HSSFFont)workbook.createFont();
 		headerFont.setBold(true);
-		headerStyle.setFont(headerFont); 
+		headerStyle.setFont(headerFont);
 
 		CreationHelper ch = workbook.getCreationHelper();
     	HSSFCellStyle styleCurrencyFormat = (HSSFCellStyle)workbook.createCellStyle();
@@ -81,9 +81,9 @@ public class ExaminersExcel extends AbstractXlsView
         HSSFRow headerRow = sheet.createRow(currentRow);
         for(String header:headers){
             text = new HSSFRichTextString(header);
-            cell = headerRow.createCell(currentColumn); 
+            cell = headerRow.createCell(currentColumn);
             cell.setCellStyle(headerStyle);
-            cell.setCellValue(text);            
+            cell.setCellValue(text);
             currentColumn++;
         }
 
@@ -94,25 +94,29 @@ public class ExaminersExcel extends AbstractXlsView
         	currentColumn = 0;
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(course.getCode());                
-			cell.setCellValue(text);                    
+			text = new HSSFRichTextString(course.getCode());
+			cell.setCellValue(text);
 
             cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(course.getSeName()+", "+course.getCredits()+" hp");                
-			cell.setCellValue(text);                    
+			text = new HSSFRichTextString(course.getSeName()+", "+course.getCredits()+" hp");
+			cell.setCellValue(text);
 
 			String examinerNames = em.get(course).stream()
         		.map( ex -> staff.get(ex.getExaminer()).getName() )
         		.collect( Collectors.joining( ", " ) );
 
 			cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString(examinerNames);                
-			cell.setCellValue(text);  
-                  
+			text = new HSSFRichTextString(examinerNames);
+			cell.setCellValue(text);
+
 			cell = row.createCell(currentColumn++);
-			text = new HSSFRichTextString( mm.get(course.getCode()) );                
-//			text = new HSSFRichTextString( course.getCode() );                
-			cell.setCellValue(text);  
+			text = new HSSFRichTextString(course.isInactive() ? "Inaktiv" : "");
+			cell.setCellValue(text);
+
+			cell = row.createCell(currentColumn++);
+			text = new HSSFRichTextString( mm.get(course.getCode()) );
+//			text = new HSSFRichTextString( course.getCode() );
+			cell.setCellValue(text);
 
 			currentRow++;
         }

@@ -537,6 +537,7 @@ public class EconomyDocController {
         headers.add("Kurskod");
         headers.add("Kursnamn");
         headers.add("Examinatorer");
+        headers.add("Status");
         headers.add("Kommentar");
 
         model.put("headers", headers);
